@@ -5,12 +5,14 @@ import lombok.extern.log4j.Log4j2;
 import org.movieproject.domain.Member;
 import org.movieproject.dto.MemberSecurityDTO;
 import org.movieproject.repository.MemberRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -23,7 +25,7 @@ public class MvpUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername : " + username);
 
-        Optional<Member> memberResult = memberRepository.FindByMemberEmail(username);
+        Optional<Member> memberResult = memberRepository.FindByMemberEmailWithRoles(username);
         if (memberResult.isPresent()) {
             Member member = memberResult.get();
             MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(
@@ -31,7 +33,10 @@ public class MvpUserDetailsService implements UserDetailsService {
                     member.getMemberEmail(),
                     member.getMemberPw(),
                     member.getMemberName(),
-                    member.getMemberPhone()
+                    member.getMemberPhone(),
+                    member.getRoleSet().stream()
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                            .collect(Collectors.toList())
             );
 
             log.info("멤버 시큐리티 DTO: " + memberSecurityDTO);

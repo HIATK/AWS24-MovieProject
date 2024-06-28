@@ -1,13 +1,14 @@
 package org.movieproject.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Getter
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
+@Getter
+@ToString(exclude = "roleSet")
 public class Member {
 
     @Id
@@ -21,4 +22,12 @@ public class Member {
     private String memberName;
 
     private String memberPhone;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roleSet = new HashSet<>();
+
+    public void addRole(Role role) {
+        this.roleSet.add(role);
+    }
 }

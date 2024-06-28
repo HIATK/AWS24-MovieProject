@@ -1,9 +1,10 @@
 package org.movieproject.dto;
 
 import lombok.*;
+import org.movieproject.domain.Role;
 
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.Set;
+
 @Data
 public class MemberDTO {
     private Integer memberNo;
@@ -15,4 +16,6 @@ public class MemberDTO {
     private String memberName;
 
     private String memberPhone;
+
+    private Set<Role> roleSet;
 }

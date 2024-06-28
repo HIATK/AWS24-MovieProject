@@ -58,7 +58,7 @@ public class CustomSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize // 권한 설정 부분
 //                    .requestMatchers("/").permitAll()
 //                    .requestMatchers("/ceo/join","/customer/join").anonymous()
-//                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 //                    .requestMatchers("/ceo/**").hasRole("CEO")
 //                    .requestMatchers("/customer/**").hasRole("CUSTOMER")
                                 .anyRequest().permitAll()
