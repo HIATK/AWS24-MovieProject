@@ -10,4 +10,6 @@ public class TestController {
     public String getDate() {
         return "Hello from Spring Boot !";
     }
+
+    //  테스트에요
 }

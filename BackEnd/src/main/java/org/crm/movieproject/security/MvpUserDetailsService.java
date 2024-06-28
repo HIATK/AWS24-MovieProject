@@ -26,16 +26,16 @@ public class MvpUserDetailsService implements UserDetailsService {
         Optional<Member> memberResult = memberRepository.FindByMemberEmail(username);
         if (memberResult.isPresent()) {
             Member member = memberResult.get();
-            MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(
-                    member.getMemberNo(),
-                    member.getMemberEmail(),
-                    member.getMemberPw(),
-                    member.getMemberName(),
-                    member.getMemberPhone()
-            );
+//            MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(
+//                    member.getMemberNo(),
+//                    member.getMemberEmail(),
+//                    member.getMemberPw(),
+//                    member.getMemberName(),
+//                    member.getMemberPhone()
+//            );
 
-            log.info("멤버 시큐리티 DTO: " + memberSecurityDTO);
-            return memberSecurityDTO;
+//            log.info("멤버 시큐리티 DTO: " + memberSecurityDTO);
+            return null;
         }
 
         throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username);
