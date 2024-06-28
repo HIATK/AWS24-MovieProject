@@ -16,5 +16,5 @@ public class userDTO {
 
     private String phoneNum;
 
-
+    private String userName;
 }
