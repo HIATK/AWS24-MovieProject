@@ -9,19 +9,17 @@ import lombok.Getter;
 @Getter
 @Entity
 
-public class user {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer memberNo;
 
-    private String userId;
+    private String memberEmail;
 
-    private String userPw;
+    private String memberPw;
 
-    private String userEmail;
+    private String memberName;
 
-    private String phoneNum;
-
-    private String userName;
+    private String memberPhone;
 }
