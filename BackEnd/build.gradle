@@ -48,17 +48,11 @@ dependencies {
     //  MySQL 커넥터
     runtimeOnly 'com.mysql:mysql-connector-j:8.4.0'
 
-    //  Thymeleaf 레이아웃 기능을 위한 추가 라이브러리
-    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.3.0'
-
-    // Thymeleaf 스프링 시큐리티
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-
     // modelmapper
     implementation 'org.modelmapper:modelmapper:3.2.0'
 
     // Swagger UI
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
     // thumbnail
     implementation 'net.coobird:thumbnailator:0.4.20'
@@ -86,15 +80,8 @@ dependencies {
     // GSON
     implementation 'com.google.code.gson:gson:2.11.0'
 
-    //썸네일
-    implementation 'net.coobird:thumbnailator:0.4.20'
-
     // compile 정리
     compileJava.dependsOn('clean')
-
-
-
-
 
 }
 

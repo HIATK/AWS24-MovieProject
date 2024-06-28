@@ -1,4 +1,4 @@
-package org.crm.movieproject;
+package org.movieproject;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
