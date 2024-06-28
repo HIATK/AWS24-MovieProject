@@ -23,7 +23,7 @@ public class MemberSecurityDTO extends User { // Security 용도로만 사용되
     private String memberName;
 
     public MemberSecurityDTO(Integer memberNo, String username, String password,
-                          String memberName, String memberPhone
+                          String memberName, String memberPhone,
                           Collection<? extends GrantedAuthority> authorities) {
 
         super(username, password, authorities);
