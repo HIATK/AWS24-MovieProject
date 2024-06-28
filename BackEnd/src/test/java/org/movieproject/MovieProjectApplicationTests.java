@@ -1,4 +1,4 @@
-package org.crm.movieproject;
+package org.movieproject;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
