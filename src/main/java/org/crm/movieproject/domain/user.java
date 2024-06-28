@@ -17,9 +17,11 @@ public class user {
 
     private String userId;
 
-    private String pw;
+    private String userPw;
 
-    private String email;
+    private String userEmail;
 
     private String phoneNum;
+
+    private String userName;
 }
