@@ -56,11 +56,9 @@ public class CustomSecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->   // 세션 비활성화
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize // 권한 설정 부분
-//                    .requestMatchers("/").permitAll()
-//                    .requestMatchers("/ceo/join","/customer/join").anonymous()
+//
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-//                    .requestMatchers("/ceo/**").hasRole("CEO")
-//                    .requestMatchers("/customer/**").hasRole("CUSTOMER")
+//
                                 .anyRequest().permitAll()
                 )
                 .addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class)
@@ -166,5 +164,7 @@ public class CustomSecurityConfig {
     private TokenCheckFilter tokenCheckFilter(JwtProvider jwtProvider, MvpUserDetailsService mvpUserDetailsService) {
         return new TokenCheckFilter(jwtProvider, mvpUserDetailsService);
     }
+
+
 
 }

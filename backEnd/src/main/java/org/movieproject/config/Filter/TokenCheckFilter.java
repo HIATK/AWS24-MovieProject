@@ -40,7 +40,8 @@ public class TokenCheckFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // 특정 경로에 대해서만 필터 적용
-        if (!path.startsWith("/api/") && !path.startsWith("/customer/")) {
+        //  !path.startsWith("/api/") && <-이거 아래에 들어가 있었음 프록시 떄문에 잠시 빼둠.
+        if ( !path.startsWith("/customer/")) {
             filterChain.doFilter(request, response);
             return;
         }
