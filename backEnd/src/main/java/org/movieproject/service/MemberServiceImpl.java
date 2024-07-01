@@ -2,7 +2,6 @@ package org.movieproject.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.catalina.Role;
 import org.modelmapper.ModelMapper;
 import org.movieproject.domain.Member;
 import org.movieproject.dto.MemberDTO;
@@ -49,7 +48,7 @@ public class MemberServiceImpl implements MemberService {
         // 만료시간 60분
         String token = jwtProvider.generateToken(tokenData, 60);
 
-        log.info("JWT 토큰 생성 !!! "+ token);
+        log.info("JWT 토큰 생성 !!! {}", token);
     }
 
     // 회원 이메일 참조하여 DTO 반환하는 서비스
@@ -66,6 +65,7 @@ public class MemberServiceImpl implements MemberService {
         memberDTO.setMemberPw(member.getMemberPw());
         memberDTO.setMemberName(member.getMemberName());
         memberDTO.setMemberPhone(member.getMemberPhone());
+        memberDTO.setMemberNick(member.getMemberNick());
         return memberDTO;
     }
 }

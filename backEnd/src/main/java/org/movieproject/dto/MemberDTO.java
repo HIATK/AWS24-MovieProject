@@ -17,5 +17,7 @@ public class MemberDTO {
 
     private String memberPhone;
 
+    private String memberNick;
+
     private Set<Role> roleSet;
 }

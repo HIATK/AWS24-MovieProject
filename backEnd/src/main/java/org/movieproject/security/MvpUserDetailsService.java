@@ -34,6 +34,7 @@ public class MvpUserDetailsService implements UserDetailsService {
                     member.getMemberPw(),
                     member.getMemberName(),
                     member.getMemberPhone(),
+                    member.getMemberNick(),
                     member.getRoleSet().stream()
                             .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                             .collect(Collectors.toList())

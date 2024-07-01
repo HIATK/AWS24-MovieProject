@@ -23,6 +23,8 @@ public class Member {
 
     private String memberPhone;
 
+    private String memberNick;
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)
     private Set<Role> roleSet = new HashSet<>();

@@ -74,7 +74,8 @@ public class MemberController {
 
         try{
             memberRepository.updateMember(passwordEncoder.encode(memberDTO.getMemberPw()),
-                    memberDTO.getMemberName(), memberDTO.getMemberPhone(),memberDTO.getMemberEmail());
+                    memberDTO.getMemberName(), memberDTO.getMemberPhone(),
+                    memberDTO.getMemberNick(), memberDTO.getMemberEmail());
         }catch(Exception e){
             return ResponseEntity.badRequest().body("업데이트 실패하였습니다. !!!");
         }

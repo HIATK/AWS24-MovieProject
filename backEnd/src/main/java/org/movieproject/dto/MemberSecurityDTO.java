@@ -22,8 +22,10 @@ public class MemberSecurityDTO extends User { // Security 용도로만 사용되
 
     private String memberName;
 
+    private String memberNick;
+
     public MemberSecurityDTO(Integer memberNo, String username, String password,
-                          String memberName, String memberPhone,
+                          String memberName, String memberPhone, String memberNick,
                           Collection<? extends GrantedAuthority> authorities) {
 
         super(username, password, authorities);
@@ -33,5 +35,6 @@ public class MemberSecurityDTO extends User { // Security 용도로만 사용되
         this.memberPw = password;
         this.memberName = memberName;
         this.memberPhone = memberPhone;
+        this.memberNick = memberNick;
     }
 }
