@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.movieproject.security.exception.RefreshTokenException;
-import org.movieproject.service.JwtProvider;
+import org.movieproject.security.JwtProvider;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 

@@ -7,7 +7,7 @@ import org.movieproject.config.Filter.RefreshTokenFilter;
 import org.movieproject.config.Filter.TokenCheckFilter;
 import org.movieproject.config.handler.APILoginSuccessHandler;
 import org.movieproject.config.handler.Custom403Handler;
-import org.movieproject.service.JwtProvider;
+import org.movieproject.security.JwtProvider;
 import org.movieproject.security.MvpUserDetailsService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package org.movieproject.service;
+package org.movieproject.security;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
