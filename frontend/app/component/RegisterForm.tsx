@@ -8,12 +8,13 @@ import styles from "./RegisterForm.module.css";
 const RegisterForm: React.FC = () => {
   const [id, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log({ id, email, password, confirmPassword });
+    console.log({ id, email, password, phone, confirmPassword });
   };
 
   return (
@@ -38,15 +39,23 @@ const RegisterForm: React.FC = () => {
       </div>
       <div>
         <input
+          type="phone"
+          id="phone"
+          placeholder="전화번호 (-자 없이)"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </div>
+      <div>
+        <input
           type="password"
           id="password"
-          placeholder="비밀번호 (영문, 숫자, 특문 중 2개 조합 10자 이상)"
+          placeholder="비밀번호 (영문, 숫자, 10자 이상)"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
       <div>
-        {/* <label htmlFor="confirmPassword">비밀번호 확인</label> */}
         <input
           type="password"
           id="confirmPassword"
