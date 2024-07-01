@@ -1,4 +1,51 @@
 package org.movieproject.service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
+import org.movieproject.domain.Member;
+import org.movieproject.dto.MemberDTO;
+import org.movieproject.repository.MemberRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+@RequiredArgsConstructor
+@Log4j2
 public class MemberServiceImpl implements MemberService {
+    private final MemberRepository memberRepository;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
+
+    // 회원가입
+    @Override
+    public void memberJoin(MemberDTO memberDTO) throws MidExistException{
+        String email = memberDTO.getMemberEmail();
+
+        // 아이디 중복확인
+        boolean exist = memberRepository.existsByMemberEmail(email);
+
+        if (exist) {
+            throw new MemberService.MidExistException("아이디가 중복되었습니다 !!! ");
+        }
+        // 비밀번호 암호화
+        String encodePassword = passwordEncoder.encode(memberDTO.getMemberPw());
+        memberDTO.setMemberPw(encodePassword);
+
+        Member member = modelMapper.map(memberDTO, Member.class);
+        memberRepository.save(member);
+
+        // JWT 토큰 생성
+        Map<String, Object> tokenData = new HashMap<>();
+        tokenData.put("email", member.getMemberEmail());
+
+        // 만료시간 60분
+        String token = jwtProvider.generateToken(tokenData, 60);
+
+        log.info("JWT 토큰 생성 !!! "+ token);
+    }
 }

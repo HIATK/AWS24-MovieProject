@@ -15,4 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     @Query("select m from Member m where m.memberEmail = :memberEmail")
     Optional<Member> FindByMemberEmailWithRoles(String memberEmail);
 
+    // 아이디 중복 확인
+    boolean existsByMemberEmail(String memberEmail);
+
 }
