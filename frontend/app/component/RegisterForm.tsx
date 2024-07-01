@@ -6,28 +6,20 @@ import React, { useState } from "react";
 import styles from "./RegisterForm.module.css";
 
 const RegisterForm: React.FC = () => {
-  const [id, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [nick, setNick] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log({ id, email, password, phone, confirmPassword });
+    console.log({ email, name, nick, password, phone, confirmPassword });
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
-      <div>
-        <input
-          type="text"
-          id="username"
-          placeholder="아이디 (2자 이상)"
-          value={id}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
       <div>
         <input
           type="email"
@@ -37,15 +29,7 @@ const RegisterForm: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-      <div>
-        <input
-          type="phone"
-          id="phone"
-          placeholder="전화번호 (-자 없이)"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-      </div>
+
       <div>
         <input
           type="password"
@@ -62,6 +46,33 @@ const RegisterForm: React.FC = () => {
           placeholder="비밀번호 확인"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+      </div>
+      <div>
+        <input
+          type="name"
+          id="name"
+          placeholder="성명"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+      <div>
+        <input
+          type="nick"
+          id="nick"
+          placeholder="닉네임"
+          value={nick}
+          onChange={(e) => setNick(e.target.value)}
+        />
+      </div>
+      <div>
+        <input
+          type="phone"
+          id="phone"
+          placeholder="전화번호 (-자 없이)"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
         />
       </div>
       <button type="submit">가입하기</button>
