@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.movieproject.security.exception.AccessTokenException;
-import org.movieproject.service.JwtProvider;
+import org.movieproject.security.JwtProvider;
 import org.movieproject.security.MvpUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
