@@ -20,7 +20,6 @@ export default function RootLayout({
       <body>
         {/* 레이아웃에 적용할 내용을 입력 */}
         <Sidebar />
-        <hr />
         {children}
       </body>
     </html>
