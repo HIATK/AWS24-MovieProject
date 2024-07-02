@@ -1,9 +1,7 @@
-
 type Movie = {
   id: string;
   title: string;
-  poster_path: string | null; // poster_path는 null이 될 수 있음
-  // 필요한 경우 다른 필드들도 추가할 수 있음
+  poster_path: string;
 };
 
 async function getMovies(): Promise<Movie[]> {
@@ -13,16 +11,14 @@ async function getMovies(): Promise<Movie[]> {
 }
 
 export default async function NowPlayingMovies() {
+  let movies: Movie[] = [];
   
-  // let movies: Movie[] = [];
   try {
-    // movies = await getMovies();
-    
+    movies = await getMovies();
   } catch (error) {
     console.error('Error fetching movies:', error);
     // API 요청 중 오류가 발생했을 경우 처리할 수 있는 코드 추가
   }
-  const movies = await getMovies();
 
   return (
     <div>
