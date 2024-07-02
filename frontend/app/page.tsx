@@ -1,20 +1,12 @@
-// app/page.tsx
-
-"use client";
-
 import styles from "./page.module.css";
 
-
-// 회원가입 폼
-import RegisterForm from "./component/RegisterForm";
-import NowPlayingMoviesComponent from "./component/NowPlayingMovies";
+import NowPlayingMovies from "./component/NowPlayingMovies";
 
 export default function Index() {
   return (
     <main className={styles.main}>
       <div className={styles.description}>
-        <RegisterForm />
-        <NowPlayingMoviesComponent />
+        <NowPlayingMovies />
       </div>
     </main>
   );
