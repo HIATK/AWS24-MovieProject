@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import styles from "./Join.module.css";
 import axios from 'axios';
-import axiosInstance from '../api/axiosInstance';
+import axiosInstance from '../../member/axiosInstance';
 
 interface FormData {
   memberEmail: string;
@@ -52,7 +52,7 @@ const Join: React.FC = () => {
         setErrors(validationErrors);
     } else {
         try {
-            const response = await axiosInstance.post('/api/member/join', formData);
+            const response = await axiosInstance.post('/member/join', formData);
             alert(response.data);
             setFormData({
                 memberEmail: '',

@@ -70,7 +70,7 @@ const Login: React.FC = () => {
             <img src="/images/naver.png" alt="Naver" />
           </div>
         </div>
-        <a href="#">회원가입</a>
+        <a href="../member/join">회원가입</a>
       </form>
     </div>
   );
