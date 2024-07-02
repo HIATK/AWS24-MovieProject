@@ -37,8 +37,12 @@ public class MemberServiceImpl implements MemberService {
         // 비밀번호 암호화
         String encodePassword = passwordEncoder.encode(memberDTO.getMemberPw());
         memberDTO.setMemberPw(encodePassword);
+        log.info("매핑 전 !!!: {}", memberDTO);
 
+        // 명시적 매핑
         Member member = modelMapper.map(memberDTO, Member.class);
+        log.info("매핑 후 !!!: {}", member);
+
         memberRepository.save(member);
 
         // JWT 토큰 생성
