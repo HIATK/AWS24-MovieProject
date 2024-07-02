@@ -22,12 +22,10 @@ const SidebarContainer = styled.div<StyledProps>`
     width: ${({isOpen}) => (isOpen ? '200px' : '60px')};
     height: 100vh;
     background-color: rgba(33, 33, 33, 0.87);
-    color: #fff;
+    color: #5fbebb;
     transition: width 0.3s ease;
     z-index: 1000;
-    overflow: ${({isOpen}) => (isOpen ? 'visible' : 'hidden')};
 `;
-
 const MenuToggle = styled.div`
     position: absolute;
     top: 10px;
@@ -83,22 +81,23 @@ const MenuText = styled.div<StyledProps>`
 
 const HoverText = styled.div<StyledProps>`
     position: absolute;
-    left: 36px; /* 아이콘 옆에 텍스트가 나오도록 위치 조정 */
+    left: ${({isOpen}) => (isOpen ? '60px' : '100%')};
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
+    background-color: rgba(33, 33, 33, 0.8);
+    color: #5fbebb;
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 14px;
     white-space: nowrap;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, left 0.3s ease;
     pointer-events: none;
     z-index: 1200;
 
     ${MenuItemWrapper}:hover & {
-        opacity: ${({ isOpen }) => (isOpen ? '0' : '1')};
+        opacity: ${({isOpen}) => (isOpen ? '0' : '1')};
+        left: ${({isOpen}) => (isOpen ? '60px' : 'calc(100% + 5px)')};
     }
 `;
 
