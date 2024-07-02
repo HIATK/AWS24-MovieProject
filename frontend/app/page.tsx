@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 
 
 // 회원가입 폼
-import RegisterForm from "./component/RegisterForm";
+import RegisterForm from "./component/Join";
 
 export default function Index() {
   return (
