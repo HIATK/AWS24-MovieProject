@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "./RegisterForm.module.css";
+import styles from "./Register.module.css";
 
 const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState("");
