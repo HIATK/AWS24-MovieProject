@@ -52,7 +52,7 @@ const Join: React.FC = () => {
         setErrors(validationErrors);
     } else {
         try {
-            const response = await axiosInstance.post('/member/join', formData);
+            const response = await axiosInstance.post('/api/member/join', formData);
             alert(response.data);
             setFormData({
                 memberEmail: '',

@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.movieproject.config.Filter.APILoginFilter;
 import org.movieproject.config.Filter.RefreshTokenFilter;
 import org.movieproject.config.Filter.TokenCheckFilter;
+import org.movieproject.config.handler.APILoginFailureHandler;
 import org.movieproject.config.handler.APILoginSuccessHandler;
 import org.movieproject.config.handler.Custom403Handler;
 import org.movieproject.security.JwtProvider;
@@ -60,11 +61,9 @@ public class CustomSecurityConfig {
             .sessionManagement(httpSecuritySessionManagementConfigurer ->   // 세션 비활성화
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize // 권한 설정 부분
-//
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-//
-                            .anyRequest().permitAll()
-            )
+                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                    .anyRequest().permitAll()
+                    )
             .addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class)
 //                .formLogin(form ->{form.loginPage("/login") // 로그인 설정 부분
 //                        .loginProcessingUrl("/login/auth")
@@ -102,6 +101,10 @@ public class CustomSecurityConfig {
         APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtProvider);
         // SuccessHandler 설정
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
+
+        APILoginFailureHandler failureHandler = new APILoginFailureHandler();
+
+        apiLoginFilter.setAuthenticationFailureHandler(failureHandler);
 
         // 토큰 체크 필터
         http.addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class);
