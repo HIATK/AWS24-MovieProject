@@ -29,13 +29,15 @@ const Login: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Login successful:", data);
-        // 로그인 성공 후 처리할 로직을 추가합니다.
+        alert('로그인 성공!');      
+      } else if (response.status === 401) {
+        alert('아이디 혹은 비밀번호가 올바르지 않습니다');
       } else {
-        console.error("Login failed");
-        // 로그인 실패 시 처리할 로직을 추가합니다.
+        throw new Error('로그인 에러');
       }
     } catch (error) {
       console.error("An error occurred:", error);
+      alert('로그인 중 문제가 발생했습니다.');
     }
   };
 
