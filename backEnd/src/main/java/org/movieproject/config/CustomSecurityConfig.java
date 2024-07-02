@@ -89,7 +89,7 @@ public class CustomSecurityConfig {
         // 인 증 매 니 저 등 록
         http.authenticationManager(authenticationManager);
         // API 로 그 인 필 터 설 정
-        APILoginFilter apiLoginFilter = new APILoginFilter("/login/auth");
+        APILoginFilter apiLoginFilter = new APILoginFilter("/api/login");
 
         apiLoginFilter.setAuthenticationManager(authenticationManager);
         // APILoginFilter 위치 조정 - UsernamePasswordAuthenticationFilter 이전에 동작해야함

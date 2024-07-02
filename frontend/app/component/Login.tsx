@@ -9,9 +9,34 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     console.log({ email, password });
+
+    // POST 요청을 보낼 데이터를 준비합니다.
+    const loginData = { username: email, password };
+
+    try {
+      // POST 요청을 보냅니다.
+      const response = await fetch("http://localhost:8000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login successful:", data);
+        // 로그인 성공 후 처리할 로직을 추가합니다.
+      } else {
+        console.error("Login failed");
+        // 로그인 실패 시 처리할 로직을 추가합니다.
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
   };
 
   return (

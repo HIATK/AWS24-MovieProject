@@ -70,6 +70,7 @@ public class MemberServiceImpl implements MemberService {
         memberDTO.setMemberName(member.getMemberName());
         memberDTO.setMemberPhone(member.getMemberPhone());
         memberDTO.setMemberNick(member.getMemberNick());
+        memberDTO.setRoleSet(member.getRoleSet());
         return memberDTO;
     }
 }

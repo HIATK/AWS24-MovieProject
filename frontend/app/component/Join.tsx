@@ -10,6 +10,7 @@ interface FormData {
   memberName: string;
   memberPhone: string;
   memberNick: string;
+  roleSet: string[];
 }
 
 interface Errors {
@@ -24,6 +25,7 @@ const Join: React.FC = () => {
       memberName: '',
       memberPhone: '',
       memberNick: '',
+      roleSet: ['GUEST'],  // roleSet 값을 GUEST로 설정
   });
 
   const [errors, setErrors] = useState<Errors>({});
@@ -59,6 +61,7 @@ const Join: React.FC = () => {
                 memberName: '',
                 memberPhone: '',
                 memberNick: '',
+                roleSet: ['GUEST'],
             });
             setErrors({});
         } catch (error) {
@@ -69,7 +72,7 @@ const Join: React.FC = () => {
             }
         }
     }
-};
+  };
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
@@ -92,7 +95,6 @@ const Join: React.FC = () => {
           value={formData.memberPw}
           onChange={handleChange}
           required
-
         />
       </div>
       <div>
