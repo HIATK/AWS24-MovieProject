@@ -4,6 +4,7 @@
 
 import React, { useState } from "react";
 import styles from "./Login.module.css";
+import Link from "next/link";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -72,7 +73,7 @@ const Login: React.FC = () => {
             <img src="/images/naver.png" alt="Naver" />
           </div>
         </div>
-        <a href="../member/join">회원가입</a>
+        <Link href="../../member/join">회원가입</Link>
       </form>
     </div>
   );
