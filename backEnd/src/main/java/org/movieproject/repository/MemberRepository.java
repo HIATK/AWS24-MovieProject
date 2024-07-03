@@ -16,7 +16,10 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Integer> {
     @EntityGraph(attributePaths = "roleSet")
     @Query("select m from Member m where m.memberEmail = :memberEmail")
-    Optional<Member> FindByMemberEmailWithRoles(String memberEmail);
+    Optional<Member> findByMemberEmailWithRoles(String memberEmail);
+
+    @EntityGraph(attributePaths = "roleSet")
+    Optional<Member> findByMemberEmail(String memberEmail);
 
     // 아이디 중복 확인
     @Transactional(readOnly = true)

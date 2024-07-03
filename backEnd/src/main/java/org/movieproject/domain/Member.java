@@ -11,6 +11,9 @@ import java.util.Set;
 @Data
 @Entity
 @ToString(exclude = "roleSet")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Member {
 
     @Id
@@ -32,8 +35,11 @@ public class Member {
     @Column(nullable = false)
     private String memberNick;
 
+    private boolean social;
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private Set<Role> roleSet = new HashSet<>();
 
     public void addRole(Role role) {
