@@ -68,9 +68,15 @@ const Login: React.FC = () => {
         <div className={styles.socialLogin}>
           <p>다른 방법으로 로그인하기</p>
           <div className={styles.icons}>
-            <img src="/images/kakao.png" alt="Kakao" />
-            <img src="/images/google.png" alt="Google" />
-            <img src="/images/naver.png" alt="Naver" />
+            <Link href="/">
+                <img src="/images/kakao.png" alt="KAKAO"/>
+            </Link>
+            <Link href="/">
+              <img src="/images/google.png" alt="Google"/>
+            </Link>
+            <Link href="/">
+              <img src="/images/naver.png" alt="Naver"/>
+            </Link>
           </div>
         </div>
         <Link href="../../member/join">회원가입</Link>
