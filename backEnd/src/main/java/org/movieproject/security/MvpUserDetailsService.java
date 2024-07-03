@@ -25,7 +25,7 @@ public class MvpUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername : " + username);
 
-        Optional<Member> memberResult = memberRepository.FindByMemberEmailWithRoles(username);
+        Optional<Member> memberResult = memberRepository.findByMemberEmailWithRoles(username);
         if (memberResult.isPresent()) {
             Member member = memberResult.get();
             MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(
@@ -35,6 +35,7 @@ public class MvpUserDetailsService implements UserDetailsService {
                     member.getMemberName(),
                     member.getMemberPhone(),
                     member.getMemberNick(),
+                    false,
                     member.getRoleSet().stream()
                             .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                             .collect(Collectors.toList())

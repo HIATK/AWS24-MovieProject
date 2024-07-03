@@ -8,6 +8,7 @@ import org.movieproject.config.Filter.TokenCheckFilter;
 import org.movieproject.config.handler.APILoginFailureHandler;
 import org.movieproject.config.handler.APILoginSuccessHandler;
 import org.movieproject.config.handler.Custom403Handler;
+import org.movieproject.config.handler.MvpSocialLoginSuccessHandler;
 import org.movieproject.security.JwtProvider;
 import org.movieproject.security.MvpUserDetailsService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -60,20 +61,21 @@ public class CustomSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(httpSecuritySessionManagementConfigurer ->   // 세션 비활성화
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(authorize -> authorize // 권한 설정 부분
+            .authorizeHttpRequests(authorize -> authorize // 권한 설정
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .anyRequest().permitAll()
                     )
             .addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class)
-//                .formLogin(form ->{form.loginPage("/login") // 로그인 설정 부분
+//                .formLogin(form ->{form.loginPage("/login") // 로그인 설정
 //                        .loginProcessingUrl("/login/auth")
 //                        .successHandler(apiLoginSuccessHandler())
 //                        .permitAll();
 //                })
-            .oauth2Login(httpSecurityOauth2LoginConfigurer -> {
-                httpSecurityOauth2LoginConfigurer.loginPage("/member/login");
+            .oauth2Login(httpSecurityOauth2LoginConfigurer -> { // 소셜 로그인 설정
+                httpSecurityOauth2LoginConfigurer.loginPage("/member/login")
+                        .successHandler(mvpSocialLoginSuccessHandler());
             })
-            .logout(logout -> logout    // 로그아웃 설정 부분
+            .logout(logout -> logout    // 로그아웃 설정
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/")
                     .invalidateHttpSession(true)
@@ -105,7 +107,6 @@ public class CustomSecurityConfig {
         APILoginFailureHandler failureHandler = new APILoginFailureHandler();
 
         apiLoginFilter.setAuthenticationFailureHandler(failureHandler);
-
         // 토큰 체크 필터
         http.addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class);
         // 리프레시 토큰 필터
@@ -152,6 +153,11 @@ public class CustomSecurityConfig {
     @Bean
     public AuthenticationSuccessHandler apiLoginSuccessHandler() {
         return new APILoginSuccessHandler(jwtProvider);
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler mvpSocialLoginSuccessHandler() {
+        return new MvpSocialLoginSuccessHandler(passwordEncoder);
     }
 
     @Bean

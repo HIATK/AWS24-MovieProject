@@ -68,9 +68,9 @@ const Login: React.FC = () => {
         <div className={styles.socialLogin}>
           <p>다른 방법으로 로그인하기</p>
           <div className={styles.icons}>
-            <Link href="/">
+            <a href="http://localhost:8000/oauth2/authorization/kakao">
                 <img src="/images/kakao.png" alt="KAKAO"/>
-            </Link>
+            </a>
             <Link href="/">
               <img src="/images/google.png" alt="Google"/>
             </Link>

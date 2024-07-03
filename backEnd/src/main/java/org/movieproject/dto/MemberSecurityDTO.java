@@ -5,13 +5,15 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.Map;
 
 @Getter
 @Setter
 @ToString
-public class MemberSecurityDTO extends User { // Security 용도로만 사용되는 DTO
+public class MemberSecurityDTO extends User implements OAuth2User { // Security 용도로만 사용되는 DTO
     private Integer memberNo;
 
     private String memberEmail;
@@ -24,8 +26,12 @@ public class MemberSecurityDTO extends User { // Security 용도로만 사용되
 
     private String memberNick;
 
+    private boolean social;
+
+    private Map<String, Object> props;
+
     public MemberSecurityDTO(Integer memberNo, String username, String password,
-                          String memberName, String memberPhone, String memberNick,
+                          String memberName, String memberPhone, String memberNick, boolean social,
                           Collection<? extends GrantedAuthority> authorities) {
 
         super(username, password, authorities);
@@ -36,5 +42,17 @@ public class MemberSecurityDTO extends User { // Security 용도로만 사용되
         this.memberName = memberName;
         this.memberPhone = memberPhone;
         this.memberNick = memberNick;
+        this.social = social;
+    }
+
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return this.getProps();
+    }
+
+    @Override
+    public String getName() {
+        return this.memberEmail;
     }
 }
