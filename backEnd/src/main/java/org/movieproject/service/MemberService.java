@@ -18,6 +18,4 @@ public interface MemberService {
     // 회원가입
     void memberJoin(MemberDTO memberDTO) throws MemberService.MidExistException;
 
-    // 회원 이메일 참조하여 DTO 반환하는 서비스
-//    MemberDTO findMemberByEmail(String email);
 }
