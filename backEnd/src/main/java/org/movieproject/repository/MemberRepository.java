@@ -19,6 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     Optional<Member> FindByMemberEmailWithRoles(String memberEmail);
 
     // 아이디 중복 확인
+    @Transactional(readOnly = true)
     boolean existsByMemberEmail(String memberEmail);
 
     // 회원 정보 수정

@@ -1,6 +1,5 @@
 package org.movieproject.controller;
 
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,9 +24,9 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
-    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
+//    private final JwtProvider jwtProvider;
 
     // 회원가입
     @PostMapping("/join")
@@ -38,34 +37,40 @@ public class MemberController {
 
         try{
             memberService.memberJoin(memberDTO);
-        }catch (MemberService.MidExistException e) {
-            return ResponseEntity.badRequest ().body("중복된 아이디 입니다 !!!");
+        } catch (MemberService.MidExistException e) {
+            return ResponseEntity.badRequest().body("중복된 아이디 입니다 !!!");
         }
         return ResponseEntity.ok("회원가입에 성공하였습니다 !!!");
     }
+//        try{
+//            memberService.memberJoin(memberDTO);
+//        }catch (MemberService.MidExistException e) {
+//            return ResponseEntity.badRequest().body("중복된 아이디 입니다 !!!");
+//        }
+//        return ResponseEntity.ok("회원가입에 성공하였습니다 !!!");
+//    }
 
     // 로그인
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody MemberDTO memberDTO) {
-        log.info("로그인 진행중 !!!");
-
-        try{
-            MemberDTO member = memberService.findMemberByEmail(memberDTO.getMemberEmail());
-            if(passwordEncoder.matches(memberDTO.getMemberPw(), member.getMemberPw())){
-
-                Map<String, Object> tokenData = new HashMap<>();
-                tokenData.put("email", memberDTO.getMemberEmail());
-
-                String token = jwtProvider.generateToken(tokenData,60);
-
-                return ResponseEntity.ok(token);
-            }else{
-                return ResponseEntity.status(401).body("자격 증명이 유효 하지 않습니다. !!!");
-            }
-        }catch(Exception e){
-            return ResponseEntity.status(401).body("자격 증명이 유효하지 않습니다. !!!");
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@Valid @RequestBody MemberDTO memberDTO) {
+//        log.info("로그인 진행중 !!!");
+//        try{
+//            MemberDTO member = memberService.findMemberByEmail(memberDTO.getMemberEmail());
+//            if(passwordEncoder.matches(memberDTO.getMemberPw(), member.getMemberPw())){
+//
+//                Map<String, Object> tokenData = new HashMap<>();
+//                tokenData.put("email", memberDTO.getMemberEmail());
+//
+//                String token = jwtProvider.generateToken(tokenData,60);
+//
+//                return ResponseEntity.ok(token);
+//            }else{
+//                return ResponseEntity.status(401).body("자격 증명이 유효 하지 않습니다. !!!");
+//            }
+//        }catch(Exception e){
+//            return ResponseEntity.status(401).body("자격 증명이 유효하지 않습니다. !!!");
+//        }
+//    }
 
     // 회원 정보 업데이트
     @PostMapping("/update")

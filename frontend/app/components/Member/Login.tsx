@@ -9,9 +9,36 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     console.log({ email, password });
+
+    // POST 요청을 보낼 데이터를 준비합니다.
+    const loginData = { username: email, password };
+
+    try {
+      // POST 요청을 보냅니다.
+      const response = await fetch("http://localhost:8000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login successful:", data);
+        alert('로그인 성공!');      
+      } else if (response.status === 401) {
+        alert('아이디 혹은 비밀번호가 올바르지 않습니다');
+      } else {
+        throw new Error('로그인 에러');
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      alert('로그인 중 문제가 발생했습니다.');
+    }
   };
 
   return (
@@ -45,7 +72,7 @@ const Login: React.FC = () => {
             <img src="/images/naver.png" alt="Naver" />
           </div>
         </div>
-        <a href="#">회원가입</a>
+        <a href="../member/join">회원가입</a>
       </form>
     </div>
   );

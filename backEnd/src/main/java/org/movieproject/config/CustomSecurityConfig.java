@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.movieproject.config.Filter.APILoginFilter;
 import org.movieproject.config.Filter.RefreshTokenFilter;
 import org.movieproject.config.Filter.TokenCheckFilter;
+import org.movieproject.config.handler.APILoginFailureHandler;
 import org.movieproject.config.handler.APILoginSuccessHandler;
 import org.movieproject.config.handler.Custom403Handler;
 import org.movieproject.security.JwtProvider;
@@ -27,8 +28,12 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Log4j2
 @Configuration
@@ -48,35 +53,33 @@ public class CustomSecurityConfig {
         log.info("--------------------configure-------------------");
 
         http
-//            .cors(cors -> {
-//                CorsConfigurationSource source = corsConfigurationSource();
-//                cors.configurationSource(source);
-//            })
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(httpSecuritySessionManagementConfigurer ->   // 세션 비활성화
-                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize // 권한 설정 부분
-//
+            .cors(cors -> {
+                CorsConfigurationSource source = corsConfigurationSource();
+                cors.configurationSource(source);
+            })
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(httpSecuritySessionManagementConfigurer ->   // 세션 비활성화
+                    httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authorize -> authorize // 권한 설정 부분
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-//
-                                .anyRequest().permitAll()
-                )
-                .addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class)
+                    .anyRequest().permitAll()
+                    )
+            .addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class)
 //                .formLogin(form ->{form.loginPage("/login") // 로그인 설정 부분
 //                        .loginProcessingUrl("/login/auth")
 //                        .successHandler(apiLoginSuccessHandler())
 //                        .permitAll();
 //                })
-                .oauth2Login(httpSecurityOauth2LoginConfigurer -> {
-                    httpSecurityOauth2LoginConfigurer.loginPage("/member/login");
-                })
-                .logout(logout -> logout    // 로그아웃 설정 부분
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                );
+            .oauth2Login(httpSecurityOauth2LoginConfigurer -> {
+                httpSecurityOauth2LoginConfigurer.loginPage("/member/login");
+            })
+            .logout(logout -> logout    // 로그아웃 설정 부분
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .permitAll()
+            );
 
 
         // 인 증 매 니 저 설 정
@@ -89,7 +92,7 @@ public class CustomSecurityConfig {
         // 인 증 매 니 저 등 록
         http.authenticationManager(authenticationManager);
         // API 로 그 인 필 터 설 정
-        APILoginFilter apiLoginFilter = new APILoginFilter("/login/auth");
+        APILoginFilter apiLoginFilter = new APILoginFilter("/api/login");
 
         apiLoginFilter.setAuthenticationManager(authenticationManager);
         // APILoginFilter 위치 조정 - UsernamePasswordAuthenticationFilter 이전에 동작해야함
@@ -98,6 +101,10 @@ public class CustomSecurityConfig {
         APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtProvider);
         // SuccessHandler 설정
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
+
+        APILoginFailureHandler failureHandler = new APILoginFailureHandler();
+
+        apiLoginFilter.setAuthenticationFailureHandler(failureHandler);
 
         // 토큰 체크 필터
         http.addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class);
@@ -147,24 +154,21 @@ public class CustomSecurityConfig {
         return new APILoginSuccessHandler(jwtProvider);
     }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("http://localhost:9000")); // 허용할 도메인
-//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-//        configuration.setAllowedHeaders(List.of("*"));
-////        configuration.setAllowCredentials(true); // 자격 증명 허용
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 허용할 도메인
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(List.of("*"));
+//        configuration.setAllowCredentials(true); // 자격 증명 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     // Token Check Filter 생성
     private TokenCheckFilter tokenCheckFilter(JwtProvider jwtProvider, MvpUserDetailsService mvpUserDetailsService) {
         return new TokenCheckFilter(jwtProvider, mvpUserDetailsService);
     }
-
-
-
 }

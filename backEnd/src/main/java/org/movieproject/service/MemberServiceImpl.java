@@ -22,12 +22,12 @@ public class MemberServiceImpl implements MemberService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
+
     // 회원가입
     @Override
-    public void memberJoin(MemberDTO memberDTO) throws MidExistException{
-        String email = memberDTO.getMemberEmail();
-
+    public void memberJoin(MemberDTO memberDTO) throws MidExistException {
         // 아이디 중복확인
+        String email = memberDTO.getMemberEmail();
         boolean exist = memberRepository.existsByMemberEmail(email);
 
         if (exist) {
@@ -45,5 +45,4 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.save(member);
 
-    }
 }

@@ -52,8 +52,10 @@ public class Member {
     private List<Like> likes = new ArrayList<>();
     //////좋아요 (like) 참조 END
 
+
     ///comment 내가 쓴 댓글
     @OneToMany(mappedBy = "member",cascade =  CascadeType.ALL,orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
-    ///comment 내가 쓴 댓글 END
+    ///comment 내가 쓴 댓글END
+
 }
