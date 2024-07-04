@@ -16,7 +16,6 @@ public interface LikeService {
 
     List<Like> getLikesByMember(int memberNo);
 
-    void removeLike(int likeId);
-
+    void removeLikesByMember(int memberNo); // 수정된 메서드 추가
 
 }

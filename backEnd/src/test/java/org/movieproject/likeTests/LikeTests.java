@@ -12,6 +12,7 @@ import org.movieproject.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,12 +39,13 @@ public class LikeTests {
     @Test
     public void testAddLikeToExistingMember() {
         // Given: 기존에 저장된 멤버 정보를 가져옴
-        Optional<Member> memberOptional = memberRepository.findById(1); // 기존 멤버의 ID를 사용하여 가져옴
+        Optional<Member> memberOptional = memberRepository.findById(6); // 기존 멤버의 ID를 사용하여 가져옴
         Member member = memberOptional.orElseThrow(() -> new IllegalArgumentException("기존 멤버가 존재하지 않습니다."));
 
         LikeDTO likeDTO = new LikeDTO();
         likeDTO.setMemberNo(member.getMemberNo());
         likeDTO.setLikeMovie("Inception");
+        // likeDTO.setLikeMovie({api:1});
 
         // When: 좋아요 추가 기능 호출
         Like savedLike = likeService.addLike(likeDTO);
@@ -60,6 +62,31 @@ public class LikeTests {
         assertEquals(member.getMemberNo(), retrievedLikeOptional.get().getMember().getMemberNo());
     }
 
+    @Test
+    public void testRemoveLikesByMember() {
+        // Given: 기존에 저장된 멤버 정보를 가져옴
+        Optional<Member> memberOptional = memberRepository.findById(6); // 기존 멤버의 ID를 사용하여 가져옴
+        Member member = memberOptional.orElseThrow(() -> new IllegalArgumentException("기존 멤버가 존재하지 않습니다."));
+
+        LikeDTO likeDTO1 = new LikeDTO();
+        likeDTO1.setMemberNo(member.getMemberNo());
+        likeDTO1.setLikeMovie("Inception");
+
+        LikeDTO likeDTO2 = new LikeDTO();
+        likeDTO2.setMemberNo(member.getMemberNo());
+        likeDTO2.setLikeMovie("Interstellar");
+
+        // 좋아요 추가 기능 호출
+        Like savedLike1 = likeService.addLike(likeDTO1);
+        Like savedLike2 = likeService.addLike(likeDTO2);
+
+        // When: 사용자의 모든 좋아요 삭제 기능 호출
+        likeService.removeLikesByMember(member.getMemberNo());
+
+        // Then: 결과 검증
+        List<Like> likes = likeService.getLikesByMember(member.getMemberNo());
+        assertTrue(likes.isEmpty(), "사용자의 좋아요가 모두 삭제되지 않았습니다.");
+    }
 
 
 }
