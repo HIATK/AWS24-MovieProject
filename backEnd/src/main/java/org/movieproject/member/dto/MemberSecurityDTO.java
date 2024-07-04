@@ -1,4 +1,4 @@
-package org.movieproject.dto;
+package org.movieproject.member.dto;
 
 import lombok.Getter;
 import lombok.Setter;

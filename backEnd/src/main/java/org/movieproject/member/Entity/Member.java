@@ -1,7 +1,10 @@
-package org.movieproject.domain;
+package org.movieproject.member.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.movieproject.comment.entity.Comment;
+import org.movieproject.like.entity.Like;
+import org.movieproject.posts.entity.Posts;
 
 import java.util.ArrayList;
 import java.util.HashSet;

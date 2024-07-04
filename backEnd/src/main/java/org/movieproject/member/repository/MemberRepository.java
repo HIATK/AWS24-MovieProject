@@ -1,7 +1,7 @@
-package org.movieproject.repository;
+package org.movieproject.member.repository;
 
 
-import org.movieproject.domain.Member;
+import org.movieproject.member.Entity.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

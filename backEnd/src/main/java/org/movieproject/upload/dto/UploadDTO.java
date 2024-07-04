@@ -1,4 +1,4 @@
-package org.movieproject.dto.upload;
+package org.movieproject.upload.dto;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;

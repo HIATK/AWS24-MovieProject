@@ -1,8 +1,10 @@
-package org.movieproject.domain;
+package org.movieproject.comment.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
+import org.movieproject.posts.entity.Posts;
+import org.movieproject.member.Entity.Member;
 
 @Getter
 @ToString

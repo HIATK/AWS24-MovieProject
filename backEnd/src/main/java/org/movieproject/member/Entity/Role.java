@@ -1,4 +1,4 @@
-package org.movieproject.domain;
+package org.movieproject.member.Entity;
 
 public enum Role {
 

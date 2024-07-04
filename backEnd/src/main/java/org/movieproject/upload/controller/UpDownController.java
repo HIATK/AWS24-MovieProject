@@ -1,9 +1,9 @@
-package org.movieproject.controller;
+package org.movieproject.upload.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
-import org.movieproject.dto.upload.UploadResultDTO;
+import org.movieproject.upload.dto.UploadResultDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;

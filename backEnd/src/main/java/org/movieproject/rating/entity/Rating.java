@@ -1,8 +1,9 @@
-package org.movieproject.domain;
+package org.movieproject.rating.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
+import org.movieproject.posts.entity.Posts;
 
 @Getter
 @Entity
