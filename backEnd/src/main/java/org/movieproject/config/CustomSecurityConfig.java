@@ -11,6 +11,7 @@ import org.movieproject.config.handler.Custom403Handler;
 import org.movieproject.config.handler.MvpSocialLoginSuccessHandler;
 import org.movieproject.security.JwtProvider;
 import org.movieproject.security.MvpUserDetailsService;
+import org.movieproject.security.util.JwtLoginUtil;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +48,7 @@ public class CustomSecurityConfig {
     private final MvpUserDetailsService mvpUserDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final JwtLoginUtil jwtLoginUtil;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -100,7 +102,7 @@ public class CustomSecurityConfig {
         // APILoginFilter 위치 조정 - UsernamePasswordAuthenticationFilter 이전에 동작해야함
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
         // APILoginSuccessHandler
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtProvider);
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtLoginUtil);
         // SuccessHandler 설정
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
@@ -152,12 +154,12 @@ public class CustomSecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler apiLoginSuccessHandler() {
-        return new APILoginSuccessHandler(jwtProvider);
+        return new APILoginSuccessHandler(jwtLoginUtil);
     }
 
     @Bean
     public AuthenticationSuccessHandler mvpSocialLoginSuccessHandler() {
-        return new MvpSocialLoginSuccessHandler(passwordEncoder);
+        return new MvpSocialLoginSuccessHandler(jwtLoginUtil);
     }
 
     @Bean
