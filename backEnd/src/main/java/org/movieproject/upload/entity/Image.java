@@ -12,9 +12,9 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ImageId;
+    private String uuid;
 
-    private String UUID;
+    private String fileName;
 
     //일 대 일 관계 설정 Posts랑
     @OneToOne(mappedBy = "image")
