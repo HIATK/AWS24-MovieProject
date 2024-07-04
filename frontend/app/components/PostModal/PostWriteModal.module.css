@@ -12,7 +12,7 @@
 }
 
 .modalContent {
-  background: #fff;
+  background: #333;
   width: 600px;
   padding: 20px;
   border-radius: 10px;
@@ -20,7 +20,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: black;
+  color: white;
 }
 
 .closeButton {
@@ -41,29 +41,62 @@
   width: 100%;
 }
 
-.label {
-  margin-bottom: 10px;
+.starRating {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-.input,
+.star {
+  font-size: 24px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.starFilled {
+  color: yellow;
+}
+
+.starHalf {
+  color: yellow;
+}
+
 .textarea {
   width: 100%;
+  height: 200px;
   padding: 10px;
-  margin-top: 5px;
+  margin-bottom: 20px;
   border-radius: 5px;
   border: 1px solid #ddd;
+  background: #444;
+  color: white;
 }
 
-.textarea {
-  height: 200px;
+.fileUpload {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.fileButton {
+  background: #5fbebb;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.fileName {
+  color: #5fbebb;
 }
 
 .button {
-  background: blue;
-  color: white;
-  padding: 10px;
+  background: #5fbebb;
+  color: black;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 10px;
+  align-self: flex-end;
 }
