@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Post.Modal.module.css";
 import PostWriteModal from "./PostWriteModal";
+import { FaHeart } from "react-icons/fa"; // 좋아요 아이콘 추가
 
 interface ModalProps {
   onClose: () => void;
@@ -38,6 +39,14 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
           X
         </button>
         <div className={styles.content}>
+          <div className={styles.background}>
+            <div className={styles.overlay}></div>
+            <img
+              src="/images/qwer.jpg"
+              alt="Background"
+              className={styles.backgroundImage}
+            />
+          </div>
           <div className={styles.header}>
             <img
               src="/images/koko.jpg"
@@ -54,6 +63,9 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
                 어머니와의 약속을 지키기 위해 인생 전부를 건 복수를
                 시작하는데...
               </p>
+              <button className={styles.likeButton}>
+                <FaHeart /> 좋아요
+              </button>
             </div>
           </div>
           <div className={styles.comments}>
