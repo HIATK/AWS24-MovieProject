@@ -1,14 +1,12 @@
-'use client';
+'use client'
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { CiMenuBurger } from 'react-icons/ci';
+import { usePathname } from 'next/navigation';
 import { CgProfile } from 'react-icons/cg';
-import {IoHomeOutline, IoStatsChartOutline} from 'react-icons/io5';
+import { IoHomeOutline, IoStatsChartOutline } from 'react-icons/io5';
 import { BiLink } from 'react-icons/bi';
-import { RiHistoryLine } from 'react-icons/ri';
-import { AiOutlineStar } from 'react-icons/ai';
-import { IoSettingsOutline } from 'react-icons/io5';
+import { MdLogin, MdLogout } from 'react-icons/md';
 import {
     SidebarContainer,
     MenuToggle,
@@ -20,8 +18,7 @@ import {
     HoverText,
     SettingsItemWrapper
 } from './SidebarStyles';
-import {VscSettings} from "react-icons/vsc";
-import {MdLogin, MdLogout} from "react-icons/md";
+import { VscSettings } from 'react-icons/vsc';
 
 interface MenuItem {
     icon: JSX.Element;
@@ -31,20 +28,21 @@ interface MenuItem {
 
 const Sidebar: React.FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // 로그인 상태를 저장할 상태
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const pathname = usePathname();
 
     useEffect(() => {
-        // 컴포넌트가 마운트되면 사용자 정보를 가져오는 함수 호출
         fetchUserInfo();
     }, []);
 
-    // 서버로부터 사용자 정보를 가져오는 함수
+    useEffect(() => {
+        fetchUserInfo();
+    }, [pathname]);
+
     const fetchUserInfo = () => {
-        // AccessToken을 LocalStorage에서 가져오거나, 필요에 따라 적절한 방법으로 가져옵니다.
         const accessToken = localStorage.getItem('accessToken');
 
         if (accessToken) {
-            // 서버에 AccessToken을 요청하여 사용자 정보를 가져오는 API 호출
             fetch('/api/check_auth', {
                 method: 'GET',
                 headers: {
@@ -55,10 +53,9 @@ const Sidebar: React.FC = () => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch user info');
                 }
-                return response.json(); // JSON 형태의 roles 배열을 받음
+                return response.json();
             })
             .then(data => {
-                // 서버로부터 받은 roles 배열을 기반으로 로그인 상태를 결정합니다.
                 setIsLoggedIn(data.includes('GUEST'));
             })
             .catch(error => {
@@ -71,6 +68,31 @@ const Sidebar: React.FC = () => {
         setIsOpen(!isOpen);
     };
 
+    const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault(); // 기본 이벤트(페이지 이동) 막기
+        
+        try {
+            const response = await fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                setIsLoggedIn(false); // 로그아웃 상태로 설정
+
+                alert('로그아웃 되었습니다');
+            } else {
+                throw new Error('로그아웃 실패');
+            }
+        } catch (error) {
+            console.error('로그아웃 에러:', error);
+        }
+    };
+
     const menuItems: MenuItem[] = [
         { icon: <CgProfile />, text: '프로필', href: '/member/profile' },
         { icon: <IoHomeOutline />, text: '홈으로', href: '/' },
@@ -79,7 +101,7 @@ const Sidebar: React.FC = () => {
     ];
 
     const settingsItem: MenuItem = { icon: <MdLogin />, text: '로그인', href: '/member/login' };
-    const settingsItem2: MenuItem = { icon: <MdLogout />, text: '로그아웃', href: '/settings' };
+    const settingsItem2: MenuItem = { icon: <MdLogout />, text: '로그아웃', href: '/member/logout' };
 
     return (
         <SidebarContainer isOpen={isOpen}>
@@ -98,10 +120,17 @@ const Sidebar: React.FC = () => {
                 ))}
             </MenuList>
             <SettingsItemWrapper isOpen={isOpen}>
-                <MenuLink href={isLoggedIn ? settingsItem2.href : settingsItem.href}>
-                    <Icon>{isLoggedIn ? settingsItem2.icon : settingsItem.icon}</Icon>
-                    <MenuText isOpen={isOpen}>{isLoggedIn ? settingsItem2.text : settingsItem.text}</MenuText>
-                </MenuLink>
+                {isLoggedIn ? (
+                    <Link href={settingsItem2.href} onClick={handleLogout}>
+                        <Icon>{settingsItem2.icon}</Icon>
+                        <MenuText isOpen={isOpen}>{settingsItem2.text}</MenuText>
+                    </Link>
+                ) : (
+                    <Link href={settingsItem.href}>            
+                        <Icon>{settingsItem.icon}</Icon>
+                        <MenuText isOpen={isOpen}>{settingsItem.text}</MenuText>                      
+                    </Link>
+                )}
                 <HoverText isOpen={isOpen}>{isLoggedIn ? settingsItem2.text : settingsItem.text}</HoverText>
             </SettingsItemWrapper>
         </SidebarContainer>

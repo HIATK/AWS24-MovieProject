@@ -1,14 +1,14 @@
-// app/login/Login.tsx
-
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./Login.module.css";
-import Link from "next/link";;;
+import Link from "next/link";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const loginButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -36,7 +36,8 @@ const Login: React.FC = () => {
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('refreshToken', data.refreshToken);
 
-
+        // 로그인 성공 후 상태 변경
+        setIsLoggedIn(true);
       } else if (response.status === 401) {
         alert('아이디 혹은 비밀번호가 올바르지 않습니다');
       } else {
@@ -47,6 +48,13 @@ const Login: React.FC = () => {
       alert('로그인 중 문제가 발생했습니다.');
     }
   };
+
+  useEffect(() => {
+    // 로그인 성공 시 버튼 클릭 이벤트 트리거
+    if (isLoggedIn && loginButtonRef.current) {
+      loginButtonRef.current.click();
+    }
+  }, [isLoggedIn]);
 
   return (
     <div className={styles.loginContainer}>
@@ -87,6 +95,10 @@ const Login: React.FC = () => {
         </div>
         <Link href="../../member/join">회원가입</Link>
       </form>
+      {/* 숨겨진 버튼 */}
+      <Link href="/">
+        <button ref={loginButtonRef} style={{ display: 'none' }} />
+      </Link>
     </div>
   );
 };
