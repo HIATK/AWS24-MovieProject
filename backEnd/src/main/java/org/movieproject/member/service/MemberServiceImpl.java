@@ -1,18 +1,13 @@
-package org.movieproject.service;
+package org.movieproject.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.movieproject.domain.Member;
-import org.movieproject.dto.MemberDTO;
-import org.movieproject.repository.MemberRepository;
-import org.movieproject.security.JwtProvider;
+import org.movieproject.member.Entity.Member;
+import org.movieproject.member.dto.MemberDTO;
+import org.movieproject.member.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

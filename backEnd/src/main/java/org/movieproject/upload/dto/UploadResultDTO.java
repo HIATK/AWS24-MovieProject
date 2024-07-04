@@ -1,4 +1,4 @@
-package org.movieproject.dto.upload;
+package org.movieproject.upload.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

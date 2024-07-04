@@ -1,8 +1,12 @@
-package org.movieproject.domain;
+package org.movieproject.posts.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
+import org.movieproject.comment.entity.Comment;
+import org.movieproject.rating.entity.Rating;
+import org.movieproject.member.Entity.Member;
+import org.movieproject.upload.entity.Image;
 
 import java.util.ArrayList;
 import java.util.List;

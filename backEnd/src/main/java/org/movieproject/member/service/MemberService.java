@@ -1,7 +1,7 @@
-package org.movieproject.service;
+package org.movieproject.member.service;
 
 
-import org.movieproject.dto.MemberDTO;
+import org.movieproject.member.dto.MemberDTO;
 
 public interface MemberService {
 

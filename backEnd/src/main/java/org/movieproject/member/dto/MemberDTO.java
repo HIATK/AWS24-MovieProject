@@ -1,7 +1,7 @@
-package org.movieproject.dto;
+package org.movieproject.member.dto;
 
 import lombok.*;
-import org.movieproject.domain.Role;
+import org.movieproject.member.Entity.Role;
 
 import java.util.Set;
 

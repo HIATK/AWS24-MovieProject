@@ -1,21 +1,17 @@
-package org.movieproject.controller;
+package org.movieproject.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.movieproject.dto.MemberDTO;
-import org.movieproject.repository.MemberRepository;
-import org.movieproject.security.JwtProvider;
-import org.movieproject.service.MemberService;
+import org.movieproject.member.dto.MemberDTO;
+import org.movieproject.member.repository.MemberRepository;
+import org.movieproject.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/member")

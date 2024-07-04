@@ -2,11 +2,10 @@ package org.movieproject.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.movieproject.domain.Member;
-import org.movieproject.domain.Role;
-import org.movieproject.dto.MemberSecurityDTO;
-import org.movieproject.repository.MemberRepository;
-import org.springframework.security.core.GrantedAuthority;
+import org.movieproject.member.Entity.Member;
+import org.movieproject.member.Entity.Role;
+import org.movieproject.member.dto.MemberSecurityDTO;
+import org.movieproject.member.repository.MemberRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
