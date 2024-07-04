@@ -4,7 +4,7 @@
 
 import React, { useState } from "react";
 import styles from "./Login.module.css";
-import Link from "next/link";
+import Link from "next/link";;;
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -35,6 +35,8 @@ const Login: React.FC = () => {
         // accessToken과 refreshToken을 localStorage에 저장
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('refreshToken', data.refreshToken);
+
+
       } else if (response.status === 401) {
         alert('아이디 혹은 비밀번호가 올바르지 않습니다');
       } else {
