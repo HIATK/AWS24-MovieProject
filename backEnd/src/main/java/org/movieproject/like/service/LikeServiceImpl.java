@@ -18,10 +18,12 @@ import java.util.Optional;
 @Transactional
 public class LikeServiceImpl implements LikeService {
 
+
     private final LikeRepository likeRepository;
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
 
+    @Autowired
     public LikeServiceImpl(LikeRepository likeRepository, MemberRepository memberRepository, ModelMapper modelMapper) {
         this.likeRepository = likeRepository;
         this.memberRepository = memberRepository;
@@ -30,7 +32,6 @@ public class LikeServiceImpl implements LikeService {
 
 
     @Override
-    @Transactional
     public Like addLike(LikeDTO likeDTO) {
         Optional<Member> memberOptional = memberRepository.findById(likeDTO.getMemberNo());
         if (memberOptional.isPresent()) {
@@ -39,9 +40,8 @@ public class LikeServiceImpl implements LikeService {
             like.setMember(member);
             return likeRepository.save(like);
         } else {
-            throw new IllegalArgumentException("맴버를 찾을수 없습니다.");
-        }
-    }
+            throw new IllegalArgumentException("멤버를 찾을 수 없습니다.");
+        }    }
 
     @Override
     public List<Like> getLikesByMember(int memberNo) {
@@ -49,12 +49,8 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public void removeLike(int likeId) {
-        if(likeRepository.existsById(likeId)){
-            likeRepository.deleteById(likeId);
-        }else {
-            throw new IllegalArgumentException("해당 좋아요는 없다"+likeId);
-        }
-
+    public void removeLikesByMember(int memberNo) {
+        List<Like> likes = likeRepository.findByMember_MemberNo(memberNo);
+        likeRepository.deleteAll(likes);
     }
 }

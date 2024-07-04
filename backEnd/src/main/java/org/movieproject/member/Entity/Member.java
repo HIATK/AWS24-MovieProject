@@ -51,6 +51,7 @@ public class Member {
 
     //Member < - > Post One To Many
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Posts> posts = new ArrayList<>();
 
     //Member < - > Post One To Many END
@@ -58,12 +59,14 @@ public class Member {
     ///좋아요 (like) 참조
     //다대일 정의/매핑, 역방향 관계 / member 엔티티의 변경이 like엔티티에도 전파되도록 설정한것
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL,orphanRemoval = true)
+    @Builder.Default
     private List<Like> likes = new ArrayList<>();
     //////좋아요 (like) 참조 END
 
 
     ///comment 내가 쓴 댓글
     @OneToMany(mappedBy = "member",cascade =  CascadeType.ALL,orphanRemoval = true)
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
     ///comment 내가 쓴 댓글END
 
