@@ -59,16 +59,6 @@ public class JwtProvider {
                 .compact();
     }
 
-
-//    private Claims extractAllClaims(String token){
-//        return Jwts.parser()
-//                .verifyWith(this.getSigningKey())
-//                .build()
-//                .parseSignedClaims(token)
-//                .getPayload();
-//
-//    }
-
     public Map<String, Object> validateToken(String token) throws JwtException {
 
         Map<String, Object> claim = null;
