@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import styles from "./PostUp.module.css";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import Modal from "../components/PostModal/Post.Modal"; // 모달 컴포넌트를 임포트합니다.
 
 const PostUp = () => {
   const [title, setTitle] = useState("");
@@ -10,6 +11,8 @@ const PostUp = () => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [file, setFile] = useState<File | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
+
   const movieTitle = ""; // API로부터 불러온 영화 제목
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -79,6 +82,14 @@ const PostUp = () => {
     return stars;
   };
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -112,10 +123,16 @@ const PostUp = () => {
             style={{ display: "none" }}
           />
         </label>
-        <button type="submit" className={styles.button}>
-          게시
-        </button>
+        <div className={styles.buttonContainer}>
+          <button type="submit" className={styles.button}>
+            게시
+          </button>
+          <button type="button" className={styles.button} onClick={openModal}>
+            Open Modal
+          </button>
+        </div>
       </form>
+      {isModalOpen && <Modal onClose={closeModal} />}
     </div>
   );
 };
