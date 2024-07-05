@@ -1,3 +1,5 @@
+// SidebarStyles.ts
+
 import styled from 'styled-components';
 
 interface StyledProps {
@@ -8,7 +10,7 @@ export const SidebarContainer = styled.div<StyledProps>`
     position: fixed;
     top: 0;
     left: 0;
-    width: ${({ isOpen }) => (isOpen ? '200px' : '60px')};
+    width: ${({ isOpen }) => (isOpen ? '150px' : '60px')};
     height: 100vh;
     background-color: rgba(33, 33, 33, 0.87);
     color: #5fbebb;
@@ -17,14 +19,6 @@ export const SidebarContainer = styled.div<StyledProps>`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-`;
-
-export const MenuToggle = styled.div`
-    position: absolute;
-    top: 10px;
-    left: 21px;
-    cursor: pointer;
-    z-index: 1100;
 `;
 
 export const MenuList = styled.ul`
@@ -49,7 +43,7 @@ export const MenuItemWrapper = styled.li<StyledProps>`
     }
 `;
 
-export const SettingsItemWrapper = styled(MenuItemWrapper)`
+export const SettingsItemWrapper = styled(MenuItemWrapper)<StyledProps>`
     margin-top: auto;
     margin-bottom: 20px;
 `;
