@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import styles from "./PostUp.module.css";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import Modal from "../(components)/PostModal/Post.Modal"; // 모달 컴포넌트를 임포트합니다.
+import axios from 'axios';
 
 const PostUp = () => {
   const [title, setTitle] = useState("");
@@ -15,8 +16,26 @@ const PostUp = () => {
 
   const movieTitle = ""; // API로부터 불러온 영화 제목
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    if(file) {
+      formData.append("files", file);
+    }
+
+    try {
+      const response = await axios.post("http://localhost:8000/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("파일 업로드 성공 : ", file);
+    } catch (error) {
+      console.error("파일 업로드 실패 : ", error);
+    }
+
+
     // 게시물 저장 로직
     console.log("Movie Title:", movieTitle);
     console.log("Title:", title);
@@ -124,7 +143,7 @@ const PostUp = () => {
           />
         </label>
         <div className={styles.buttonContainer}>
-          <button type="submit" className={styles.button}>
+          <button type='submit' className={styles.button}>
             게시
           </button>
           <button type="button" className={styles.button} onClick={openModal}>
