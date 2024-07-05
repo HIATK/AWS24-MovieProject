@@ -1,3 +1,5 @@
+import styles from '@/(components)/NowplayingMovies.module.css'
+
 type Movie = {
   id: string;
   title: string;
@@ -20,16 +22,18 @@ export default async function NowPlayingMovies() {
     // API 요청 중 오류가 발생했을 경우 처리할 수 있는 코드 추가
   }
 
+  
+
   return (
-    <div>
-      <h1>All Movies</h1>
-      <ul>
-        {movies.map((movie) => (
-          <li key={movie.id}>
-            <h3>{movie.title}</h3>
-            {movie.poster_path && (
-              <img src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`} alt={`Poster for ${movie.title}`} />
-            )}
+    <div className={styles.movielist}>
+      <ul className={styles['movie-items']}>
+        {movies.map(movie => (
+          <li key={movie.id} className={styles['movie-item']}>
+            <img
+              src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
+              alt={`Poster for ${movie.title}`}
+              className={styles['movie-img']}
+            />
           </li>
         ))}
       </ul>

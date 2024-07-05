@@ -6,9 +6,9 @@ import { CgProfile } from 'react-icons/cg';
 import { IoHomeOutline, IoStatsChartOutline } from 'react-icons/io5';
 import { BiLink } from 'react-icons/bi';
 import { MdLogin, MdLogout } from 'react-icons/md';
+import Link from 'next/link';
 import {
     SidebarContainer,
-    MenuToggle,
     MenuList,
     MenuItemWrapper,
     MenuLink,
@@ -18,7 +18,6 @@ import {
     SettingsItemWrapper
 } from './SidebarStyles';
 import { VscSettings } from 'react-icons/vsc';
-import Link from 'next/link';
 
 interface MenuItem {
     icon: JSX.Element;
@@ -69,7 +68,7 @@ const Sidebar: React.FC = () => {
     };
 
     const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement>) => {
-        event.preventDefault(); // 기본 이벤트(페이지 이동) 막기
+        event.preventDefault();
         
         try {
             const response = await fetch('/api/logout', {
@@ -82,7 +81,7 @@ const Sidebar: React.FC = () => {
             if (response.ok) {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
-                setIsLoggedIn(false); // 로그아웃 상태로 설정
+                setIsLoggedIn(false);
 
                 alert('로그아웃 되었습니다');
             } else {
@@ -113,9 +112,6 @@ const Sidebar: React.FC = () => {
 
     return (
         <SidebarContainer isOpen={isOpen} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-            {/* <MenuToggle onClick={toggleSidebar}>
-                <VscSettings />
-            </MenuToggle> */}
             <MenuList>
                 {menuItems.map((item, index) => (
                     <MenuItemWrapper key={index} isOpen={isOpen} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
@@ -136,7 +132,7 @@ const Sidebar: React.FC = () => {
                         <MenuText isOpen={isOpen}>{settingsItem2.text}</MenuText>
                     </a>
                 ) : (
-                    <Link href={settingsItem.href}>            
+                    <Link href={settingsItem.href}>
                         <MenuLink>
                             <Icon>{settingsItem.icon}</Icon>
                             <MenuText isOpen={isOpen}>{settingsItem.text}</MenuText>                      
