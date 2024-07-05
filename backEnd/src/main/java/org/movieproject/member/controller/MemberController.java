@@ -26,7 +26,6 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-//    private final JwtProvider jwtProvider;
 
     // 회원가입
     @PostMapping("/join")
@@ -45,8 +44,11 @@ public class MemberController {
 
     // 마이페이지
     @GetMapping("/mypage")
-    public Optional<Member> getMemberDetails(@AuthenticationPrincipal UserDetails userDetails) {
-        return memberRepository.findByMemberEmailWithRoles(userDetails.getUsername());
+    public ResponseEntity<?> getMemberDetails(@AuthenticationPrincipal UserDetails userDetails) {
+        try{
+            // 사용자 정보 가져오기
+            Optional<Member> member = memberService.get
+        }
     }
 
     @GetMapping("/likes")

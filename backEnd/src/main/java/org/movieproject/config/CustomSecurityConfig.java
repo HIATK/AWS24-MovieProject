@@ -168,7 +168,7 @@ public class CustomSecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 허용할 도메인
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("*"));
-//        configuration.setAllowCredentials(true); // 자격 증명 허용
+        configuration.setAllowCredentials(true); // 자격 증명 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

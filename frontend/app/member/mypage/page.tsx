@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import styles from "@/app/page.module.css";
-import Mypage from "@/app/components/Member/Mypage";
+import styles from "@/page.module.css";
 
 export default function mypage(){
 
