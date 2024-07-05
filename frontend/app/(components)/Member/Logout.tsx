@@ -22,7 +22,7 @@ const Logout = () => {
                     localStorage.removeItem('accessToken');
                     localStorage.removeItem('refreshToken');
 
-                    // 로그아웃 후 리디렉션 예시
+                    // 로그아웃 후 리디렉션
                     router.push('/'); // 로그아웃 후 리디렉션할 경로
                 } else {
                     throw new Error('로그아웃 실패');

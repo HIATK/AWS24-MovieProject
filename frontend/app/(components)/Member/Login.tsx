@@ -115,7 +115,7 @@ const Login: React.FC = () => {
             <a href='http://localhost:8000/oauth2/authorization/kakao'>
               <img src='/images/kakao.png' alt='KAKAO' />
             </a>
-            <Link href='/'>
+            <Link href='#'>
               <img src='/images/google.png' alt='Google' />
             </Link>
             <Link href='http://localhost:8000/oauth2/authorization/naver'>
