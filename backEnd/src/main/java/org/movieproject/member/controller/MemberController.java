@@ -42,14 +42,14 @@ public class MemberController {
         return ResponseEntity.ok("회원가입에 성공하였습니다 !!!");
     }
 
-    // 마이페이지
-    @GetMapping("/mypage")
-    public ResponseEntity<?> getMemberDetails(@AuthenticationPrincipal UserDetails userDetails) {
-        try{
-            // 사용자 정보 가져오기
-            Optional<Member> member = memberService.get
-        }
-    }
+//    // 마이페이지
+//    @GetMapping("/mypage")
+//    public ResponseEntity<?> getMemberDetails(@AuthenticationPrincipal UserDetails userDetails) {
+//        try{
+//            // 사용자 정보 가져오기
+//            Optional<Member> member = memberService.get
+//        }
+//    }
 
     @GetMapping("/likes")
     public List<Like> getLikeMovies(@AuthenticationPrincipal UserDetails userDetails) {
