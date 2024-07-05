@@ -1,7 +1,6 @@
 package org.movieproject.like.service;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.movieproject.like.dto.LikeDTO;
 import org.movieproject.like.entity.Like;
