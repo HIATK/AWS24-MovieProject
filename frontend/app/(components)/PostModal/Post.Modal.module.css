@@ -1,3 +1,4 @@
+/* 기존 스타일 유지 */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -11,7 +12,7 @@
 }
 
 .modalContent {
-  background: rgba(0, 0, 0, 0.8); /* 반투명 검정색 배경 */
+  background: #353535;
   border-radius: 8px;
   padding: 20px;
   max-width: 800px;
@@ -19,7 +20,7 @@
   max-height: 90%;
   overflow-y: auto;
   position: relative;
-  color: white; /* 텍스트 색상 변경 */
+  color: white;
 }
 
 .closeButton {
@@ -30,7 +31,7 @@
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: white; /* 닫기 버튼 색상 변경 */
+  color: white;
 }
 
 .content {
@@ -50,15 +51,15 @@
 .header {
   display: flex;
   margin-top: 20px;
-  background: rgba(0, 0, 0, 0.6); /* 반투명 검정색 배경 */
+  background: #353535;
   border-radius: 8px;
   padding: 20px;
 }
 
 .poster {
-
-  width: 60px; /* 이미지의 폭을 180px로 설정 */
-  height: 120px; /* 이미지의 높이를 280px로 설정 */
+  width: 150px;
+  height: auto;
+  border-radius: 8px;
   margin-right: 20px;
 }
 
@@ -86,12 +87,12 @@
 }
 
 .likeButton.liked {
-  color: red;
+  color: #5fbebb;
 }
 
 .comments {
   margin-top: 20px;
-  background: rgba(0, 0, 0, 0.6); /* 반투명 검정색 배경 */
+  background: #353535;
   border-radius: 8px;
   padding: 20px;
 }
@@ -104,11 +105,28 @@
 }
 
 .writeButton {
-  background: #007bff;
-  color: white;
+  background: #5fbebb;
+  color: black;
   border: none;
   border-radius: 4px;
   padding: 5px 10px;
+  cursor: pointer;
+}
+
+.comment {
+  background: #444;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.postButton {
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  width: 100%;
   cursor: pointer;
 }
 
@@ -119,8 +137,8 @@
 }
 
 .pageButton {
-  background: #007bff;
-  color: white;
+  background: #5fbebb;
+  color: black;
   border: none;
   border-radius: 4px;
   margin: 0 5px;
