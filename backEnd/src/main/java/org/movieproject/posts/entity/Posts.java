@@ -1,6 +1,7 @@
 package org.movieproject.posts.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.movieproject.comment.entity.Comment;
@@ -47,7 +48,7 @@ public class Posts {
 
     //post <-> image ///나중에 포스트가 여러개의 사진을 가질수 있다면
     //List<Image> 로 변경하고 @OneToMany로 바꿔주면 됩니다.
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "uuid", referencedColumnName = "uuid")
     private Image image;
     //post <-> image END
