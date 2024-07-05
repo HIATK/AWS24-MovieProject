@@ -1,26 +1,23 @@
+"use client";
+
 import React, { useState } from "react";
-import styles from "./PostWriteModal.module.css";
+import styles from "./Register.module.css";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
-interface PostWriteModalProps {
-  onClose: () => void;
-  addPost: (post: string) => void;
-}
-
-const PostWriteModal: React.FC<PostWriteModalProps> = ({
-  onClose,
-  addPost,
-}) => {
+const Register = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
-  const [file, setFile] = useState<File | null>(null);
+  const movieTitle = ""; // API로부터 불러온 영화 제목
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addPost(`${title}: ${content}`);
-    onClose();
+    // 게시물 저장 로직
+    console.log("Movie Title:", movieTitle);
+    console.log("Title:", title);
+    console.log("Content:", content);
+    console.log("Rating:", rating);
   };
 
   const handleRating = (rate: number) => {
@@ -35,12 +32,6 @@ const PostWriteModal: React.FC<PostWriteModalProps> = ({
     setHoverRating(0);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
-
   const renderStars = () => {
     const stars = [];
     const effectiveRating = hoverRating || rating;
@@ -49,7 +40,7 @@ const PostWriteModal: React.FC<PostWriteModalProps> = ({
         stars.push(
           <FaStar
             key={i}
-            className={`${styles.star} ${styles.starFilled}`}
+            className={styles.star + " " + styles.starFilled}
             onMouseEnter={() => handleHover(i)}
             onMouseLeave={handleLeave}
             onClick={() => handleRating(i)}
@@ -59,7 +50,7 @@ const PostWriteModal: React.FC<PostWriteModalProps> = ({
         stars.push(
           <FaStarHalfAlt
             key={i}
-            className={`${styles.star} ${styles.starHalf}`}
+            className={styles.star + " " + styles.starHalf}
             onMouseEnter={() => handleHover(i - 0.5)}
             onMouseLeave={handleLeave}
             onClick={() => handleRating(i - 0.5)}
@@ -81,37 +72,40 @@ const PostWriteModal: React.FC<PostWriteModalProps> = ({
   };
 
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
-        <button className={styles.closeButton} onClick={onClose}>
-          X
-        </button>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.starRating}>{renderStars()}</div>
+    <div className={styles.container}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.label}>
+          영화 제목:
+          <div>{movieTitle}</div>
+        </div>
+        <div className={styles.starRating}>{renderStars()}</div>
+        <label className={styles.label}>
+          제목
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className={styles.input}
+          />
+        </label>
+        <label className={styles.label}>
+          내용
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             className={styles.textarea}
           />
-          <div className={styles.fileUpload}>
-            <input
-              type="file"
-              id="file"
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-            />
-            <label htmlFor="file" className={styles.fileButton}>
-              사진 첨부
-            </label>
-            {file && <span className={styles.fileName}>{file.name}</span>}
-          </div>
-          <button type="submit" className={styles.button}>
-            게시
-          </button>
-        </form>
-      </div>
+        </label>
+        <label className={styles.fileUpload}>
+          파일 첨부
+          <input type="file" style={{ display: "none" }} />
+        </label>
+        <button type="submit" className={styles.button}>
+          게시
+        </button>
+      </form>
     </div>
   );
 };
 
-export default PostWriteModal;
+export default Register;

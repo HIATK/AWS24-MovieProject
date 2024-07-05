@@ -22,7 +22,6 @@
   flex-direction: column;
   align-items: center;
   color: white;
-  overflow: hidden;
 }
 
 .closeButton {
@@ -43,33 +42,6 @@
   align-items: center;
   width: 100%;
   height: 100%;
-  position: relative;
-}
-
-.background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.25); /* 회색빛 투명도 25% */
-  z-index: 1;
-}
-
-.backgroundImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
 }
 
 .header {
@@ -96,17 +68,6 @@
 .movieInfo p {
   margin-top: 14px;
   font-size: 14px;
-}
-
-.likeButton {
-  background: transparent;
-  border: none;
-  color: #5fbebb;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
 }
 
 .comments {
