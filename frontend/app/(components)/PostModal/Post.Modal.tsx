@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./Post.Modal.module.css";
 import PostWriteModal from "./PostWriteModal";
 import { FaHeart } from "react-icons/fa"; // 좋아요 아이콘 추가
+import { motion } from "framer-motion"; // 애니메이션 라이브러리 추가
 
 interface ModalProps {
   onClose: () => void;
@@ -11,6 +12,7 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [posts, setPosts] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [liked, setLiked] = useState(false); // 좋아요 상태 추가
   const postsPerPage = 4; // 페이지당 게시글 수
 
   const openWriteModal = () => {
@@ -32,9 +34,18 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
+  const handleLike = () => {
+    setLiked(!liked);
+  };
+
   return (
     <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
+      <motion.div
+        className={styles.modalContent}
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <button className={styles.closeButton} onClick={onClose}>
           X
         </button>
@@ -54,7 +65,8 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
               className={styles.poster}
             />
             <div className={styles.movieInfo}>
-              <h1>2024/05/22(KR) · 액션, 모험, SF · 2h 29m</h1>
+              <h1>퓨리오사: 매드맥스 사가(2024)</h1>
+              <h2>2024/05/22(KR) · 액션, 모험, SF · 2h 29m</h2>
               <p>
                 문명 붕괴 45년 후, 황폐해진 세상 속 누구에게도 알려지지 않은
                 풍요가 가득한 녹색의 땅에서 자란 퓨리오사는 바이커 군단의 폭군
@@ -63,7 +75,10 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
                 어머니와의 약속을 지키기 위해 인생 전부를 건 복수를
                 시작하는데...
               </p>
-              <button className={styles.likeButton}>
+              <button
+                className={`${styles.likeButton} ${liked ? styles.liked : ""}`}
+                onClick={handleLike}
+              >
                 <FaHeart /> 좋아요
               </button>
             </div>
@@ -97,7 +112,7 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
       {isWriteModalOpen && (
         <PostWriteModal onClose={closeWriteModal} addPost={addPost} />
       )}
