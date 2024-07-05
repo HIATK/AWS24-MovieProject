@@ -63,6 +63,9 @@ public class Member {
     private List<Like> likes = new ArrayList<>();
     //////좋아요 (like) 참조 END
 
+    public List<Like> getLikeMovies() {
+        return likes;
+    }
 
     ///comment 내가 쓴 댓글
     @OneToMany(mappedBy = "member",cascade =  CascadeType.ALL,orphanRemoval = true)
