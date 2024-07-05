@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import styles from "./Join.module.css";
 import axios from 'axios';
-import axiosInstance from '../../member/axiosInstance';
+import axiosInstance from '../axiosInstance';
 
 interface FormData {
   memberEmail: string;

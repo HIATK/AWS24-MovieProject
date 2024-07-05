@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
-import Login from '@/(components)/Member/Login'; // 실제 경로에 맞게 수정 필요
+import React, { useState } from "react";
 import styles from "@/page.module.css";
+import Login from "@/(components)/Member/Login";
 
 export default function login(){
 
