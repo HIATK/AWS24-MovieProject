@@ -159,7 +159,7 @@ public class CustomSecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler mvpSocialLoginSuccessHandler() {
-        return new MvpSocialLoginSuccessHandler(jwtLoginUtil);
+        return new MvpSocialLoginSuccessHandler(jwtProvider);
     }
 
     @Bean

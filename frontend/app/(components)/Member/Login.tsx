@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React, { useState, useRef, useEffect } from "react";
-import styles from "./Login.module.css";
-import Link from "next/link";
+import React, { useState, useRef, useEffect } from 'react';
+import styles from './Login.module.css';
+import Link from 'next/link';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const loginButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -19,18 +19,18 @@ const Login: React.FC = () => {
 
     try {
       // POST 요청을 보냅니다.
-      const response = await fetch("http://localhost:8000/api/login", {
-        method: "POST",
+      const response = await fetch('http://localhost:8000/api/login', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(loginData),
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Login successful:", data);
-        alert('로그인 성공!');      
+        console.log('Login successful:', data);
+        alert('로그인 성공!');
 
         // accessToken과 refreshToken을 localStorage에 저장
         localStorage.setItem('accessToken', data.accessToken);
@@ -44,7 +44,7 @@ const Login: React.FC = () => {
         throw new Error('로그인 에러');
       }
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.error('An error occurred:', error);
       alert('로그인 중 문제가 발생했습니다.');
     }
   };
@@ -56,47 +56,77 @@ const Login: React.FC = () => {
     }
   }, [isLoggedIn]);
 
+  // 소셜 로그인 쿠키 검증 및 localStorage 저장
+  useEffect(() => {
+    
+    const accessToken = getCookie('accessToken');
+    const refreshToken = getCookie('refreshToken');
+
+    if (accessToken && refreshToken) {
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+
+      // 쿠키 삭제
+      deleteCookie('accessToken');
+      deleteCookie('refreshToken');
+      
+      alert('소셜 로그인 성공!');
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const getCookie = (name: string) => {
+    const matches = document.cookie.match(new RegExp(
+      '(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+  };
+
+  const deleteCookie = (name: string) => {
+    document.cookie = name + '=; Path=/; Max-Age=-99999999;';
+  };
+
   return (
     <div className={styles.loginContainer}>
       <form onSubmit={handleSubmit} className={styles.formContainer}>
         <h2>로그인</h2>
         <div>
           <input
-            type="email"
-            id="email"
-            placeholder="이메일(example@gmail.com)"
+            type='email'
+            id='email'
+            placeholder='이메일(example@gmail.com)'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div>
           <input
-            type="password"
-            id="password"
-            placeholder="비밀번호"
+            type='password'
+            id='password'
+            placeholder='비밀번호'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="submit">로그인</button>
+        <button type='submit'>로그인</button>
         <div className={styles.socialLogin}>
           <p>다른 방법으로 로그인하기</p>
           <div className={styles.icons}>
-            <a href="http://localhost:8000/oauth2/authorization/kakao">
-                <img src="/images/kakao.png" alt="KAKAO"/>
+            <a href='http://localhost:8000/oauth2/authorization/kakao'>
+              <img src='/images/kakao.png' alt='KAKAO' />
             </a>
-            <Link href="/">
-              <img src="/images/google.png" alt="Google"/>
+            <Link href='/'>
+              <img src='/images/google.png' alt='Google' />
             </Link>
-            <Link href="/">
-              <img src="/images/naver.png" alt="Naver"/>
+            <Link href='http://localhost:8000/oauth2/authorization/naver'>
+              <img src='/images/naver.png' alt='Naver' />
             </Link>
           </div>
         </div>
-        <Link href="../../member/join">회원가입</Link>
+        <Link href='../../member/join'>회원가입</Link>
       </form>
       {/* 숨겨진 버튼 */}
-      <Link href="/">
+      <Link href='/'>
         <button ref={loginButtonRef} style={{ display: 'none' }} />
       </Link>
     </div>

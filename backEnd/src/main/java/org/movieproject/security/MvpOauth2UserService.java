@@ -50,6 +50,9 @@ public class MvpOauth2UserService extends DefaultOAuth2UserService {
             case "kakao" :
                 memberEmail = getKakaoEmail(paramMap);
                 break;
+            case "naver" :
+                memberEmail = getNaverEmail(paramMap);
+                break;
         }
 
         log.info("이 메 일 : " + memberEmail);
@@ -88,7 +91,7 @@ public class MvpOauth2UserService extends DefaultOAuth2UserService {
             Member member = result.get();
 
             MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(
-                   member.getMemberNo(), member.getMemberEmail(), member.getMemberPw(),
+                    member.getMemberNo(), member.getMemberEmail(), member.getMemberPw(),
                     member.getMemberPhone(), member.getMemberName(), member.getMemberNick(), member.isSocial(),
                     member.getRoleSet().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                             .collect(Collectors.toList()));
@@ -112,6 +115,22 @@ public class MvpOauth2UserService extends DefaultOAuth2UserService {
         String email = (String)accountMap.get("email");
 
         log.info("이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일  : " + email);
+
+        return email;
+    }
+
+    private String getNaverEmail(Map<String, Object> paramMap) {
+        log.info("네 이 버 네 이 버 네 이 버 네 이 버 네 이 버 네 이 버 네 이 버 네 이 버 네 이 버");
+
+        Object value = paramMap.get("response");
+
+        log.info("겟 네 이 버 어 카 운 트 : " + value);
+
+        LinkedHashMap accountMap = (LinkedHashMap)value;
+
+        String email = (String)accountMap.get("email");
+
+        log.info("이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 : " + email);
 
         return email;
     }
