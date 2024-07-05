@@ -4,7 +4,8 @@ const instance = axios.create({
     baseURL: 'http://localhost:8000', // 백엔드 API URL에 맞게 설정
     headers: {
         'Content-Type': 'application/json'
-    }
+    },
+    withCredentials: true,
 });
 
 // // 요청 인터셉터: 인증 토큰 추가
