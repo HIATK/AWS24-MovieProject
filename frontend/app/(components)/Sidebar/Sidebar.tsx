@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { CgProfile } from 'react-icons/cg';
 import { IoHomeOutline, IoStatsChartOutline } from 'react-icons/io5';
@@ -19,6 +18,7 @@ import {
     SettingsItemWrapper
 } from './SidebarStyles';
 import { VscSettings } from 'react-icons/vsc';
+import Link from 'next/link';
 
 interface MenuItem {
     icon: JSX.Element;
@@ -103,32 +103,44 @@ const Sidebar: React.FC = () => {
     const settingsItem: MenuItem = { icon: <MdLogin />, text: '로그인', href: '/member/login' };
     const settingsItem2: MenuItem = { icon: <MdLogout />, text: '로그아웃', href: '/member/logout' };
 
+    const handleMouseEnter = () => {
+        setIsOpen(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsOpen(false);
+    };
+
     return (
-        <SidebarContainer isOpen={isOpen}>
-            <MenuToggle onClick={toggleSidebar}>
+        <SidebarContainer isOpen={isOpen} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            {/* <MenuToggle onClick={toggleSidebar}>
                 <VscSettings />
-            </MenuToggle>
+            </MenuToggle> */}
             <MenuList>
                 {menuItems.map((item, index) => (
-                    <MenuItemWrapper key={index} isOpen={isOpen}>
-                        <MenuLink href={item.href}>
-                            <Icon>{item.icon}</Icon>
-                            <MenuText isOpen={isOpen}>{item.text}</MenuText>
-                        </MenuLink>
+                    <MenuItemWrapper key={index} isOpen={isOpen} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                        <Link href={item.href}>
+                            <MenuLink>
+                                <Icon>{item.icon}</Icon>
+                                <MenuText isOpen={isOpen}>{item.text}</MenuText>
+                            </MenuLink>
+                        </Link>
                         <HoverText isOpen={isOpen}>{item.text}</HoverText>
                     </MenuItemWrapper>
                 ))}
             </MenuList>
-            <SettingsItemWrapper isOpen={isOpen}>
+            <SettingsItemWrapper isOpen={isOpen} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
                 {isLoggedIn ? (
-                    <Link href={settingsItem2.href} onClick={handleLogout}>
+                    <a href="#" onClick={handleLogout}>
                         <Icon>{settingsItem2.icon}</Icon>
                         <MenuText isOpen={isOpen}>{settingsItem2.text}</MenuText>
-                    </Link>
+                    </a>
                 ) : (
                     <Link href={settingsItem.href}>            
-                        <Icon>{settingsItem.icon}</Icon>
-                        <MenuText isOpen={isOpen}>{settingsItem.text}</MenuText>                      
+                        <MenuLink>
+                            <Icon>{settingsItem.icon}</Icon>
+                            <MenuText isOpen={isOpen}>{settingsItem.text}</MenuText>                      
+                        </MenuLink>
                     </Link>
                 )}
                 <HoverText isOpen={isOpen}>{isLoggedIn ? settingsItem2.text : settingsItem.text}</HoverText>

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Link from 'next/link';
 
 interface StyledProps {
     isOpen: boolean;
@@ -9,7 +8,7 @@ export const SidebarContainer = styled.div<StyledProps>`
     position: fixed;
     top: 0;
     left: 0;
-    width: ${({isOpen}) => (isOpen ? '200px' : '60px')};
+    width: ${({ isOpen }) => (isOpen ? '200px' : '60px')};
     height: 100vh;
     background-color: rgba(33, 33, 33, 0.87);
     color: #5fbebb;
@@ -31,7 +30,7 @@ export const MenuToggle = styled.div`
 export const MenuList = styled.ul`
     list-style: none;
     margin: 0;
-    padding: 40px 0 0 0;
+    padding: 0px 0 0 0;
     display: flex;
     flex-direction: column;
 `;
@@ -55,12 +54,13 @@ export const SettingsItemWrapper = styled(MenuItemWrapper)`
     margin-bottom: 20px;
 `;
 
-export const MenuLink = styled(Link)`
+export const MenuLink = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
     color: inherit;
     text-decoration: none;
+    cursor: pointer;
 `;
 
 export const Icon = styled.div`
@@ -80,7 +80,7 @@ export const MenuText = styled.div<StyledProps>`
 
 export const HoverText = styled.div<StyledProps>`
     position: absolute;
-    left: ${({isOpen}) => (isOpen ? '60px' : '100%')};
+    left: ${({ isOpen }) => (isOpen ? '60px' : '100%')};
     top: 50%;
     transform: translateY(-50%);
     background-color: rgba(33, 33, 33, 0.85);
@@ -95,7 +95,7 @@ export const HoverText = styled.div<StyledProps>`
     z-index: 1200;
 
     ${MenuItemWrapper}:hover & {
-        opacity: ${({isOpen}) => (isOpen ? '0' : '1')};
-        left: ${({isOpen}) => (isOpen ? '60px' : 'calc(100% + 5px)')};
+        opacity: ${({ isOpen }) => (isOpen ? '0' : '1')};
+        left: ${({ isOpen }) => (isOpen ? '60px' : 'calc(100% + 5px)')};
     }
 `;
