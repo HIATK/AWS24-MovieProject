@@ -56,9 +56,9 @@
 }
 
 .poster {
-  width: 150px;
-  height: auto;
-  border-radius: 8px;
+
+  width: 60px; /* 이미지의 폭을 180px로 설정 */
+  height: 120px; /* 이미지의 높이를 280px로 설정 */
   margin-right: 20px;
 }
 
