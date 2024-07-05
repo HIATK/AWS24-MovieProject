@@ -1,6 +1,6 @@
 import styles from "./page.module.css";
 
-import NowPlayingMovies from "./components/NowPlayingMovies";
+import NowPlayingMovies from "./(components)/NowPlayingMovies";
 
 export default function Index() {
   return (
