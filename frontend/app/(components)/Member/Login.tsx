@@ -1,30 +1,32 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './Login.module.css';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useAuth } from '../util/useAuth';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const loginButtonRef = useRef<HTMLButtonElement>(null);
+  const { isLoggedIn, checkAuth, setIsLoggedIn } = useAuth();
+  const pathname = usePathname();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     console.log({ email, password });
 
-    // POST 요청을 보낼 데이터를 준비합니다.
     const loginData = { username: email, password };
 
     try {
-      // POST 요청을 보냅니다.
       const response = await fetch('http://localhost:8000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(loginData),
+        credentials: 'include'  // cors 응답에 cookie를 포함
       });
 
       if (response.ok) {
@@ -32,11 +34,6 @@ const Login: React.FC = () => {
         console.log('Login successful:', data);
         alert('로그인 성공!');
 
-        // accessToken과 refreshToken을 localStorage에 저장
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-
-        // 로그인 성공 후 상태 변경
         setIsLoggedIn(true);
       } else if (response.status === 401) {
         alert('아이디 혹은 비밀번호가 올바르지 않습니다');
@@ -50,41 +47,14 @@ const Login: React.FC = () => {
   };
 
   useEffect(() => {
-    // 로그인 성공 시 버튼 클릭 이벤트 트리거
+    checkAuth();
+  }, [pathname]);
+
+  useEffect(() => {
     if (isLoggedIn && loginButtonRef.current) {
       loginButtonRef.current.click();
     }
   }, [isLoggedIn]);
-
-  // 소셜 로그인 쿠키 검증 및 localStorage 저장
-  useEffect(() => {
-    
-    const accessToken = getCookie('accessToken');
-    const refreshToken = getCookie('refreshToken');
-
-    if (accessToken && refreshToken) {
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-
-      // 쿠키 삭제
-      deleteCookie('accessToken');
-      deleteCookie('refreshToken');
-      
-      alert('소셜 로그인 성공!');
-      setIsLoggedIn(true);
-    }
-  }, []);
-
-  const getCookie = (name: string) => {
-    const matches = document.cookie.match(new RegExp(
-      '(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-  };
-
-  const deleteCookie = (name: string) => {
-    document.cookie = name + '=; Path=/; Max-Age=-99999999;';
-  };
 
   return (
     <div className={styles.loginContainer}>
@@ -125,7 +95,6 @@ const Login: React.FC = () => {
         </div>
         <Link href='../../member/join'>회원가입</Link>
       </form>
-      {/* 숨겨진 버튼 */}
       <Link href='/'>
         <button ref={loginButtonRef} style={{ display: 'none' }} />
       </Link>

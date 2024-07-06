@@ -1,6 +1,7 @@
 package org.movieproject.security.util;
 
 import com.google.gson.Gson;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -32,17 +33,28 @@ public class JwtLoginUtil {
         // 리프레시 토큰 10분
         String refreshToken = jwtProvider.generateToken(claim, 10);
 
-        response.addHeader("Authorization", "Bearer " + accessToken);
+        // 액세스 토큰 쿠키 생성
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+//        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(300); // 5분 (300초)
+
+        // 리프레시 토큰 쿠키 생성
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(600); // 10분 (600초)
+
+        // 쿠키를 응답에 추가
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
 
         // 사용자 역할 가져오기
         GrantedAuthority grantedAuthority = authentication.getAuthorities().iterator().next();
         String authority = grantedAuthority.getAuthority();
 
         Map<String, Object> keyMap = Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken,
-                "authority", authority,
-                "location", "/"
+                "authority", authority
         );
 
         log.info("이 내용으로 토큰 생성 : " + keyMap);

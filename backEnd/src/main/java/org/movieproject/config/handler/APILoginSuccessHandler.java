@@ -22,7 +22,6 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         
         log.info("API 로 그 인 석 세 스 핸 들 러");
-
         jwtLoginUtil.generateAndSendTokens(response, authentication);
 
     }
