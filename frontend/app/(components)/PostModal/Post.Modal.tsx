@@ -1,19 +1,28 @@
 import React, { useState } from "react";
 import styles from "./Post.Modal.module.css";
 import PostWriteModal from "./PostWriteModal";
-import { FaHeart } from "react-icons/fa"; // 좋아요 아이콘 추가
-import { motion } from "framer-motion"; // 애니메이션 라이브러리 추가
+import { FaHeart } from "react-icons/fa";
+import { motion } from "framer-motion";
+import Board from "../board/board";
 
 interface ModalProps {
   onClose: () => void;
 }
 
+interface Post {
+  content: string;
+  file: string | null;
+  rating: number;
+}
+
 const Modal: React.FC<ModalProps> = ({ onClose }) => {
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
-  const [posts, setPosts] = useState<string[]>([]);
+  const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [liked, setLiked] = useState(false); // 좋아요 상태 추가
-  const postsPerPage = 4; // 페이지당 게시글 수
+  const [liked, setLiked] = useState(false);
+  const postsPerPage = 4;
 
   const openWriteModal = () => {
     setIsWriteModalOpen(true);
@@ -23,20 +32,33 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
     setIsWriteModalOpen(false);
   };
 
-  const addPost = (post: string) => {
+  const openBoardModal = (post: Post) => {
+    setSelectedPost(post);
+    setIsBoardModalOpen(true);
+  };
+
+  const closeBoardModal = () => {
+    setIsBoardModalOpen(false);
+  };
+
+  const addPost = (post: Post) => {
     setPosts([...posts, post]);
   };
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  // Calculate current posts
+  const handleLike = () => {
+    setLiked(!liked);
+  };
+
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
-  const handleLike = () => {
-    setLiked(!liked);
-  };
+  const pageNumbers = Array.from(
+    { length: Math.ceil(posts.length / postsPerPage) },
+    (_, i) => i + 1
+  );
 
   return (
     <div className={styles.modalOverlay}>
@@ -50,14 +72,6 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
           X
         </button>
         <div className={styles.content}>
-          <div className={styles.background}>
-            <div className={styles.overlay}></div>
-            <img
-              src="/images/qwer.jpg"
-              alt="Background"
-              className={styles.backgroundImage}
-            />
-          </div>
           <div className={styles.header}>
             <img
               src="/images/koko.jpg"
@@ -79,7 +93,7 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
                 className={`${styles.likeButton} ${liked ? styles.liked : ""}`}
                 onClick={handleLike}
               >
-                <FaHeart /> 좋아요
+                <FaHeart /> {liked ? "좋아요 취소" : "좋아요"}
               </button>
             </div>
           </div>
@@ -92,29 +106,41 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
             </div>
             {currentPosts.map((post, index) => (
               <div key={index} className={styles.comment}>
-                {post}
+                <button
+                  onClick={() => openBoardModal(post)}
+                  className={styles.postButton}
+                >
+                  ID(사용자): {post.content.slice(0, 8)}
+                </button>
               </div>
             ))}
           </div>
           {posts.length > postsPerPage && (
             <div className={styles.pagination}>
-              {[...Array(Math.ceil(posts.length / postsPerPage)).keys()].map(
-                (number) => (
-                  <button
-                    key={number + 1}
-                    onClick={() => paginate(number + 1)}
-                    className={styles.pageButton}
-                  >
-                    {number + 1}
-                  </button>
-                )
-              )}
+              {pageNumbers.map((number) => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={styles.pageButton}
+                >
+                  {number}
+                </button>
+              ))}
             </div>
           )}
         </div>
       </motion.div>
       {isWriteModalOpen && (
-        <PostWriteModal onClose={closeWriteModal} addPost={addPost} />
+        <PostWriteModal
+          onClose={closeWriteModal}
+          addPost={(newPost) => {
+            addPost(newPost);
+            closeWriteModal();
+          }}
+        />
+      )}
+      {isBoardModalOpen && selectedPost && (
+        <Board post={selectedPost} onClose={closeBoardModal} />
       )}
     </div>
   );
