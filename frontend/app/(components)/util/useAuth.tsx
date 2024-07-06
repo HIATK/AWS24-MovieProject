@@ -17,6 +17,9 @@ export const useAuth = () => {
         const roles = await response.json();
         console.log('Roles:', roles);
         setIsLoggedIn(roles.includes('GUEST')); // 사용자 권한 확인 (예시)
+      } else if (response.status === 401) {
+        console.error('Unauthorized access');
+        setIsLoggedIn(false); // 401 상태일 경우 isLoggedIn을 false로 설정
       } else {
         setIsLoggedIn(false);
       }

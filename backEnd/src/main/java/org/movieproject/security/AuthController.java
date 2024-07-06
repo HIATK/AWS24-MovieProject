@@ -27,9 +27,17 @@ public class AuthController {
 
     @GetMapping("/api/check_auth")
     public ResponseEntity<Object> checkAuth(@CookieValue(name = "accessToken", required = false) String accessToken) {
+        if (accessToken == null) {
+            return ResponseEntity.status(HttpStatus.FOUND).body("비로그인 사용자 쿠키 없음");
+        }
 
+        Map<String, Object> claims;
+        try {
+            claims = jwtProvider.validateToken(accessToken);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
 
-        Map<String, Object> claims = jwtProvider.validateToken(accessToken);
         String username = (String) claims.get("username");
 
         Optional<Member> role = memberRepository.findByMemberEmailWithRoles(username); // 사용자의 roleset을 가져오는 메서드

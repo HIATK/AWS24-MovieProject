@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
 interface StyledProps {
-  isOpen: boolean;
+  $isOpen: boolean; // Transient prop
 }
 
 export const SidebarContainer = styled.div<StyledProps>`
   position: fixed;
   top: 0;
   left: 0;
-  width: ${({ isOpen }) => (isOpen ? '150px' : '60px')};
+  width: ${({ $isOpen }) => ($isOpen ? '150px' : '60px')};
   height: 100vh;
   background-color: rgba(33, 33, 33, 0.87);
   color: #5fbebb;
@@ -36,7 +36,7 @@ export const MenuItemWrapper = styled.li<StyledProps>`
   cursor: pointer;
 
   &:hover {
-    background-color: ${({ isOpen }) => (isOpen ? 'rgba(255, 255, 255, 0.1)' : 'transparent')};
+    background-color: ${({ $isOpen }) => ($isOpen ? 'rgba(255, 255, 255, 0.1)' : 'transparent')};
   }
 `;
 
@@ -66,12 +66,12 @@ export const Icon = styled.div`
 export const MenuText = styled.div<StyledProps>`
   margin-left: 10px;
   white-space: nowrap;
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
 `;
 
 export const HoverText = styled.div<StyledProps>`
   position: absolute;
-  left: ${({ isOpen }) => (isOpen ? '60px' : '100%')};
+  left: ${({ $isOpen }) => ($isOpen ? '60px' : '100%')};
   top: 50%;
   transform: translateY(-50%);
   background-color: rgba(33, 33, 33, 0.85);
@@ -86,7 +86,7 @@ export const HoverText = styled.div<StyledProps>`
   z-index: 1200;
 
   ${MenuItemWrapper}:hover & {
-    opacity: ${({ isOpen }) => (isOpen ? '0' : '1')};
-    left: ${({ isOpen }) => (isOpen ? '60px' : 'calc(100% + 5px)')};
+    opacity: ${({ $isOpen }) => ($isOpen ? '0' : '1')};
+    left: ${({ $isOpen }) => ($isOpen ? '60px' : 'calc(100% + 5px)')};
   }
 `;
