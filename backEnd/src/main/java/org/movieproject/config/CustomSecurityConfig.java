@@ -159,7 +159,7 @@ public class CustomSecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler mvpSocialLoginSuccessHandler() {
-        return new MvpSocialLoginSuccessHandler(jwtProvider);
+        return new MvpSocialLoginSuccessHandler(jwtLoginUtil);
     }
 
     @Bean
@@ -167,7 +167,8 @@ public class CustomSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 허용할 도메인
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true); // 자격 증명 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
