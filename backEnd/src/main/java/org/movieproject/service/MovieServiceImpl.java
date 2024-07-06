@@ -1,6 +1,5 @@
 package org.movieproject.service;
 
-import org.movieproject.service.MovieService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -44,5 +43,23 @@ public class MovieServiceImpl implements MovieService {
                             ))
                             .collect(Collectors.toList());
                 });
+    }
+
+    @Override
+    public Mono<Map<String, String>> getMovieById(String id) {
+        return this.webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/{id}")
+                        .queryParam("language", "ko-KR")
+                        .queryParam("api_key", apiKey)
+                        .build(id))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .map(movie -> Map.of(
+                        "id", String.valueOf(movie.get("id")),
+                        "title", String.valueOf(movie.get("title")),
+                        "description", String.valueOf(movie.get("overview")),
+                        "poster_path", String.valueOf(movie.get("poster_path"))
+                ));
     }
 }

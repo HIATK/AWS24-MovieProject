@@ -59,6 +59,7 @@ const SidebarClient: React.FC = () => {
       if (response.ok) {
         alert('로그아웃 되었습니다');
         setIsLoggedIn(false);
+        
       } else {
         console.error('Failed to logout');
       }
@@ -68,37 +69,37 @@ const SidebarClient: React.FC = () => {
   };
 
   return (
-    <SidebarContainer isOpen={isOpen} onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
+    <SidebarContainer $isOpen={isOpen} onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
       <MenuList>
         {menuItems.map((item, index) => (
-          <MenuItemWrapper key={index} isOpen={isOpen}>
+          <MenuItemWrapper key={index} $isOpen={isOpen}>
             <Link href={item.href}>
               <MenuLink>
                 <Icon>{item.icon}</Icon>
-                <MenuText isOpen={isOpen}>{item.text}</MenuText>
+                <MenuText $isOpen={isOpen}>{item.text}</MenuText>
               </MenuLink>
             </Link>
-            <HoverText isOpen={isOpen}>{item.text}</HoverText>
+            <HoverText $isOpen={isOpen}>{item.text}</HoverText>
           </MenuItemWrapper>
         ))}
       </MenuList>
-      <SettingsItemWrapper isOpen={isOpen}>
+      <SettingsItemWrapper $isOpen={isOpen}>
         {isLoggedIn ? (
-          <a href="/api/logout" onClick={handleLogout}>
+          <Link href="/api/logout" onClick={handleLogout}>
             <MenuLink>
               <Icon>{settingsItem2.icon}</Icon>
-              <MenuText isOpen={isOpen}>{settingsItem2.text}</MenuText>
+              <MenuText $isOpen={isOpen}>{settingsItem2.text}</MenuText>
             </MenuLink>
-          </a>
+          </Link>
         ) : (
           <Link href={settingsItem.href}>
             <MenuLink>
               <Icon>{settingsItem.icon}</Icon>
-              <MenuText isOpen={isOpen}>{settingsItem.text}</MenuText>
+              <MenuText $isOpen={isOpen}>{settingsItem.text}</MenuText>
             </MenuLink>
           </Link>
         )}
-        <HoverText isOpen={isOpen}>{isLoggedIn ? settingsItem2.text : settingsItem.text}</HoverText>
+        <HoverText $isOpen={isOpen}>{isLoggedIn ? settingsItem2.text : settingsItem.text}</HoverText>
       </SettingsItemWrapper>
     </SidebarContainer>
   );
