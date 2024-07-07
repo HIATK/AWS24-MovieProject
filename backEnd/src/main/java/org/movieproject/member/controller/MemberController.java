@@ -8,8 +8,10 @@ import org.movieproject.member.Entity.Member;
 import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.member.service.MemberService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -42,14 +44,24 @@ public class MemberController {
         return ResponseEntity.ok("회원가입에 성공하였습니다 !!!");
     }
 
-//    // 마이페이지
-//    @GetMapping("/mypage")
-//    public ResponseEntity<?> getMemberDetails(@AuthenticationPrincipal UserDetails userDetails) {
-//        try{
-//            // 사용자 정보 가져오기
-//            Optional<Member> member = memberService.get
-//        }
-//    }
+    @GetMapping("/mypage")
+    public ResponseEntity<?> getMemberDetails() {
+        try {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+            log.info("프린서펄 값 !!!: {}", username);
+
+            Optional<Member> member = memberRepository.findByMemberEmailWithRoles(username);
+            if (member.isPresent()) {
+                return ResponseEntity.ok(member.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("멤버를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            log.error("멤버 디테일에 문제가 발생했습니다.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        }
+    }
 
     @GetMapping("/likes")
     public List<Like> getLikeMovies(@AuthenticationPrincipal UserDetails userDetails) {
