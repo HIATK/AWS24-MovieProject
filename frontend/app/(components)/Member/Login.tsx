@@ -1,17 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import styles from './Login.module.css';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useAuth } from '../util/useAuth';
+import { useAuth } from '../util/AuthContext';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const loginButtonRef = useRef<HTMLButtonElement>(null);
-  const { isLoggedIn, checkAuth, setIsLoggedIn } = useAuth();
-  const pathname = usePathname();
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -26,7 +24,7 @@ const Login: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(loginData),
-        credentials: 'include'  // cors 응답에 cookie를 포함
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -35,6 +33,8 @@ const Login: React.FC = () => {
         alert('로그인 성공!');
 
         setIsLoggedIn(true);
+
+        // 리디렉션하거나 추가 동작을 수행할 수 있습니다.
       } else if (response.status === 401) {
         alert('아이디 혹은 비밀번호가 올바르지 않습니다');
       } else {
@@ -45,16 +45,6 @@ const Login: React.FC = () => {
       alert('로그인 중 문제가 발생했습니다.');
     }
   };
-
-  useEffect(() => {
-    checkAuth();
-  }, [pathname]);
-
-  useEffect(() => {
-    if (isLoggedIn && loginButtonRef.current) {
-      loginButtonRef.current.click();
-    }
-  }, [isLoggedIn]);
 
   return (
     <div className={styles.loginContainer}>

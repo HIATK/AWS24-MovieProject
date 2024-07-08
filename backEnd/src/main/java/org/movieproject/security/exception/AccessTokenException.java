@@ -14,7 +14,7 @@ public class AccessTokenException extends RuntimeException {
     TOKEN_ERROR token_error;
 
     public enum TOKEN_ERROR {
-        UNACCEPT (401, "토 큰 이 null 이 거 나 너 무 짧 다"),
+        UNACCEPT (401, "토 큰 이 null"),
         BADTYPE (401, "토 큰 타 입 베 어 러"),
         MALFORM (403, "말 폼 드 토 큰 이 다"),
         BADSIGN (403, "나쁜 시그니쳐 토큰"),
@@ -57,5 +57,4 @@ public class AccessTokenException extends RuntimeException {
             throw new RuntimeException(e);
         }
     }
-
 }
