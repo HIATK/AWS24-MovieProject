@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import {getMemberDetails} from "@/(components)/memberServices";
+import axios from "axios";
 
+const instance = axios.create({
+    baseURL: 'http://localhost:8000', // 백엔드 API URL에 맞게 설정
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    withCredentials: true,
+    credentials: 'include'
+});
 
 interface Member {
     memberEmail: string;
     memberPw: string;
-    memberPwConfirm: string;
     memberName: string;
     memberPhone: string;
     memberNick: string;
@@ -16,7 +23,18 @@ interface Movie {
 
 }
 
-const Mypage: React.FC = () => {
+const getMemberDetails = async () => {
+    const response = await instance.get('api/member/profile', { withCredentials: true, credentials: 'include' });
+    return response.data;
+};
+
+// const getLikeMovies = async () => {
+//     const response = await instance.get(`api/member/likes`, { withCredentials: true, credentials: 'include' });
+//     return response.data;
+// };
+
+
+const Profile: React.FC = () => {
     const [member, setMember] = useState<Member | null>(null);
     // const [likeMovies, setLikeMovies] = useState<Movie[]>([]);
 
@@ -25,6 +43,7 @@ const Mypage: React.FC = () => {
             try {
                 const data = await getMemberDetails();
                 setMember(data);
+                console.log("데이터 !!!"+data)
             } catch (error) {
                 console.error('Failed to fetch member details', error);
             }
@@ -51,11 +70,14 @@ const Mypage: React.FC = () => {
         <div>
             <h1>My Page</h1>
             <div>
-                <h2>Member Info</h2>
+                <h2>회원 정보</h2>
                 <p>EMAIL: {member.memberEmail}</p>
+                <p>NAME: {member.memberName}</p>
+                <p>PHONE: {member.memberPhone}</p>
                 <p>NICKNAME: {member.memberNick}</p>
-                <button>Edit Info</button>
+                <button>정보 수정</button>
             </div>
+            <hr/>
             <div>
                 <h2>Like Movies</h2>
                 <ul>
@@ -71,4 +93,4 @@ const Mypage: React.FC = () => {
     );
 };
 
-export default Mypage;
+export default Profile;

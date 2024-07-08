@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react';
 import styles from "@/page.module.css";
-import Mypage from "@/(components)/Member/Mypage";
+import Profile from "@/(components)/Member/Profile";
 
-export default function mypage(){
+export default function profile(){
 
     return(
         <main className={styles.main}>
             <div className={styles.description}>
-                <Mypage/>
+                <Profile/>
             </div>
         </main>
     );

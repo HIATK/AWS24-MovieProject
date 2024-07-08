@@ -35,7 +35,7 @@ public class JwtLoginUtil {
 
         // 액세스 토큰 쿠키 생성
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-//        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(300); // 5분 (300초)
 
