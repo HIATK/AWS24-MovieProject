@@ -1,11 +1,14 @@
 package org.movieproject.movie.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.movieproject.posts.entity.Posts;
+
+import java.util.List;
 
 @Entity
+@Data
 public class Movie {
 
     @Id
@@ -15,4 +18,6 @@ public class Movie {
     @Column(nullable = false)
     private String movieTitle;
 
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Posts> posts;
 }
