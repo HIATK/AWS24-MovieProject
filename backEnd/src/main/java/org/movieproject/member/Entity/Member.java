@@ -2,7 +2,6 @@ package org.movieproject.member.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.movieproject.comment.entity.Comment;
 import org.movieproject.like.entity.Like;
 import org.movieproject.posts.entity.Posts;
 
@@ -17,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Setter
 public class Member {
 
     @Id
@@ -50,9 +50,9 @@ public class Member {
     }
 
     //Member < - > Post One To Many
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Posts> posts = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Posts")
+    private Posts posts;
 
     //Member < - > Post One To Many END
 
@@ -67,10 +67,5 @@ public class Member {
         return likes;
     }
 
-    ///comment 내가 쓴 댓글
-    @OneToMany(mappedBy = "member",cascade =  CascadeType.ALL,orphanRemoval = true)
-    @Builder.Default
-    private List<Comment> comments = new ArrayList<>();
-    ///comment 내가 쓴 댓글END
 
 }

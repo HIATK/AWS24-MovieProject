@@ -9,7 +9,7 @@ import org.movieproject.posts.entity.Posts;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "post")
+@ToString()
 public class Image{
 
     @Id
@@ -19,11 +19,12 @@ public class Image{
 
     private boolean img;
 
-    //일 대 일 관계 설정 Posts랑
-    @OneToOne(fetch = FetchType.LAZY)
+    // Many-to-one relationship with Posts
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", referencedColumnName = "postId")
     private Posts post;
-    //일 대 일 관계 설정 Posts랑 END
 
+    // Constructors, getters, setters, toString() methods omitted for brevity
 
 
 

@@ -39,7 +39,7 @@ public class LikeTests {
     @Test
     public void testAddLikeToExistingMember() {
         // Given: 기존에 저장된 멤버 정보를 가져옴
-        Optional<Member> memberOptional = memberRepository.findById(6); // 기존 멤버의 ID를 사용하여 가져옴
+        Optional<Member> memberOptional = memberRepository.findById(1); // 기존 멤버의 ID를 사용하여 가져옴
         Member member = memberOptional.orElseThrow(() -> new IllegalArgumentException("기존 멤버가 존재하지 않습니다."));
 
         LikeDTO likeDTO = new LikeDTO();
