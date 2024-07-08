@@ -85,6 +85,12 @@ dependencies {
 
     // compile 정리
     compileJava.dependsOn('clean')
+
+    //AssertJ
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.26.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+
+
 }
 
 tasks.named('test') {
