@@ -5,6 +5,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -38,19 +39,29 @@ public class TokenCheckFilter extends OncePerRequestFilter {
 //        }
 
         String path = request.getRequestURI();
-
+        log.info(path);
         // 특정 경로에 대해서만 필터 적용
         //  !path.startsWith("/api/") && <-이거 아래에 들어가 있었음 프록시 떄문에 잠시 빼둠.
-        if ( !path.startsWith("/customer/")) {
+        if ( !path.startsWith("/api/member/")) {
             filterChain.doFilter(request, response);
             return;
         }
-
         log.info("토 큰 체 크 필 터");
         log.info("Jwt 프로바이더 : " + jwtProvider);
 
         try {
-            Map<String, Object> payload = validateAccessToken(request);
+            String accessToken = null;
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if ("accessToken".equals(cookie.getName())) {
+                        accessToken = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+            log.info(accessToken);
+
+            Map<String, Object> payload = validateAccessToken(accessToken);
             // username 값 얻기
             String username = (String) payload.get("username");
 
@@ -71,26 +82,26 @@ public class TokenCheckFilter extends OncePerRequestFilter {
         }
     }
 
-    private Map<String, Object> validateAccessToken(HttpServletRequest request) throws AccessTokenException {
+    private Map<String, Object> validateAccessToken(String accessToken) throws AccessTokenException {
 
-        String headerStr = request.getHeader("Authorization");
+//        String headerStr = request.getHeader("Authorization");
+//
+//        log.info("headerStr : " + headerStr);
+//
+//        if (headerStr == null || headerStr.length() < 8) {
+//            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.UNACCEPT);
+//        }
+//
+//        // Bearer 생략
+//        String tokenType = headerStr.substring(0, 6);
+//        String tokenStr = headerStr.substring(7);
 
-        log.info("headerStr : " + headerStr);
-
-        if (headerStr == null || headerStr.length() < 8) {
-            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.UNACCEPT);
-        }
-
-        // Bearer 생략
-        String tokenType = headerStr.substring(0, 6);
-        String tokenStr = headerStr.substring(7);
-
-        if (!tokenType.equalsIgnoreCase("Bearer")) {
-            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.BADTYPE);
-        }
+//        if (!tokenType.equalsIgnoreCase("Bearer")) {
+//            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.BADTYPE);
+//        }
 
         try {
-            Map<String, Object> values = jwtProvider.validateToken(tokenStr);
+            Map<String, Object> values = jwtProvider.validateToken(accessToken);
 
             return values;
         } catch (MalformedJwtException malformedJwtException) {

@@ -40,11 +40,11 @@ public class MemberController {
             memberService.memberJoin(memberDTO);
         } catch (MemberService.MidExistException e) {
             return ResponseEntity.badRequest().body("중복된 아이디 입니다 !!!");
-        }
+            }
         return ResponseEntity.ok("회원가입에 성공하였습니다 !!!");
     }
 
-    @GetMapping("/mypage")
+    @GetMapping("/profile")
     public ResponseEntity<?> getMemberDetails() {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();

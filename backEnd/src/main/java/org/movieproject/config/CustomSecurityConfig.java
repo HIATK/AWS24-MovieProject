@@ -67,7 +67,6 @@ public class CustomSecurityConfig {
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .anyRequest().permitAll()
                     )
-            .addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class)
 //                .formLogin(form ->{form.loginPage("/login") // 로그인 설정
 //                        .loginProcessingUrl("/login/auth")
 //                        .successHandler(apiLoginSuccessHandler())
