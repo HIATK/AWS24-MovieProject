@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@ToString(exclude = "roleSet")
+@ToString(exclude = {"roleSet", "posts", "likes"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -51,7 +51,7 @@ public class Member {
 
     //Member < - > Post One To Many
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Posts")
+    @JoinColumn(name = "postId")
     private Posts posts;
 
     //Member < - > Post One To Many END
