@@ -32,36 +32,18 @@ public class TokenCheckFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-//        // POST 요청만 처리
-//        if (!request.getMethod().equalsIgnoreCase("POST")) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
-
         String path = request.getRequestURI();
-        log.info(path);
+        log.info("요청 URI : " + path);
+
         // 특정 경로에 대해서만 필터 적용
-        //  !path.startsWith("/api/") && <-이거 아래에 들어가 있었음 프록시 떄문에 잠시 빼둠.
-        if ( !path.startsWith("/api/member/")) {
+        if (!path.startsWith("/api/member")) {
             filterChain.doFilter(request, response);
             return;
         }
-        log.info("토 큰 체 크 필 터");
-        log.info("Jwt 프로바이더 : " + jwtProvider);
+        log.info("토큰 체크 필터");
 
         try {
-            String accessToken = null;
-            if (request.getCookies() != null) {
-                for (Cookie cookie : request.getCookies()) {
-                    if ("accessToken".equals(cookie.getName())) {
-                        accessToken = cookie.getValue();
-                        break;
-                    }
-                }
-            }
-            log.info(accessToken);
-
-            Map<String, Object> payload = validateAccessToken(accessToken);
+            Map<String, Object> payload = validateAccessToken(request);
             // username 값 얻기
             String username = (String) payload.get("username");
 
@@ -82,36 +64,37 @@ public class TokenCheckFilter extends OncePerRequestFilter {
         }
     }
 
-    private Map<String, Object> validateAccessToken(String accessToken) throws AccessTokenException {
+    private Map<String, Object> validateAccessToken(HttpServletRequest request) throws AccessTokenException {
 
-//        String headerStr = request.getHeader("Authorization");
-//
-//        log.info("headerStr : " + headerStr);
-//
-//        if (headerStr == null || headerStr.length() < 8) {
-//            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.UNACCEPT);
-//        }
-//
-//        // Bearer 생략
-//        String tokenType = headerStr.substring(0, 6);
-//        String tokenStr = headerStr.substring(7);
+        String accessToken = null;
 
-//        if (!tokenType.equalsIgnoreCase("Bearer")) {
-//            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.BADTYPE);
-//        }
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (accessToken == null || accessToken.isEmpty()) {
+            log.info("액세스 토큰이 존재하지 않거나 비어 있습니다.");
+            throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.UNACCEPT);
+        }
+
+        log.info("액세스토큰 쿠키 : " + accessToken);
 
         try {
-            Map<String, Object> values = jwtProvider.validateToken(accessToken);
-
+            Map<String, Object> values = jwtProvider.extractClaim(accessToken);
             return values;
         } catch (MalformedJwtException malformedJwtException) {
-            log.info("말 폼 드 J W T 익 셉 션");
+            log.info("말 폼 드 JWT 익셉션");
             throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.MALFORM);
         } catch (SignatureException signatureException) {
-            log.info("시 그 니 쳐 익 셉 션");
+            log.info("시그니처 익셉션");
             throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.BADSIGN);
         } catch (ExpiredJwtException expiredJwtException) {
-            log.info("만 료 된 토 큰 익 셉 션");
+            log.info("만료된 토큰 익셉션");
             throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.EXPIRED);
         }
     }

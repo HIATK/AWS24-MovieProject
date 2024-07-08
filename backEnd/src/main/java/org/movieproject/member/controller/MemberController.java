@@ -1,5 +1,8 @@
 package org.movieproject.member.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -10,14 +13,19 @@ import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/member")
@@ -82,5 +90,43 @@ public class MemberController {
             return ResponseEntity.badRequest().body("업데이트 실패하였습니다. !!!");
         }
         return ResponseEntity.ok("회원 정보 업데이트가 성공하였습니다. !!!");
+    }
+
+    @GetMapping("/check_auth")
+    public ResponseEntity<Object> checkAuth() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증되지 않은 사용자입니다.");
+            }
+
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            Set<String> roles = authorities.stream()
+                    .map(grantedAuthority -> grantedAuthority.getAuthority().replace("ROLE_", ""))
+                    .collect(Collectors.toSet());
+            return ResponseEntity.ok(roles);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("체크어쓰 실패");
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        // accessToken 쿠키 삭제
+        Cookie accessTokenCookie = new Cookie("accessToken", null);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(0); // 쿠키 만료
+        response.addCookie(accessTokenCookie);
+
+        // refreshToken 쿠키 삭제
+        Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(0); // 쿠키 만료
+        response.addCookie(refreshTokenCookie);
+
+        return ResponseEntity.ok().build();
     }
 }

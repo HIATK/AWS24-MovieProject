@@ -124,7 +124,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
     
     private void checkAccessToken(String accessToken) throws RefreshTokenException {
         try {
-            jwtProvider.validateToken(accessToken);
+            jwtProvider.extractClaim(accessToken);
         } catch (ExpiredJwtException expiredJwtException) {
             log.info("액 세 스 토 큰 이 만 료 되 었 다");
         } catch (Exception exception) {
@@ -134,7 +134,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
     private Map <String, Object> checkRefreshToken(String refreshToken) throws RefreshTokenException {
         try {
-            Map<String, Object> values = jwtProvider.validateToken(refreshToken);
+            Map<String, Object> values = jwtProvider.extractClaim(refreshToken);
             return values;
         } catch (ExpiredJwtException expiredJwtException) {
             throw new RefreshTokenException(RefreshTokenException.ErrorCase.OLD_REFRESH);

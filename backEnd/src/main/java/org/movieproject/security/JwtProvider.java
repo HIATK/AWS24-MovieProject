@@ -59,7 +59,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public Map<String, Object> validateToken(String token) throws JwtException {
+    public Map<String, Object> extractClaim(String token) throws JwtException {
 
         Map<String, Object> claim = null;
 

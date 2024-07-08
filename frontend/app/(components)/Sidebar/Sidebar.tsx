@@ -7,7 +7,7 @@ import { IoHomeOutline, IoStatsChartOutline } from 'react-icons/io5';
 import { BiLink } from 'react-icons/bi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import Link from 'next/link';
-import { useAuth } from '../util/useAuth';
+import { useAuth } from '../util/AuthContext';
 import {
   SidebarContainer,
   MenuList,
@@ -48,7 +48,7 @@ const SidebarClient: React.FC = () => {
   const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     try {
-      const response = await fetch('/api/logout', {
+      const response = await fetch('/api/member/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -59,7 +59,6 @@ const SidebarClient: React.FC = () => {
       if (response.ok) {
         alert('로그아웃 되었습니다');
         setIsLoggedIn(false);
-        
       } else {
         console.error('Failed to logout');
       }
