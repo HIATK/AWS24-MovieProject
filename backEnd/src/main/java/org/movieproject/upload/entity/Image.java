@@ -9,7 +9,7 @@ import org.movieproject.posts.entity.Posts;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString()
+@ToString(exclude = "post")
 public class Image{
 
     @Id
@@ -21,7 +21,7 @@ public class Image{
 
     // Many-to-one relationship with Posts
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", referencedColumnName = "postId")
+    @JoinColumn(name = "postId")
     private Posts post;
 
     // Constructors, getters, setters, toString() methods omitted for brevity
