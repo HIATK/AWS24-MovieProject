@@ -1,4 +1,4 @@
-package org.movieproject.viewController;
+package org.movieproject.movie.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
