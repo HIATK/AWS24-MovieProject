@@ -7,6 +7,7 @@ import org.movieproject.posts.repository.PostsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -16,6 +17,7 @@ public class PostRepositoryTests {
     @Autowired
     private PostsRepository postsRepository;
 
+    //  게시물 등록 테스트
     @Test
     public void testInsertPost() {
         IntStream.rangeClosed(1, 50).forEach(i -> {
@@ -30,4 +32,31 @@ public class PostRepositoryTests {
             log.info("postId" + result.getPostId());
         });
     }
+
+    //  게시물 조회 테스트
+    @Test
+    public void testSelectPost() {
+        Long postId = 50L;
+
+        Optional<Posts> result = postsRepository.findById(postId);
+        Posts posts = result.orElseThrow();
+
+        log.info(posts);
+    }
+
+    //  게시물 수정 테스트
+    @Test
+    public void testUpdatePost() {
+        Long postId = 50L;
+
+        Optional<Posts> result = postsRepository.findById(postId);
+        Posts posts = result.orElseThrow();
+
+        posts.changePost("Update Post Title", " Update Content",  2);
+        postsRepository.save(posts);
+    }
+
+    //  게시물 삭제 테스트
+    @Test
+    public void testDeletePost() {postsRepository.deleteById(50L);}
 }
