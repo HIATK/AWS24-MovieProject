@@ -1,4 +1,4 @@
-package org.movieproject.posts.dto;
+package org.movieproject.post.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostsDTO {
+public class PostDTO {
 
     private Long postId;
 
@@ -31,6 +31,8 @@ public class PostsDTO {
     @Min(value = 1)     //  최소값
     @Max(value = 5)     //  최대값
     private int ratingStar;
+
+    private Integer movieId;
 
     //  등록, 수정 날짜 관련
     private LocalDateTime regDate;

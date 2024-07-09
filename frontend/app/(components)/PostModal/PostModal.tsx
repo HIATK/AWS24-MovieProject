@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./PostModal.module.css";
 import { motion } from "framer-motion";
 import { FaHeart } from "react-icons/fa";
-import { getMovieById } from "@/movieService";
+import { getMovieById } from "@/MovieService";
 
 interface ModalProps {
   movieId: string;

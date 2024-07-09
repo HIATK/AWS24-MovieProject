@@ -1,4 +1,4 @@
-package org.movieproject.posts.entity;
+package org.movieproject.post.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

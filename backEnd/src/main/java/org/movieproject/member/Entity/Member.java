@@ -3,7 +3,7 @@ package org.movieproject.member.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.movieproject.like.entity.Like;
-import org.movieproject.posts.entity.Posts;
+import org.movieproject.post.entity.Post;
 import org.movieproject.upload.entity.Image;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@ToString(exclude = {"roleSet", "posts", "likes", "image"})
+@ToString(exclude = {"roleSet", "post", "likes", "image"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -57,7 +57,7 @@ public class Member {
     //Member < - > Post One To Many
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId")
-    private Posts posts;
+    private Post post;
 
     //Member < - > Post One To Many END
 

@@ -17,6 +17,7 @@
   border-radius: 8px;
   max-width: 80%;
   max-height: 80%;
+  width: calc(100% - 4rem); /* Adjust modal width */
   overflow-y: auto;
   position: relative;
   color: #fff;
@@ -34,47 +35,16 @@
 }
 
 .content {
-  color: #fff;
-}
-
-.header {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.poster {
-  width: 200px;
-  height: auto;
-}
-
-.movieInfo {
-  flex: 1;
-}
-
-.likeButton {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.liked {
-  background-color: #f44336;
+  flex-direction: column;
+  gap: 2rem;
+  color: #fff;
 }
 
 .form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 2rem;
   width: 100%;
   background-color: #333;
   border-radius: 8px;
@@ -89,31 +59,32 @@
   color: #fff;
 }
 
-.input,
 .textarea {
   width: 100%;
+  height: 2rem; /* Initial height */
   padding: 0.5rem;
   margin-top: 0.5rem;
   border: none;
   border-radius: 4px;
   background-color: #555;
   color: #fff;
-  transition: height 0.3s ease, padding 0.3s ease;
+  resize: none;
+  transition: height 0.3s ease, padding 0.3s ease, width 0.3s ease; /* Added width transition */
 }
 
-.input:focus,
 .textarea:focus {
-  height: 2.5rem; /* Adjust the height for the input */
+  height: 10rem; /* Expanded height */
   padding: 1rem;
 }
 
-.textarea {
-  height: 2rem; /* Initial height for the textarea */
-  resize: none;
+.ratingAndButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.textarea:focus {
-  height: 10rem; /* Expanded height for the textarea when focused */
+.buttonContainer {
+  margin-left: auto;
 }
 
 .button {
@@ -124,33 +95,9 @@
   border-radius: 4px;
   cursor: pointer;
   text-align: center;
-  margin-left: auto;
 }
 
-.starRating {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.star {
-  font-size: 2rem;
-  cursor: pointer;
-  color: yellow;
-}
-
-.starFilled,
-.starHalf {
-  color: yellow;
-}
-
-.fileUpload {
-  padding: 0.5rem;
-  background-color: #555;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-  display: inline-block;
+.postListWrapper {
+  width: 100%;
+  margin-top: 10px;
 }

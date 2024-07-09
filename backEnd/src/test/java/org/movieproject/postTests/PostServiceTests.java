@@ -2,8 +2,8 @@ package org.movieproject.postTests;
 
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
-import org.movieproject.posts.dto.PostsDTO;
-import org.movieproject.posts.service.PostsService;
+import org.movieproject.post.dto.PostDTO;
+import org.movieproject.post.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,14 +12,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class PostServiceTests {
 
     @Autowired
-    private PostsService postsService;
+    private PostService postsService;
 
     //  게시물 등록
     @Test
     public void testRegister() {
         log.info(postsService.getClass().getName());
 
-        PostsDTO postsDTO = PostsDTO.builder()
+        PostDTO postsDTO = PostDTO.builder()
                 .postTitle("Test PostTitle ~")
                 .postContent("Test PostContent ~")
                 .writer("user")
