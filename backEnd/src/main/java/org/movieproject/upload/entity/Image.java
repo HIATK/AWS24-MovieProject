@@ -2,6 +2,7 @@ package org.movieproject.upload.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.movieproject.member.Entity.Member;
 import org.movieproject.posts.entity.Posts;
 
 @Entity
@@ -9,7 +10,7 @@ import org.movieproject.posts.entity.Posts;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "post")
+@ToString(exclude = "member")
 public class Image{
 
     @Id
@@ -19,10 +20,10 @@ public class Image{
 
     private boolean img;
 
-    // Many-to-one relationship with Posts
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId")
-    private Posts post;
+    //  프로필 이미지는 회원 당 1개만 가질 수 있으므로 @OneToOne 적용
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberNo")
+    private Member member;
 
     // Constructors, getters, setters, toString() methods omitted for brevity
 

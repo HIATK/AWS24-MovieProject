@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.movieproject.like.entity.Like;
 import org.movieproject.posts.entity.Posts;
+import org.movieproject.upload.entity.Image;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@ToString(exclude = {"roleSet", "posts", "likes"})
+@ToString(exclude = {"roleSet", "posts", "likes", "image"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -48,6 +49,10 @@ public class Member {
     public void addRole(Role role) {
         this.roleSet.add(role);
     }
+
+    //  회원 당 프로필 이미지는 1개만 적용 가능
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
+    private Image image;
 
     //Member < - > Post One To Many
     @ManyToOne(fetch = FetchType.LAZY)

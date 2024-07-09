@@ -67,22 +67,6 @@ const MovieModal: React.FC = () => {
     const handlePostSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        if (file) {
-            formData.append("files", file);
-        }
-
-        try {
-            await axios.post("http://localhost:8000/upload", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
-            console.log("파일 업로드 성공 : ", file);
-        } catch (error) {
-            console.error("파일 업로드 실패 : ", error);
-        }
-
         console.log("Post submitted:", { postTitle, postContent, postRating, file });
         // 여기에 게시글 제출 로직 추가
         // 게시글 목록을 새로고침하거나 업데이트하는 로직 추가
