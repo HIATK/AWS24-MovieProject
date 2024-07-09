@@ -28,14 +28,10 @@ const Join: React.FC = () => {
     memberNick: '',
     roleSet: ['GUEST'],
   });
-
   const [errors, setErrors] = useState<Errors>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({...formData, [e.target.name]: e.target.value,});
   };
 
   const validateForm = (): Errors => {
@@ -137,7 +133,7 @@ const Join: React.FC = () => {
       </div>
       <div>
         <input
-          type="text"
+          type=""
           name="memberPhone"
           placeholder="Phone('-' 생략)"
           value={formData.memberPhone}
