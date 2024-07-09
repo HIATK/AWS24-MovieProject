@@ -51,7 +51,7 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:3.2.0'
 
     // Swagger UI
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
     // thumbnail
     implementation 'net.coobird:thumbnailator:0.4.20'
