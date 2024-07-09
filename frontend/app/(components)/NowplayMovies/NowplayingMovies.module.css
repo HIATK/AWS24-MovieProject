@@ -6,6 +6,8 @@
 .movie-items {
   list-style-type: none; /* 목록 마커 제거 */
   padding: 0;
+  margin-top: 50px; /*상단 검색바 넣으려고 추가 */
+  margin-left: 120px; /*사이듭 간격 맞추려고 넣어줌 */
   display: flex; /* 가로로 배열 */
   flex-wrap: wrap; /* 넘치면 줄바꿈 */
 }
