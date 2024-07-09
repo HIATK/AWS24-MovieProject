@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import styles from "@/(components)/NowplayingMovies.module.css";
-import PostModal from "@/(components)/PostModal/Post.Modal";
+import styles from "@/(components)/NowplayMovies/NowPlayingMovies.module.css";
+import PostModal from "@/(components)/PostModal/PostModal";
 import { getMovies } from "@/movieService";
 
 type Movie = {
