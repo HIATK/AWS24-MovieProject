@@ -46,8 +46,10 @@ const Profile: React.FC = () => {
                 console.error('Failed to fetch member details', error);
             }
         };
-        fetchMemberDetails();
-    }, []);
+        (async () => {
+            await fetchMemberDetails();
+        })();
+        }, []);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setMember({ ...member, [e.target.name]: e.target.value });
@@ -68,31 +70,14 @@ const Profile: React.FC = () => {
             setErrors(validationErrors);
         } else {
             try {
-                const response = await axios.put('/api/member/update', member, {
+                const {data} = await axios.put<{ message: string, member: Member }>
+                ('/api/member/update', member, {
                     headers: { 'Content-Type': 'application/json' },
                 });
-                alert(response.data);
-                console.log(response.data);
-                setMember({
-                    memberEmail: '',
-                    memberPw: '',
-                    memberPwConfirm: '',
-                    memberName: '',
-                    memberPhone: '',
-                    memberNick: '',
-                    roleSet: ['GUEST'],
-                });
+                alert(data.message);
+                setMember(data.member)
                 setErrors({});
                 setIsModalOpen(false);
-                const fetchMemberDetails = async () => {
-                    try {
-                        const data = await getMemberDetails();
-                        setMember(data);
-                    } catch (error) {
-                        console.error('Failed to fetch member details', error);
-                    }
-                };
-                fetchMemberDetails();
 
             } catch (error) {
                 if (axios.isAxiosError(error) && error.response) {
@@ -107,7 +92,7 @@ const Profile: React.FC = () => {
     const handleUpdateClick = () => setIsModalOpen(true);
     const handleCloseModal = () => setIsModalOpen(false);
 
-    if (!member) return <div>Loading...</div>;
+    if (!member.memberEmail) return <div>Loading...</div>;
 
     return (
         <div>
