@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostsDTO {
 
+    private Long postId;
+
     private String writer;
 
     @NotEmpty
@@ -33,4 +35,5 @@ public class PostsDTO {
     //  등록, 수정 날짜 관련
     private LocalDateTime regDate;
     private LocalDateTime modDate;
+
 }

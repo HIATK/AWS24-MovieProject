@@ -43,9 +43,7 @@ public class Posts extends BaseEntity{
     private List<Image> images = new ArrayList<>();
 
     //  Entity 내에서 변경할 수 있는 내용들을 메소드로 구성
-    public void changePost(String postTitle, String postContent, int ratingStar) {
-        this.postTitle = postTitle;
-        this.postContent = postContent;
-        this.ratingStar = ratingStar;
-    }
+    public void changeTitle(String postTitle){this.postTitle = postTitle;}
+    public void changeContent(String postContent){this.postContent = postContent;}
+    public void changeRatingStar(int ratingStar){this.ratingStar = ratingStar;}
 }
