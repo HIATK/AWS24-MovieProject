@@ -1,12 +1,22 @@
-/* app/page.module.css */
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #272727;
+  background-image: url("/toto.png");
+  background-size: cover;
+  background-position: center;
+  z-index: 0; /* 모든 콘텐츠 앞에 배경이 위치하도록 설정 */
+}
+
 .main {
   display: flex;
   height: 100vh;
-  background-color: #272727;
-  /* background-image: url("/toto.png"); 이미지 경로 설정 */
-  background-size: cover;
-  background-position: center;
   color: white;
+  z-index: 1; /* 배경보다 앞에 위치하도록 설정 */
+  position: relative; /* z-index를 적용하기 위해 position 설정 */
 }
 
 .description {
