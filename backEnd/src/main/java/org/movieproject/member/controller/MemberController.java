@@ -78,7 +78,7 @@ public class MemberController {
     }
 
     // 회원 정보 업데이트
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<?> update(@Valid @RequestBody MemberDTO memberDTO) {
         log.info("회원 정보 업데이트 시작 !!!"+memberDTO);
 
@@ -89,7 +89,7 @@ public class MemberController {
         }catch(Exception e){
             return ResponseEntity.badRequest().body("업데이트 실패하였습니다. !!!");
         }
-        return ResponseEntity.ok("회원 정보 업데이트가 성공하였습니다. !!!");
+        return ResponseEntity.ok("회원 정보 업데이트가 성공하였습니다. !!!"+memberDTO);
     }
 
     @GetMapping("/check_auth")
