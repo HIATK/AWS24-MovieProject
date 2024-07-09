@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import NowPlayingMovies from "@/(components)/NowPlayingMovies";
+import NowPlayingMovies from "@/(components)/NowplayMovies/NowPlayingMovies";
 
 export default function MoviePage() {
   const params = useParams();

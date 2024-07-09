@@ -1,23 +1,47 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "./Register.module.css";
+import styles from "./PostUp.module.css";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import axios from 'axios';
+import Modal from "../PostModal/PostModal";
 
-const Register = () => {
+const PostUp = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [file, setFile] = useState<File | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
+
   const movieTitle = ""; // API로부터 불러온 영화 제목
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    if(file) {
+      formData.append("files", file);
+    }
+
+    try {
+      const response = await axios.post("http://localhost:8000/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("파일 업로드 성공 : ", file);
+    } catch (error) {
+      console.error("파일 업로드 실패 : ", error);
+    }
+
+
     // 게시물 저장 로직
     console.log("Movie Title:", movieTitle);
     console.log("Title:", title);
     console.log("Content:", content);
     console.log("Rating:", rating);
+    console.log("File:", file);
   };
 
   const handleRating = (rate: number) => {
@@ -32,6 +56,12 @@ const Register = () => {
     setHoverRating(0);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
   const renderStars = () => {
     const stars = [];
     const effectiveRating = hoverRating || rating;
@@ -40,7 +70,7 @@ const Register = () => {
         stars.push(
           <FaStar
             key={i}
-            className={styles.star + " " + styles.starFilled}
+            className={`${styles.star} ${styles.starFilled}`}
             onMouseEnter={() => handleHover(i)}
             onMouseLeave={handleLeave}
             onClick={() => handleRating(i)}
@@ -50,7 +80,7 @@ const Register = () => {
         stars.push(
           <FaStarHalfAlt
             key={i}
-            className={styles.star + " " + styles.starHalf}
+            className={`${styles.star} ${styles.starHalf}`}
             onMouseEnter={() => handleHover(i - 0.5)}
             onMouseLeave={handleLeave}
             onClick={() => handleRating(i - 0.5)}
@@ -69,6 +99,14 @@ const Register = () => {
       }
     }
     return stars;
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -98,14 +136,24 @@ const Register = () => {
         </label>
         <label className={styles.fileUpload}>
           파일 첨부
-          <input type="file" style={{ display: "none" }} />
+          <input
+            type="file"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
         </label>
-        <button type="submit" className={styles.button}>
-          게시
-        </button>
+        <div className={styles.buttonContainer}>
+          <button type='submit' className={styles.button}>
+            게시
+          </button>
+          <button type="button" className={styles.button} onClick={openModal}>
+            Open Modal
+          </button>
+        </div>
       </form>
+      {isModalOpen && <Modal onClose={closeModal} />}
     </div>
   );
 };
 
-export default Register;
+export default PostUp;

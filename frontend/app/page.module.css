@@ -3,7 +3,7 @@
   display: flex;
   height: 100vh;
   background-color: #272727;
-  background-image: url("/toto.png"); /* 이미지 경로 설정 */
+  /* background-image: url("/toto.png"); 이미지 경로 설정 */
   background-size: cover;
   background-position: center;
   color: white;

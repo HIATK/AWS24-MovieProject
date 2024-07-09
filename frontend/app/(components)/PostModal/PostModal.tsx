@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "./Post.Modal.module.css";
+import styles from "./PostModal.module.css";
 import { motion } from "framer-motion";
 import { FaHeart } from "react-icons/fa";
 import { getMovieById } from "@/movieService";

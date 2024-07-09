@@ -1,4 +1,4 @@
-import PostUp from "@/(components)/PostUp";
+import PostUp from "@/(components)/PostUp/PostUp";
 import React from "react";
 
 const RegisterPage = () => {
