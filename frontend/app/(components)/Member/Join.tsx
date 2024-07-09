@@ -1,6 +1,7 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, {useState, ChangeEvent, FormEvent, useRef} from 'react';
 import styles from "./Join.module.css";
 import axios from 'axios';
+import Link from "next/link";
 
 interface FormData {
   memberEmail: string;
@@ -17,6 +18,7 @@ interface Errors {
 }
 
 const Join: React.FC = () => {
+  const joinButtonRef = useRef<HTMLButtonElement>(null);
   const [formData, setFormData] = useState<FormData>({
     memberEmail: '',
     memberPw: '',
@@ -26,14 +28,10 @@ const Join: React.FC = () => {
     memberNick: '',
     roleSet: ['GUEST'],
   });
-
   const [errors, setErrors] = useState<Errors>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({...formData, [e.target.name]: e.target.value,});
   };
 
   const validateForm = (): Errors => {
@@ -67,6 +65,7 @@ const Join: React.FC = () => {
           roleSet: ['GUEST'],
         });
         setErrors({});
+        joinButtonRef.current?.click();
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
           alert(error.response.data);
@@ -78,6 +77,7 @@ const Join: React.FC = () => {
   };
 
   return (
+  <div>
     <form onSubmit={handleSubmit} className={styles.formContainer}>
       <div>
         <input
@@ -133,7 +133,7 @@ const Join: React.FC = () => {
       </div>
       <div>
         <input
-          type="text"
+          type=""
           name="memberPhone"
           placeholder="Phone('-' 생략)"
           value={formData.memberPhone}
@@ -143,6 +143,10 @@ const Join: React.FC = () => {
       </div>
       <button type="submit">가입하기</button>
     </form>
+    <Link href='/member/login'>
+      <button ref={joinButtonRef} style={{ display: 'none' }} />
+    </Link>
+  </div>
   );
 };
 

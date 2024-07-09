@@ -21,10 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -78,7 +75,7 @@ public class MemberController {
     }
 
     // 회원 정보 업데이트
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<?> update(@Valid @RequestBody MemberDTO memberDTO) {
         log.info("회원 정보 업데이트 시작 !!!"+memberDTO);
 
@@ -86,10 +83,15 @@ public class MemberController {
             memberRepository.updateMember(passwordEncoder.encode(memberDTO.getMemberPw()),
                     memberDTO.getMemberName(), memberDTO.getMemberPhone(),
                     memberDTO.getMemberNick(), memberDTO.getMemberEmail());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "회원 정보 업데이트가 성공하였습니다. !!!");
+            response.put("member", memberDTO);
+
+            return ResponseEntity.ok(response);
         }catch(Exception e){
             return ResponseEntity.badRequest().body("업데이트 실패하였습니다. !!!");
         }
-        return ResponseEntity.ok("회원 정보 업데이트가 성공하였습니다. !!!");
     }
 
     @GetMapping("/check_auth")
