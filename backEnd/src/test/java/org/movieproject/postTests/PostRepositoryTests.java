@@ -44,7 +44,7 @@ public class PostRepositoryTests {
         Long postId = 50L;
 
         Optional<Post> result = postRepository.findById(postId);
-        Posts posts = result.orElseThrow();
+        Post post = result.orElseThrow();
 
         log.info(post);
     }
@@ -94,7 +94,7 @@ public class PostRepositoryTests {
         //  Page order by postId desc
         Pageable pageable = PageRequest.of(1, 5, Sort.by("postId").descending());
 
-        postsRepository.search1(pageable);
+        postRepository.search1(pageable);
     }
 
     @Test
