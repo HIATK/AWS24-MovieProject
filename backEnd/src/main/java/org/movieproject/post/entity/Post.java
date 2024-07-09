@@ -1,10 +1,9 @@
-package org.movieproject.posts.entity;
+package org.movieproject.post.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.movieproject.movie.entity.Movie;
 import org.movieproject.member.Entity.Member;
-import org.movieproject.upload.entity.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +13,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString (exclude = {"movie", "members", "images"})
-public class Posts extends BaseEntity{
+@ToString (exclude = {"movie", "members"})
+public class Post extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,13 +33,13 @@ public class Posts extends BaseEntity{
     private Movie movie;
 
     //  연관관계 구성
-    @OneToMany(mappedBy = "posts" , cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "post" , cascade = {CascadeType.ALL}, orphanRemoval = true)
     @Builder.Default
     private List<Member> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post" , cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @Builder.Default
-    private List<Image> images = new ArrayList<>();
+//    @OneToMany(mappedBy = "post" , cascade = {CascadeType.ALL}, orphanRemoval = true)
+//    @Builder.Default
+//    private List<Image> images = new ArrayList<>();
 
     //  Entity 내에서 변경할 수 있는 내용들을 메소드로 구성
     public void changeTitle(String postTitle){this.postTitle = postTitle;}

@@ -4,13 +4,13 @@ package org.movieproject.movie.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
-import org.movieproject.posts.entity.Posts;
+import org.movieproject.post.entity.Post;
 
 import java.util.List;
 
 @Entity
 @Data
-@ToString(exclude = "posts")
+@ToString(exclude = "post")
 public class Movie {
 
     @Id
@@ -21,5 +21,5 @@ public class Movie {
     private String movieTitle;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Posts> posts;
+    private List<Post> post;
 }

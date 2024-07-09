@@ -1,0 +1,40 @@
+.postsList {
+  width: 100%;
+}
+
+.post {
+  background-color: #444;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.postHeader {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.postContent {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.expanded .postContent {
+  white-space: normal;
+}
+
+.star {
+  font-size: 1.5rem;
+  color: yellow;
+  margin-right: 0.2rem;
+}

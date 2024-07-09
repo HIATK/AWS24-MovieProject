@@ -1,7 +1,6 @@
-package org.movieproject.posts.dto;
+package org.movieproject.post.dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 

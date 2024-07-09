@@ -1,12 +1,9 @@
-package org.movieproject.posts.repository.search;
+package org.movieproject.post.repository.search;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-import org.movieproject.posts.dto.PageRequestDTO;
-import org.movieproject.posts.dto.PostsDTO;
-import org.movieproject.posts.entity.Posts;
-import org.movieproject.posts.entity.QPosts;
+import org.movieproject.post.entity.Post;
+import org.movieproject.post.entity.QPost;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,32 +11,34 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import java.util.List;
 
+import static org.movieproject.post.entity.QPost.post;
+
 public class PostSearchImpl extends QuerydslRepositorySupport implements PostSearch {
     //  PostSearchImpl :  QuerydslRepositorySupport 상속받고 PostSearch 인터페이스 구현
-    public PostSearchImpl() {super(Posts.class);}
+    public PostSearchImpl() {super(Post.class);}
 
     @Override
-    public Page<Posts> search1(Pageable pageable) {
+    public Page<Post> search1(Pageable pageable) {
 
         //  Q도메인 생성
-        QPosts posts = QPosts.posts;
+        QPost post = QPost.post;
 
         //  Query 작성
-        JPQLQuery<Posts> query = from(posts);       //  select ... from posts
+        JPQLQuery<Post> query = from(post);       //  select ... from posts
 
         //  BooleanBuilder() 사용
         BooleanBuilder booleanBuilder = new BooleanBuilder();       //   (
 
-        booleanBuilder.or(posts.postTitle.contains(""));    //  title like
-        booleanBuilder.or(posts.postContent.contains(""));  //  content like
+        booleanBuilder.or(post.postTitle.contains(""));    //  title like
+        booleanBuilder.or(post.postContent.contains(""));  //  content like
 
         query.where(booleanBuilder);        // )
-        query.where(posts.postId.gt(0L));   //  postId > 0
+        query.where(post.postId.gt(0L));   //  postId > 0
 
         //  Paging
         this.getQuerydsl().applyPagination(pageable, query);
 
-        List<Posts> title = query.fetch();
+        List<Post> title = query.fetch();
 
         long count = query.fetchCount();
 
@@ -47,11 +46,11 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
     }
 
     @Override
-    public Page<Posts> searchAll(String[] types, String keyword, Pageable pageable) {
+    public Page<Post> searchAll(String[] types, String keyword, Pageable pageable) {
 
-        QPosts posts = QPosts.posts;
+        QPost posts = QPost.post;
 
-        JPQLQuery<Posts> query = from(posts);
+        JPQLQuery<Post> query = from(post);
 
         if( ( types != null && types.length > 0 ) && keyword != null) { //  검색 조건 및 키워드가 있는 경우
             BooleanBuilder booleanBuilder = new BooleanBuilder();   //  (
@@ -79,7 +78,7 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
         //  paging
         this.getQuerydsl().applyPagination(pageable, query);
 
-        List<Posts> list = query.fetch();
+        List<Post> list = query.fetch();
 
         long count = query.fetchCount();
 
