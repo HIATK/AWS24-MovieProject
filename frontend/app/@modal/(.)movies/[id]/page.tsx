@@ -1,17 +1,12 @@
-// app/@modal/movies/[id]/page.tsx
 'use client'
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from "react";
-import styles from '@/(components)/PostModal/PostModal.module.css';
+import styles from './PostModal.module.css';
 import { motion } from "framer-motion";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { getMovieById } from "@/movieService";
-
-interface ModalProps {
-    movieId: string;
-    onClose: () => void;
-}
+import axios from 'axios';
 
 interface MovieDetails {
     id: string;
@@ -24,15 +19,21 @@ interface MovieDetails {
 }
 
 const MovieModal: React.FC = () => {
+    const router = useRouter();
     const params = useParams();
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
     const [movie, setMovie] = useState<MovieDetails | null>(null);
     const [liked, setLiked] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [postTitle, setPostTitle] = useState("");
+    const [postContent, setPostContent] = useState("");
+    const [postRating, setPostRating] = useState(0);
+    const [postHoverRating, setPostHoverRating] = useState(0);
+    const [file, setFile] = useState<File | null>(null);
 
     const closeModal = () => {
-        window.history.back();
+        router.back();
     };
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -63,6 +64,75 @@ const MovieModal: React.FC = () => {
         setLiked(!liked);
     };
 
+    const handlePostSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        if (file) {
+            formData.append("files", file);
+        }
+
+        try {
+            await axios.post("http://localhost:8000/upload", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            console.log("파일 업로드 성공 : ", file);
+        } catch (error) {
+            console.error("파일 업로드 실패 : ", error);
+        }
+
+        console.log("Post submitted:", { postTitle, postContent, postRating, file });
+        // 여기에 게시글 제출 로직 추가
+        // 게시글 목록을 새로고침하거나 업데이트하는 로직 추가
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const renderStars = () => {
+        const stars = [];
+        const effectiveRating = postHoverRating || postRating;
+        for (let i = 1; i <= 5; i++) {
+            if (effectiveRating >= i) {
+                stars.push(
+                    <FaStar
+                        key={i}
+                        className={`${styles.star} ${styles.starFilled}`}
+                        onMouseEnter={() => setPostHoverRating(i)}
+                        onMouseLeave={() => setPostHoverRating(0)}
+                        onClick={() => setPostRating(i)}
+                    />
+                );
+            } else if (effectiveRating >= i - 0.5) {
+                stars.push(
+                    <FaStarHalfAlt
+                        key={i}
+                        className={`${styles.star} ${styles.starHalf}`}
+                        onMouseEnter={() => setPostHoverRating(i - 0.5)}
+                        onMouseLeave={() => setPostHoverRating(0)}
+                        onClick={() => setPostRating(i - 0.5)}
+                    />
+                );
+            } else {
+                stars.push(
+                    <FaRegStar
+                        key={i}
+                        className={styles.star}
+                        onMouseEnter={() => setPostHoverRating(i)}
+                        onMouseLeave={() => setPostHoverRating(0)}
+                        onClick={() => setPostRating(i)}
+                    />
+                );
+            }
+        }
+        return stars;
+    };
+
     if (isLoading) {
         return <div className={styles.modalOverlay}>Loading...</div>;
     }
@@ -72,9 +142,7 @@ const MovieModal: React.FC = () => {
     }
 
     if (!movie) {
-        return (
-            <div className={styles.modalOverlay}>Movie information not available</div>
-        );
+        return <div className={styles.modalOverlay}>Movie information not available</div>;
     }
 
     return (
@@ -84,11 +152,9 @@ const MovieModal: React.FC = () => {
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                onClick={(e) => e.stopPropagation()} // This stops the click from propagating to the overlay
+                onClick={(e) => e.stopPropagation()}
             >
-                <button className={styles.closeButton} onClick={closeModal}>
-                    X
-                </button>
+                <button className={styles.closeButton} onClick={closeModal}>X</button>
                 <div className={styles.content}>
                     <div className={styles.header}>
                         <img
@@ -113,13 +179,43 @@ const MovieModal: React.FC = () => {
                             </button>
                         </div>
                     </div>
-                    <div className={styles.posts}>
-                        <div className={styles.commentHeader}>
-                            게시글
-                            <button className={styles.writeButton}>새 게시글</button>
+                    <form onSubmit={handlePostSubmit} className={styles.form}>
+                        <div className={styles.label}>
+                            영화 제목:
+                            <div>{movie.title}</div>
                         </div>
-                        {/* 여기에 게시글 목록을 추가할 수 있습니다 */}
-                    </div>
+                        <div className={styles.starRating}>{renderStars()}</div>
+                        <label className={styles.label}>
+                            제목
+                            <input
+                                type="text"
+                                value={postTitle}
+                                onChange={(e) => setPostTitle(e.target.value)}
+                                className={styles.input}
+                            />
+                        </label>
+                        <label className={styles.label}>
+                            내용
+                            <textarea
+                                value={postContent}
+                                onChange={(e) => setPostContent(e.target.value)}
+                                className={styles.textarea}
+                            />
+                        </label>
+                        <label className={styles.fileUpload}>
+                            파일 첨부
+                            <input
+                                type="file"
+                                onChange={handleFileChange}
+                                style={{ display: "none" }}
+                            />
+                        </label>
+                        <div className={styles.buttonContainer}>
+                            <button type='submit' className={styles.button}>
+                                게시
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </motion.div>
         </div>
