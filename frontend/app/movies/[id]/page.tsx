@@ -1,10 +1,10 @@
-"use client";
-
-import { useParams } from "next/navigation";
-import NowPlayingMovies from "@/(components)/NowplayMovies/NowPlayingMovies";
-
-export default function MoviePage() {
-  const params = useParams();
-
-  return <NowPlayingMovies initialMovieId={params.id as string} />;
-}
+// app/movies/[id]/page.tsx
+export default function MoviePage({ params }: { params: { id: string } }) {
+    return (
+      <div>
+        <h1>Movie ID:ttttt {params.id}</h1>
+        <p>Details about movie {params.id}.</p>
+      </div>
+    );
+  }
+  
