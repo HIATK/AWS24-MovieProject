@@ -1,7 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import styles from "./Join.module.css";
 import axios from 'axios';
-import axiosInstance from '../axiosInstance';
 
 interface FormData {
   memberEmail: string;
@@ -19,58 +18,62 @@ interface Errors {
 
 const Join: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-      memberEmail: '',
-      memberPw: '',
-      memberPwConfirm: '',
-      memberName: '',
-      memberPhone: '',
-      memberNick: '',
-      roleSet: ['GUEST'],  // roleSet 값을 GUEST로 설정
+    memberEmail: '',
+    memberPw: '',
+    memberPwConfirm: '',
+    memberName: '',
+    memberPhone: '',
+    memberNick: '',
+    roleSet: ['GUEST'],
   });
 
   const [errors, setErrors] = useState<Errors>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      setFormData({
-          ...formData,
-          [e.target.name]: e.target.value
-      });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const validateForm = (): Errors => {
-      const newErrors: Errors = {};
-      if (formData.memberPw !== formData.memberPwConfirm) {
-          newErrors.memberPwConfirm = '비밀번호가 일치하지 않습니다. !!!';
-      }
-      return newErrors;
+    const newErrors: Errors = {};
+    if (formData.memberPw !== formData.memberPwConfirm) {
+      newErrors.memberPwConfirm = '비밀번호가 일치하지 않습니다. !!!';
+    }
+    return newErrors;
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
+      setErrors(validationErrors);
     } else {
-        try {
-            const response = await axiosInstance.post('/api/member/join', formData);
-            alert(response.data);
-            setFormData({
-                memberEmail: '',
-                memberPw: '',
-                memberPwConfirm: '',
-                memberName: '',
-                memberPhone: '',
-                memberNick: '',
-                roleSet: ['GUEST'],
-            });
-            setErrors({});
-        } catch (error) {
-            if (axios.isAxiosError(error) && error.response) {
-                alert(error.response.data);
-            } else {
-                alert('An unexpected error occurred');
-            }
+      try {
+        const response = await axios.post('/api/member/join', formData, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        alert(response.data);
+        setFormData({
+          memberEmail: '',
+          memberPw: '',
+          memberPwConfirm: '',
+          memberName: '',
+          memberPhone: '',
+          memberNick: '',
+          roleSet: ['GUEST'],
+        });
+        setErrors({});
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          alert(error.response.data);
+        } else {
+          alert('An unexpected error occurred');
         }
+      }
     }
   };
 
