@@ -98,11 +98,22 @@
   border-radius: 4px;
   background-color: #555;
   color: #fff;
+  transition: height 0.3s ease, padding 0.3s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  height: 2.5rem; /* Adjust the height for the input */
+  padding: 1rem;
 }
 
 .textarea {
-  height: 200px;
+  height: 2rem; /* Initial height for the textarea */
   resize: none;
+}
+
+.textarea:focus {
+  height: 10rem; /* Expanded height for the textarea when focused */
 }
 
 .button {
