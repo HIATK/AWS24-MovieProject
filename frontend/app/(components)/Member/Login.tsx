@@ -33,6 +33,7 @@ const Login: React.FC = () => {
         alert('로그인 성공!');
 
         setIsLoggedIn(true);
+        loginButtonRef.current?.click();
 
         // 리디렉션하거나 추가 동작을 수행할 수 있습니다.
       } else if (response.status === 401) {

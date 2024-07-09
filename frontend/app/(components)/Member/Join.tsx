@@ -1,6 +1,7 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, {useState, ChangeEvent, FormEvent, useRef} from 'react';
 import styles from "./Join.module.css";
 import axios from 'axios';
+import Link from "next/link";
 
 interface FormData {
   memberEmail: string;
@@ -17,6 +18,7 @@ interface Errors {
 }
 
 const Join: React.FC = () => {
+  const joinButtonRef = useRef<HTMLButtonElement>(null);
   const [formData, setFormData] = useState<FormData>({
     memberEmail: '',
     memberPw: '',
@@ -67,6 +69,7 @@ const Join: React.FC = () => {
           roleSet: ['GUEST'],
         });
         setErrors({});
+        joinButtonRef.current?.click();
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
           alert(error.response.data);
@@ -78,6 +81,7 @@ const Join: React.FC = () => {
   };
 
   return (
+  <div>
     <form onSubmit={handleSubmit} className={styles.formContainer}>
       <div>
         <input
@@ -143,6 +147,10 @@ const Join: React.FC = () => {
       </div>
       <button type="submit">가입하기</button>
     </form>
+    <Link href='/member/login'>
+      <button ref={joinButtonRef} style={{ display: 'none' }} />
+    </Link>
+  </div>
   );
 };
 
