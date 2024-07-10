@@ -29,7 +29,6 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
         //  BooleanBuilder() 사용
         BooleanBuilder booleanBuilder = new BooleanBuilder();       //   (
 
-        booleanBuilder.or(post.postTitle.contains(""));    //  title like
         booleanBuilder.or(post.postContent.contains(""));  //  content like
 
         query.where(booleanBuilder);        // )
@@ -45,45 +44,45 @@ public class PostSearchImpl extends QuerydslRepositorySupport implements PostSea
         return null;
     }
 
-    @Override
-    public Page<Post> searchAll(String[] types, String keyword, Pageable pageable) {
-
-        QPost posts = QPost.post;
-
-        JPQLQuery<Post> query = from(post);
-
-        if( ( types != null && types.length > 0 ) && keyword != null) { //  검색 조건 및 키워드가 있는 경우
-            BooleanBuilder booleanBuilder = new BooleanBuilder();   //  (
-
-            for(String type : types) {
-                switch (type) {
-                    case "title":
-                        booleanBuilder.or(posts.postTitle.contains(keyword));
-                        break;
-                    case "content":
-                        booleanBuilder.or(posts.postContent.contains(keyword));
-                        break;
-                    case "writer":
-                        booleanBuilder.or(posts.writer.contains(keyword));
-                        break;
-                }
-            }   //  end for
-            query.where(booleanBuilder);    //  )
-
-        }   //  end if
-
-        //  postId > 0
-        query.where(posts.postId.gt(0L));
-
-        //  paging
-        this.getQuerydsl().applyPagination(pageable, query);
-
-        List<Post> list = query.fetch();
-
-        long count = query.fetchCount();
-
-        //  Page<T> 형식으로 변환 : Page<Posts>
-        //  PageImpl을 통해서 반환 : list - 실제 목록 데이터, pageable, total - 전체 개수)
-        return new PageImpl<>(list, pageable, count);
-    }
+//    @Override
+//    public Page<Post> searchAll(String[] types, String keyword, Pageable pageable) {
+//
+//        QPost posts = QPost.post;
+//
+//        JPQLQuery<Post> query = from(post);
+//
+//        if( ( types != null && types.length > 0 ) && keyword != null) { //  검색 조건 및 키워드가 있는 경우
+//            BooleanBuilder booleanBuilder = new BooleanBuilder();   //  (
+//
+//            for(String type : types) {
+//                switch (type) {
+////                    case "title":
+////                        booleanBuilder.or(posts.postTitle.contains(keyword));
+////                        break;
+//                    case "content":
+//                        booleanBuilder.or(posts.postContent.contains(keyword));
+//                        break;
+//                    case "writer":
+//                        booleanBuilder.or(posts.writer.contains(keyword));
+//                        break;
+//                }
+//            }   //  end for
+//            query.where(booleanBuilder);    //  )
+//
+//        }   //  end if
+//
+//        //  postId > 0
+//        query.where(posts.postId.gt(0L));
+//
+//        //  paging
+//        this.getQuerydsl().applyPagination(pageable, query);
+//
+//        List<Post> list = query.fetch();
+//
+//        long count = query.fetchCount();
+//
+//        //  Page<T> 형식으로 변환 : Page<Posts>
+//        //  PageImpl을 통해서 반환 : list - 실제 목록 데이터, pageable, total - 전체 개수)
+//        return new PageImpl<>(list, pageable, count);
+//    }
 }

@@ -10,5 +10,5 @@ public interface PostSearch {
     Page<Post> search1(Pageable pageable);
 
     //  title, content 내용을 검색
-    Page<Post> searchAll(String[] types, String keyword, Pageable pageable);
+//    Page<Post> searchAll(String[] types, String keyword, Pageable pageable);
 }
