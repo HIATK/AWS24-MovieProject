@@ -1,14 +1,15 @@
 'use client'
-
-import { usePathname } from 'next/navigation';
 import React, { useState, useEffect } from "react";
+import { usePathname } from 'next/navigation';
 import styles from './Modal.module.css';
 import { motion } from "framer-motion";
 import { getMovieById } from "@/MovieService";
+import { getPostsByMovieId } from "@/PostService";
+import { submitPost } from "@/PostService";
 import MovieHeader from '@/(components)/MovieHeader';
 import PostList from '@/(components)/PostList';
 import RatingStars from '@/(components)/RatingStars';
-import { getPostsByMovieId } from "@/PostService";
+import axios from 'axios';
 
 interface MovieDetails {
     id: string;
@@ -21,23 +22,24 @@ interface MovieDetails {
 }
 
 interface PostDetails {
-    postId: number;
+    movieId : string;
+    postId: string;
     postContent: string;
     ratingStar: number;
 }
 
 const MovieModal: React.FC = () => {
     const pathname = usePathname();
-    const id = pathname.split('/').pop(); // Assuming the ID is at the end of the URL path
+    const id = parseInt(pathname.split('/').pop() || '0',10);
     const [movie, setMovie] = useState<MovieDetails | null>(null);
     const [liked, setLiked] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [postContent, setPostContent] = useState("");
-    const [postRating, setPostRating] = useState(0);
+    const [postRating, setPostRating] = useState(1);
     const [postHoverRating, setPostHoverRating] = useState(0);
     const [showRating, setShowRating] = useState(false);
-    const [posts, setPosts] = useState<PostDetails[]>([]);
+    const [posts, setPost] = useState<PostDetails[]>([]);
 
     const closeModal = () => {
         window.history.back();
@@ -56,8 +58,9 @@ const MovieModal: React.FC = () => {
                 setError(null);
                 const details = await getMovieById(id!);
                 setMovie(details);
+                // 이거 써서 새로고침같은거 사용
                 const fetchedPosts = await getPostsByMovieId(id!);
-                setPosts(fetchedPosts);
+                setPost(fetchedPosts);
             } catch (error) {
                 console.error("Error fetching movie details:", error);
                 setError("Failed to load movie details. Please try again.");
@@ -75,7 +78,19 @@ const MovieModal: React.FC = () => {
 
     const handlePostSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Post submitted:", { postContent, postRating });
+        if (id === 0) {
+            console.error("유효하지 않은 영화 ID");
+            return;
+        }
+        try {
+            const newPost = await submitPost(postContent, postRating, id);
+            setPost(prevPosts => [newPost, ...prevPosts]); // 새 게시글을 목록의 맨 앞에 추가
+            setPostContent(""); // 텍스트 입력란 비우기
+            setPostRating(1); // 평점 초기화
+            setShowRating(false); // 평점 입력 UI 숨기기
+        } catch (error) {
+            console.error("전송에러:", error);
+        }
     };
 
     if (isLoading) {
@@ -107,26 +122,27 @@ const MovieModal: React.FC = () => {
                             <textarea
                                 value={postContent}
                                 onChange={(e) => setPostContent(e.target.value)}
-                                className={styles.textarea}
+                                className={`${styles.textarea} ${postContent ? styles.expandedTextarea : ''}`}
                                 onFocus={() => setShowRating(true)}
-                                onBlur={() => setShowRating(false)}
                             />
                         </label>
-                        {showRating && (
-                            <div className={styles.ratingAndButton}>
-                                <RatingStars 
-                                    rating={postRating} 
-                                    hoverRating={postHoverRating} 
-                                    onHover={setPostHoverRating} 
-                                    onClick={setPostRating} 
-                                />
-                                <div className={styles.buttonContainer}>
-                                    <button type='submit' className={styles.button}>
-                                        게시
-                                    </button>
-                                </div>
-                            </div>
-                        )}
+                        <div className={styles.ratingAndButton}>
+                            {showRating && (
+                                <>
+                                    <RatingStars
+                                        rating={postRating}
+                                        hoverRating={postHoverRating}
+                                        onHover={setPostHoverRating}
+                                        onClick={setPostRating}
+                                    />
+                                    <div className={styles.buttonContainer}>
+                                        <button type='submit' className={styles.button}>
+                                            게시
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </form>
                     <div className={styles.postListWrapper}>
                         <PostList posts={posts} />
