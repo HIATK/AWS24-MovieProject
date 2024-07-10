@@ -27,7 +27,6 @@ public class PostRepositoryTests {
     public void testInsertPost() {
         IntStream.rangeClosed(52, 150).forEach(i -> {
             Post post = Post.builder()
-                    .postTitle("Test Posts ..." + i)
                     .postContent("Test Posts ..." + i)
                     .writer("writer"+(i%10))
                     .ratingStar((int)(Math.random()*5)+1)
@@ -41,7 +40,7 @@ public class PostRepositoryTests {
     //  게시물 조회 테스트
     @Test
     public void testSelectPost() {
-        Long postId = 50L;
+        int postId = 50;
 
         Optional<Post> result = postRepository.findById(postId);
         Post post = result.orElseThrow();
@@ -52,12 +51,11 @@ public class PostRepositoryTests {
     //  게시물 수정 테스트
     @Test
     public void testUpdatePost() {
-        Long postId = 50L;
+        int postId = 50;
 
         Optional<Post> result = postRepository.findById(postId);
         Post post = result.orElseThrow();
 
-        post.changeTitle("Update title !!");
         post.changeContent("Update content ~~");
         post.changeRatingStar(3);
         postRepository.save(post);
@@ -65,7 +63,7 @@ public class PostRepositoryTests {
 
     //  게시물 삭제 테스트
     @Test
-    public void testDeletePost() {postRepository.deleteById(50L);}
+    public void testDeletePost() {postRepository.deleteById(50);}
 
     //  페이징 처리 테스트
     //  Pageable 이용하여 값을 넘기고 반환 타입은 Page<T>를 이용

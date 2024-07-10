@@ -3,6 +3,8 @@ package org.movieproject.post.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.movieproject.movie.entity.Movie;
+import org.movieproject.movie.repository.MovieRepository;
 import org.movieproject.post.dto.PageRequestDTO;
 import org.movieproject.post.dto.PageResponseDTO;
 import org.movieproject.post.dto.PostDTO;
@@ -22,17 +24,26 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final MovieRepository movieRepository;
     private final ModelMapper modelMapper;
 
     //  게시물 등록 기능
     @Override
-    public Integer regPost(PostDTO postsDTO) {
+    public void regPost(PostDTO postDTO) {
+        // Movie 객체를 가져옴
+        Movie movie = movieRepository.findMovieByMovieId(postDTO.getMovieId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid movie ID"));
 
-        Post post = modelMapper.map(postsDTO, Post.class);
-        Integer postId = postRepository.save(post).getPostId();
+        // PostDTO를 Post 객체로 변환
+        Post post = modelMapper.map(postDTO, Post.class);
 
-        return postId;
+        // Post 객체에 Movie 설정
+        post.setMovie(movie);
+
+        // Post 객체 저장
+        postRepository.save(post);
     }
+
 
     //  게시물 삭제 기능
     @Override

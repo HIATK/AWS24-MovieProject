@@ -95,10 +95,10 @@ public class MemberController {
     }
 
     @GetMapping("/check_auth")
-    public ResponseEntity<Object> checkAuth() {
+    public ResponseEntity<?> checkAuth() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated()) {
+            if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증되지 않은 사용자입니다.");
             }
 
@@ -106,7 +106,18 @@ public class MemberController {
             Set<String> roles = authorities.stream()
                     .map(grantedAuthority -> grantedAuthority.getAuthority().replace("ROLE_", ""))
                     .collect(Collectors.toSet());
-            return ResponseEntity.ok(roles);
+
+            // 사용자 닉네임 가져오기
+            String memberNick = null;
+            if (authentication.getPrincipal() instanceof UserDetails userDetails) {
+                memberNick = userDetails.getUsername(); // 혹은 사용자의 닉네임을 반환하는 다른 메서드를 호출
+            }
+
+            Map<String, Object> authInfo = new HashMap<>();
+            authInfo.put("roles", roles);
+            authInfo.put("memberNick", memberNick);
+
+            return ResponseEntity.ok(authInfo);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("체크어쓰 실패");

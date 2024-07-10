@@ -1,11 +1,13 @@
-package org.movieproject.service;
+package org.movieproject.movie.service;
 
-import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public interface MovieService {
-    Mono<List<Map<String, String>>> getNowPlayingMovies();
+    CompletableFuture<List<Map<String, String>>> getNowPlayingMovies();
 
-    Mono<Map<String, String>> getMovieById(String id); // 새로운 메서드 추가
+    CompletableFuture<Map<String, String>> getMovieById(String id);
+
+    CompletableFuture<List<Map<String, String>>> fetchAndSaveNowPlayingMovies();
 }
