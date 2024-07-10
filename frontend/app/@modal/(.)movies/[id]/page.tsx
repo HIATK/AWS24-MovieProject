@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import styles from './Modal.module.css';
 import { motion } from "framer-motion";
-import { getMovieById } from "@/MovieService";
+import { getMovieById } from "@/movieService";
 import { getPostsByMovieId } from "@/PostService";
 import { submitPost } from "@/PostService";
 import MovieHeader from '@/(components)/MovieHeader';

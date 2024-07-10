@@ -21,7 +21,7 @@ public class PostController {
     private final PostService postsService;
 
 
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Integer> register(@RequestBody PostDTO postsDTO) {
         log.info(postsDTO);
         Integer postId = postsService.regPost(postsDTO);
