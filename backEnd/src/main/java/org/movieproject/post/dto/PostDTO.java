@@ -1,5 +1,6 @@
 package org.movieproject.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,13 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostDTO {
 
-    private int postId;
-
-    private String writer;
-
-    @NotEmpty
-    @Size(min = 5, max = 50)
-    private String postTitle;
+    private Integer postId;
 
     @NotEmpty
     private String postContent;
@@ -34,8 +30,8 @@ public class PostDTO {
 
     private Integer movieId;
 
-    //  등록, 수정 날짜 관련
-    private LocalDateTime regDate;
-    private LocalDateTime modDate;
+    //  등록 날짜 (문자열 형태)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH-mm", timezone = "Asia/Seoul")
+    private LocalDate regDate;
 
 }

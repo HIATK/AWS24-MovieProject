@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Integer>, PostSearch {
 
-    @Query("select p from Post p where p.postTitle like concat('%', :keyword, '%')")
-    Page<Post> findKeyword(String keyword, Pageable pageable);
+//    @Query("select p from Post p where p.postTitle like concat('%', :keyword, '%')")
+//    Page<Post> findKeyword(String keyword, Pageable pageable);
 
     @Query("SELECT p FROM Post p WHERE p.movie.movieId = :movieId")
     List<Post> findPostsByMovieId(Integer movieId);

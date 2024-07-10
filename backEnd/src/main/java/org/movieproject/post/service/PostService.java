@@ -15,7 +15,7 @@ public interface PostService {
     void removePost(Integer postId);
 
     //  Paging
-    PageResponseDTO<PostDTO> list (PageRequestDTO pageRequestDTO);
+//    PageResponseDTO<PostDTO> list (PageRequestDTO pageRequestDTO);
 
     // 영화 ID로 포스트 찾기
     List<PostDTO> getPostByMovieId(Integer movieId);

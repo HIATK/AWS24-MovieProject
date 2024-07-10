@@ -39,25 +39,25 @@ public class PostServiceImpl implements PostService {
     public void removePost(Integer postId) {postRepository.deleteById(postId);}
 
     //  페이징 처리 기능
-    @Override
-    public PageResponseDTO<PostDTO> list(PageRequestDTO pageRequestDTO) {
-
-        String[] types = pageRequestDTO.getTypes();
-        String keyword = pageRequestDTO.getKeyword();
-        Pageable pageable = pageRequestDTO.getPageable("postId");
-        Page<Post> result = postRepository.searchAll(types,keyword,pageable);
-
-        //  변환 Posts -> PostsDTO
-        List<PostDTO> dtoList = result.getContent().stream()
-                .map(post -> modelMapper.map(post, PostDTO.class))
-                .collect(Collectors.toList());
-
-        return PageResponseDTO.<PostDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .dtoList(dtoList)
-                .total((int) result.getTotalElements())
-                .build();
-    }
+//    @Override
+//    public PageResponseDTO<PostDTO> list(PageRequestDTO pageRequestDTO) {
+//
+//        String[] types = pageRequestDTO.getTypes();
+//        String keyword = pageRequestDTO.getKeyword();
+//        Pageable pageable = pageRequestDTO.getPageable("postId");
+//        Page<Post> result = postRepository.searchAll(types,keyword,pageable);
+//
+//        //  변환 Posts -> PostsDTO
+//        List<PostDTO> dtoList = result.getContent().stream()
+//                .map(post -> modelMapper.map(post, PostDTO.class))
+//                .collect(Collectors.toList());
+//
+//        return PageResponseDTO.<PostDTO>withAll()
+//                .pageRequestDTO(pageRequestDTO)
+//                .dtoList(dtoList)
+//                .total((int) result.getTotalElements())
+//                .build();
+//    }
 
     @Override
     public List<PostDTO> getPostByMovieId(Integer movieId) {

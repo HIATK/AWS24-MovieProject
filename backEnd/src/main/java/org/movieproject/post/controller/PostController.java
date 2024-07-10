@@ -36,8 +36,8 @@ public class PostController {
     }
 
     //  검색 조건과 페이징 처리
-    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PageResponseDTO<PostDTO> list(PageRequestDTO pageRequestDTO) {return postsService.list(pageRequestDTO);}
+//    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public PageResponseDTO<PostDTO> list(PageRequestDTO pageRequestDTO) {return postsService.list(pageRequestDTO);}
 
     @GetMapping("/movie/{movieId}")
     public List<PostDTO> getPostByMovieId(@PathVariable("movieId") Integer   movieId) {
