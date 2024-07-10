@@ -8,9 +8,9 @@ export const SidebarContainer = styled.div<StyledProps>`
   position: fixed;
   top: 0;
   left: 0;
-  width: ${({ $isOpen }) => ($isOpen ? '150px' : '60px')};
+  width: ${({$isOpen}) => ($isOpen ? '150px' : '60px')};
   height: 100vh;
-  background-color: rgba(33, 33, 33, 0.87);
+  background-color: rgba(33, 33, 33, 0.53);
   color: #5fbebb;
   transition: width 0.3s ease;
   z-index: 1000;
@@ -36,7 +36,7 @@ export const MenuItemWrapper = styled.li<StyledProps>`
   cursor: pointer;
 
   &:hover {
-    background-color: ${({ $isOpen }) => ($isOpen ? 'rgba(255, 255, 255, 0.1)' : 'transparent')};
+    background-color: ${({ $isOpen }) => ($isOpen ? 'rgba(255,255,255,0.03)' : 'transparent')};
   }
 `;
 

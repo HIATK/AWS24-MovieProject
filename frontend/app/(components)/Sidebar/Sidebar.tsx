@@ -18,6 +18,7 @@ import {
   HoverText,
   SettingsItemWrapper
 } from './SidebarStyles';
+import SearchBar from "@/(components)/SearchBar/SearchBar";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -72,6 +73,7 @@ const SidebarClient: React.FC = () => {
       <MenuList>
         {menuItems.map((item, index) => (
           <MenuItemWrapper key={index} $isOpen={isOpen}>
+
             <Link href={item.href}>
               <MenuLink>
                 <Icon>{item.icon}</Icon>
@@ -81,6 +83,7 @@ const SidebarClient: React.FC = () => {
             <HoverText $isOpen={isOpen}>{item.text}</HoverText>
           </MenuItemWrapper>
         ))}
+
       </MenuList>
       <SettingsItemWrapper $isOpen={isOpen}>
         {isLoggedIn ? (
@@ -97,8 +100,10 @@ const SidebarClient: React.FC = () => {
               <MenuText $isOpen={isOpen}>{settingsItem.text}</MenuText>
             </MenuLink>
           </Link>
+
         )}
         <HoverText $isOpen={isOpen}>{isLoggedIn ? settingsItem2.text : settingsItem.text}</HoverText>
+
       </SettingsItemWrapper>
     </SidebarContainer>
   );
