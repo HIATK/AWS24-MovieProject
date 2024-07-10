@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import styles from './Login.module.css';
 import Link from 'next/link';
-import { useAuth } from '../util/AuthContext';
+import { useAuth } from '../../(context)/AuthContext';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');

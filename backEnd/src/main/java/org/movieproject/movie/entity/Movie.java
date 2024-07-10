@@ -2,20 +2,21 @@ package org.movieproject.movie.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.movieproject.post.entity.Post;
 
 import java.util.List;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString(exclude = "post")
 public class Movie {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int  movieId;
+    private Integer movieId;
 
     @Column(nullable = false)
     private String movieTitle;

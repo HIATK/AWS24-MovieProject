@@ -12,14 +12,13 @@
   transition: all 0.3s ease;
   overflow: hidden;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
-.postHeader {
+.postHeader, .postBody {
   display: flex;
   align-items: center;
-  margin-right: 1rem;
 }
 
 .postContent {
@@ -37,4 +36,8 @@
   font-size: 1.5rem;
   color: yellow;
   margin-right: 0.2rem;
+}
+
+.postDate {
+  padding-left: 1rem; /* Ensure some spacing between content and date */
 }

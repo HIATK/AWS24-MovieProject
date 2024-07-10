@@ -7,7 +7,7 @@ import { IoHomeOutline, IoStatsChartOutline } from 'react-icons/io5';
 import { BiLink } from 'react-icons/bi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import Link from 'next/link';
-import { useAuth } from '../util/AuthContext';
+import { useAuth } from '../../(context)/AuthContext';
 import {
   SidebarContainer,
   MenuList,

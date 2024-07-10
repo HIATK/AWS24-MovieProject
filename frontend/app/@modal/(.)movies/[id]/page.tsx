@@ -1,44 +1,31 @@
 'use client'
+
 import React, { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import styles from './Modal.module.css';
 import { motion } from "framer-motion";
-import { getMovieById } from "@/movieService";
-import { getPostsByMovieId } from "@/PostService";
-import { submitPost } from "@/PostService";
+import { getMovieById } from "@/MovieService";
+import { getPostsByMovieId, regPost } from "@/PostService";
 import MovieHeader from '@/(components)/MovieHeader';
 import PostList from '@/(components)/PostList';
 import RatingStars from '@/(components)/RatingStars';
-import axios from 'axios';
-
-interface MovieDetails {
-    id: string;
-    title: string;
-    overview: string;
-    poster_path: string;
-    release_date: string;
-    runtime: number;
-    genres: { name: string }[];
-}
-
-interface PostDetails {
-    movieId : string;
-    postId: string;
-    postContent: string;
-    ratingStar: number;
-}
+import { useAuth } from "@/(context)/AuthContext";
+import { PostDetails, MovieDetails } from "@/(types)/types";
 
 const MovieModal: React.FC = () => {
+    const { memberNick } = useAuth(); // useAuth 훅에서 memberNick 추출
+    const regDate = ''
     const pathname = usePathname();
-    const id = parseInt(pathname.split('/').pop() || '0',10);
+    const id = parseInt(pathname.split('/').pop() || '0', 10);
     const [movie, setMovie] = useState<MovieDetails | null>(null);
     const [liked, setLiked] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [postContent, setPostContent] = useState("");
-    const [postRating, setPostRating] = useState(1);
+    const [postRating, setPostRating] = useState(0);
     const [postHoverRating, setPostHoverRating] = useState(0);
     const [showRating, setShowRating] = useState(false);
+    const [ratingError, setErrorMsg] = useState("");
     const [posts, setPost] = useState<PostDetails[]>([]);
 
     const closeModal = () => {
@@ -56,10 +43,9 @@ const MovieModal: React.FC = () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const details = await getMovieById(id!);
+                const details = await getMovieById(id);
                 setMovie(details);
-                // 이거 써서 새로고침같은거 사용
-                const fetchedPosts = await getPostsByMovieId(id!);
+                const fetchedPosts = await getPostsByMovieId(id);
                 setPost(fetchedPosts);
             } catch (error) {
                 console.error("Error fetching movie details:", error);
@@ -78,18 +64,25 @@ const MovieModal: React.FC = () => {
 
     const handlePostSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (id === 0) {
-            console.error("유효하지 않은 영화 ID");
+        let cleanedContent = postContent.replace(/^\s+|\s+$/g, '');
+        if (cleanedContent === '') {
+            setErrorMsg("글이 비어있습니다");
             return;
         }
+        if (postRating === 0 && postContent) {
+            setErrorMsg("별점을 선택하세요");
+            return;
+        }
+        setErrorMsg("");
         try {
-            const newPost = await submitPost(postContent, postRating, id);
-            setPost(prevPosts => [newPost, ...prevPosts]); // 새 게시글을 목록의 맨 앞에 추가
-            setPostContent(""); // 텍스트 입력란 비우기
-            setPostRating(1); // 평점 초기화
-            setShowRating(false); // 평점 입력 UI 숨기기
+            await regPost(cleanedContent, postRating, id, regDate, memberNick);
+            const fetchedPosts = await getPostsByMovieId(id);
+            setPost(fetchedPosts);
+            setPostContent("");
+            setPostRating(0);
+            setShowRating(false);
         } catch (error) {
-            console.error("전송에러:", error);
+            console.error("Post submission error:", error);
         }
     };
 
@@ -135,6 +128,7 @@ const MovieModal: React.FC = () => {
                                         onHover={setPostHoverRating}
                                         onClick={setPostRating}
                                     />
+                                    {ratingError && <div className={styles.ratingError}>{ratingError}</div>}
                                     <div className={styles.buttonContainer}>
                                         <button type='submit' className={styles.button}>
                                             게시

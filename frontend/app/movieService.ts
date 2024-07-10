@@ -12,7 +12,7 @@ export const getMovies = async () => {
   }
 };
 
-export const getMovieById = async (id: string) => {
+export const getMovieById = async (id: number) => {
   try {
     console.log(`Fetching movie with ID: ${id}`);
     const response = await axios.get(`${API_BASE_URL}/movies/${id}`);

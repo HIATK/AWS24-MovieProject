@@ -9,7 +9,7 @@ import java.util.List;
 public interface PostService {
 
     //  등록
-    Integer regPost(PostDTO postsDTO);
+    void regPost(PostDTO postsDTO);
 
     //  삭제
     void removePost(Integer postId);

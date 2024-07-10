@@ -6,6 +6,7 @@ import org.movieproject.movie.entity.Movie;
 import org.movieproject.member.Entity.Member;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class Post {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "movieId")
+    @JoinColumn(name = "movie_id")
     private Movie movie;
 
     //  연관관계 구성
@@ -42,4 +43,9 @@ public class Post {
     //  Entity 내에서 변경할 수 있는 내용들을 메소드로 구성
     public void changeContent(String postContent){this.postContent = postContent;}
     public void changeRatingStar(int ratingStar){this.ratingStar = ratingStar;}
+
+    @PrePersist
+    public void prePersist() {
+        regDate = LocalDate.from(LocalDateTime.now());
+    }
 }

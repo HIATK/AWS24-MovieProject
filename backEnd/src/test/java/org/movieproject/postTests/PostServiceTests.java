@@ -20,12 +20,9 @@ public class PostServiceTests {
         log.info(postsService.getClass().getName());
 
         PostDTO postsDTO = PostDTO.builder()
-                .postTitle("Test PostTitle ~")
                 .postContent("Test PostContent ~")
                 .writer("user")
                 .build();
-
-        long postId = postsService.regPost(postsDTO);
 
         log.info("postId : " + postId);
     }

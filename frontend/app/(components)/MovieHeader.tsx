@@ -1,16 +1,7 @@
 import React from 'react';
 import styles from './MovieHeader.module.css';
 import { FaHeart } from "react-icons/fa";
-
-interface MovieDetails {
-    id: string;
-    title: string;
-    overview: string;
-    poster_path: string;
-    release_date: string;
-    runtime: number;
-    genres: { name: string }[];
-}
+import { MovieDetails } from '@/(types)/types';
 
 interface MovieHeaderProps {
     movie: MovieDetails;
