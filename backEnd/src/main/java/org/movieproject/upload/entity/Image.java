@@ -13,20 +13,14 @@ import org.movieproject.member.Entity.Member;
 public class Image{
 
     @Id
-    private String uuid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long imageId;
 
     private String fileName;
-
-    private boolean img;
 
     //  프로필 이미지는 회원 당 1개만 가질 수 있으므로 @OneToOne 적용
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberNo")
     private Member member;
-
-    // Constructors, getters, setters, toString() methods omitted for brevity
-
-
-
 
 }

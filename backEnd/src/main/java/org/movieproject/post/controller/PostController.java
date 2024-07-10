@@ -22,35 +22,15 @@ public class PostController {
 
 
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Long> register(@RequestBody PostDTO postsDTO) {
+    public Map<String, Integer> register(@RequestBody PostDTO postsDTO) {
         log.info(postsDTO);
-        Long postId = postsService.regPost(postsDTO);
+        Integer postId = postsService.regPost(postsDTO);
         return Map.of("postId", postId);
-    }
-
-    //  @PathVariable을 이용해 /api/posts/postId 경로를 처리
-    @GetMapping("/{postId}")
-    public PostDTO read(@PathVariable("postId") Long postId) {
-        log.info("read postId : " + postId);
-        return postsService.readPost(postId);
-    }
-
-    //  수정
-    @PutMapping(value = "/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> modify(@PathVariable("postId") Long postId,
-                                      @RequestBody PostDTO postsDTO) {
-
-        //  잘못된 postId가 발생하지 못하도록
-        postsDTO.setPostId(postId);
-
-        postsService.modifyPost(postsDTO);
-
-        return Map.of("result", "success");
     }
 
     //  삭제
     @DeleteMapping(value = "/{postId}")
-    public Map<String, String> remove(@PathVariable("postID") Long postId) {
+    public Map<String, String> remove(@PathVariable("postId") Integer postId) {
         postsService.removePost(postId);
         return Map.of("result", "success");
     }

@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface PostRepository extends JpaRepository<Post, Long>, PostSearch {
+public interface PostRepository extends JpaRepository<Post, Integer>, PostSearch {
 
     @Query("select p from Post p where p.postTitle like concat('%', :keyword, '%')")
     Page<Post> findKeyword(String keyword, Pageable pageable);
