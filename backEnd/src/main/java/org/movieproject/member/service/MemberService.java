@@ -2,6 +2,7 @@ package org.movieproject.member.service;
 
 
 import org.movieproject.member.dto.MemberDTO;
+import org.movieproject.upload.dto.UploadResultDTO;
 
 public interface MemberService {
 

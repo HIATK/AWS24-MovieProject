@@ -4,7 +4,6 @@ import org.movieproject.member.Entity.Member;
 import org.movieproject.upload.entity.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ImageRepository extends JpaRepository<Image, Long> {
+public interface ImageRepository extends JpaRepository<Image, String> {
 
-    Image findByMember(Member member);
 }

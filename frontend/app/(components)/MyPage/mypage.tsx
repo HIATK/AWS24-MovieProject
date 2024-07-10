@@ -52,14 +52,14 @@ const MyPage: React.FC = () => {
       const formData = new FormData();
       formData.append("profileImage", file);
       axios
-        .post("/api/profile-image", formData)
+        .post("/api/profile/upload", formData)
         .then((response) => {
-          console.log("Profile image updated", response.data);
+          console.log("이미지가 변경되었습니다..", response.data);
           // 새로고침
           window.location.reload();
         })
         .catch((error) =>
-          console.error("Error updating profile image:", error)
+          console.error("이미지 변경에 실패했습니다.", error)
         );
     }
   };
