@@ -4,8 +4,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #272727;
-  background-image: url("/toto.png");
+  /*background-color: #272727;*/
+  /*background-image: url("/toto.png");*/
   background-size: cover;
   background-position: center;
   z-index: 0; /* 모든 콘텐츠 앞에 배경이 위치하도록 설정 */

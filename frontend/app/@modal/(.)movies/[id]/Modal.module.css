@@ -72,7 +72,7 @@
   transition: height 0.3s ease, padding 0.3s ease, width 0.3s ease; /* Added width transition */
 }
 
-.textarea:focus {
+.textarea.expandedTextarea {
   height: 10rem; /* Expanded height */
   padding: 1rem;
 }

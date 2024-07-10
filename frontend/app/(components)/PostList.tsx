@@ -35,15 +35,15 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
         <div className={styles.postsList}>
             {posts.map((post) => (
                 <div 
-                    key={post.postId} 
-                    className={`${styles.post} ${expandedPost === post.postId ? styles.expanded : ''}`} 
+                    key={post.postId}
+                    className={`${styles.post} ${expandedPost === post.postId ? styles.expanded : ''}`}
                     onClick={() => toggleExpand(post.postId)}
                 >
                     <div className={styles.postHeader}>
                         {renderStars(post.ratingStar)}
                     </div>
                     <div className={styles.postContent}>
-                        {expandedPost === post.postId ? post.postContent : post.postContent.split('\n')[0]}
+                        {expandedPost === post.postId ? post.postContent : (post.postContent ? post.postContent.split('\n')[0] : '')}
                     </div>
                 </div>
             ))}
