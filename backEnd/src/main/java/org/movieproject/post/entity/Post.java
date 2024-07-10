@@ -18,7 +18,7 @@ public class Post extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    private Integer postId;
 
     private String writer;
     private String postTitle;

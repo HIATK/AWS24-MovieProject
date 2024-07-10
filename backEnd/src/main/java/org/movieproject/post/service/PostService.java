@@ -9,16 +9,10 @@ import java.util.List;
 public interface PostService {
 
     //  등록
-    Long regPost(PostDTO postsDTO);
-
-    //  조회와 목록 처리
-    PostDTO readPost(Long postId);
-
-    //  수정
-    void modifyPost(PostDTO postsDTO);
+    Integer regPost(PostDTO postsDTO);
 
     //  삭제
-    void removePost(Long postId);
+    void removePost(Integer postId);
 
     //  Paging
     PageResponseDTO<PostDTO> list (PageRequestDTO pageRequestDTO);

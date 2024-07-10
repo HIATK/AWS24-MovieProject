@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostDTO {
 
-    private Long postId;
+    private int postId;
 
     private String writer;
 

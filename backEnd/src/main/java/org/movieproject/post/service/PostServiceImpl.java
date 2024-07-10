@@ -26,40 +26,17 @@ public class PostServiceImpl implements PostService {
 
     //  게시물 등록 기능
     @Override
-    public Long regPost(PostDTO postsDTO) {
+    public Integer regPost(PostDTO postsDTO) {
 
         Post post = modelMapper.map(postsDTO, Post.class);
-        Long postId = postRepository.save(post).getPostId();
+        Integer postId = postRepository.save(post).getPostId();
 
         return postId;
     }
 
-    //  게시물 조회 & 목록 기능
-    @Override
-    public PostDTO readPost(Long postId) {
-
-        Optional<Post> result = postRepository.findById(postId);
-        Post post = result.orElseThrow();
-
-        return modelMapper.map(post, PostDTO.class);
-    }
-
-    //  게시물 수정 기능
-    @Override
-    public void modifyPost(PostDTO postsDTO) {
-        Optional<Post> result = postRepository.findById(postsDTO.getPostId());
-        Post post = result.orElseThrow();
-
-        post.changeTitle(postsDTO.getPostTitle());
-        post.changeContent(postsDTO.getPostContent());
-        post.changeRatingStar(postsDTO.getRatingStar());
-
-        postRepository.save(post);
-    }
-
     //  게시물 삭제 기능
     @Override
-    public void removePost(Long postId) {postRepository.deleteById(postId);}
+    public void removePost(Integer postId) {postRepository.deleteById(postId);}
 
     //  페이징 처리 기능
     @Override
