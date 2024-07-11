@@ -1,11 +1,9 @@
-package org.movieproject.member.Entity;
+package org.movieproject.member.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.movieproject.like.entity.Like;
-import org.movieproject.post.entity.Post;
 import org.movieproject.upload.entity.Image;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@ToString(exclude = {"roleSet", "post", "likes", "image"})
+@ToString(exclude = {"roleSet", "likes", "image"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -50,27 +48,19 @@ public class Member {
         this.roleSet.add(role);
     }
 
-    //  회원 당 프로필 이미지는 1개만 적용 가능
+    // 회원 당 프로필 이미지는 1개만 적용 가능
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
     private Image image;
 
-    //Member < - > Post One To Many
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId")
-    private Post post;
-
-    //Member < - > Post One To Many END
-
-    ///좋아요 (like) 참조
-    //다대일 정의/매핑, 역방향 관계 / member 엔티티의 변경이 like엔티티에도 전파되도록 설정한것
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL,orphanRemoval = true)
+    // 좋아요 (like) 참조
+    // 다대일 정의/매핑, 역방향 관계 / member 엔티티의 변경이 like 엔티티에도 전파되도록 설정한 것
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Like> likes = new ArrayList<>();
-    //////좋아요 (like) 참조 END
+
+    // 좋아요 (like) 참조 END
 
     public List<Like> getLikeMovies() {
         return likes;
     }
-
-
 }

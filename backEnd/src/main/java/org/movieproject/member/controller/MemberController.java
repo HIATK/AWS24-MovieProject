@@ -7,14 +7,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.movieproject.like.entity.Like;
-import org.movieproject.member.Entity.Member;
+import org.movieproject.member.entity.Member;
 import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -98,24 +97,30 @@ public class MemberController {
     public ResponseEntity<?> checkAuth() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증되지 않은 사용자입니다.");
             }
 
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            Set<String> roles = authorities.stream()
+            String username = null;
+            if (authentication.getPrincipal() instanceof UserDetails userDetails) {
+                username = userDetails.getUsername(); // 일반적으로 이메일이나 ID를 반환
+            }
+
+            Set<String> roles = authentication.getAuthorities().stream()
                     .map(grantedAuthority -> grantedAuthority.getAuthority().replace("ROLE_", ""))
                     .collect(Collectors.toSet());
 
-            // 사용자 닉네임 가져오기
             String memberNick = null;
-            if (authentication.getPrincipal() instanceof UserDetails userDetails) {
-                memberNick = userDetails.getUsername(); // 혹은 사용자의 닉네임을 반환하는 다른 메서드를 호출
+            if (username != null) {
+                Member member = memberRepository.findByMemberEmail(username)
+                        .orElseThrow(() -> new RuntimeException("Member not found"));
+                memberNick = member.getMemberNick();
             }
 
             Map<String, Object> authInfo = new HashMap<>();
             authInfo.put("roles", roles);
             authInfo.put("memberNick", memberNick);
+            log.info("멤버닉 서버에서 보낸다: " + memberNick);
 
             return ResponseEntity.ok(authInfo);
 

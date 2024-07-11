@@ -2,7 +2,7 @@ package org.movieproject.upload.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.movieproject.member.Entity.Member;
+import org.movieproject.member.entity.Member;
 
 @Entity
 @Builder

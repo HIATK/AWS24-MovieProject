@@ -3,13 +3,13 @@
 import React, { useState, useRef } from 'react';
 import styles from './Login.module.css';
 import Link from 'next/link';
-import { useAuth } from '../../(context)/AuthContext';
+import { useAuth } from '../../(context)/AuthContext'; // useAuth 임포트
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const loginButtonRef = useRef<HTMLButtonElement>(null);
-  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const { checkAuth } = useAuth(); // useAuth 훅에서 checkAuth 추출
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -29,10 +29,15 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
+        
+        checkAuth(); // 로그인 성공 시 checkAuth 호출하여 인증 상태 업데이트
+        
         console.log('Login successful:', data);
-        alert('로그인 성공!');
 
-        setIsLoggedIn(true);
+        alert('로그인 성공!');
+        
+        
+
         loginButtonRef.current?.click();
 
         // 리디렉션하거나 추가 동작을 수행할 수 있습니다.

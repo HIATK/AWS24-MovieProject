@@ -3,20 +3,20 @@
 import React, { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import styles from './Modal.module.css';
-import { motion } from "framer-motion";
-import { getMovieById } from "@/MovieService";
+import { motion } from 'framer-motion'
+import { getMovieByMovieId } from "@/MovieService";
 import { getPostsByMovieId, regPost } from "@/PostService";
 import MovieHeader from '@/(components)/MovieHeader';
 import PostList from '@/(components)/PostList';
 import RatingStars from '@/(components)/RatingStars';
-import { useAuth } from "../../../(context)/AuthContext"
+import { useAuth } from "@/(context)/AuthContext"
 import { PostDetails, MovieDetails } from "@/(types)/types";
 
 const MovieModal: React.FC = () => {
     const { memberNick } = useAuth(); // useAuth 훅에서 memberNick 추출
     const regDate = ''
     const pathname = usePathname();
-    const id = parseInt(pathname.split('/').pop() || '0', 10);
+    const movieId = parseInt(pathname.split('/').pop() || '0', 10);
     const [movie, setMovie] = useState<MovieDetails | null>(null);
     const [liked, setLiked] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -43,9 +43,9 @@ const MovieModal: React.FC = () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const details = await getMovieById(id);
+                const details = await getMovieByMovieId(movieId);
                 setMovie(details);
-                const fetchedPosts = await getPostsByMovieId(id);
+                const fetchedPosts = await getPostsByMovieId(movieId);
                 setPost(fetchedPosts);
             } catch (error) {
                 console.error("Error fetching movie details:", error);
@@ -56,7 +56,7 @@ const MovieModal: React.FC = () => {
         };
 
         fetchMovieDetails();
-    }, [id]);
+    }, [movieId]);
 
     const handleLike = () => {
         setLiked(!liked);
@@ -74,10 +74,10 @@ const MovieModal: React.FC = () => {
             return;
         }
         setErrorMsg("");
- 
+        console.log('멤버닉포스트한다' + memberNick)
         try {
-            await regPost(cleanedContent, postRating, id, regDate, memberNick);
-            const fetchedPosts = await getPostsByMovieId(id);
+            await regPost(cleanedContent, postRating, movieId, regDate, memberNick);
+            const fetchedPosts = await getPostsByMovieId(movieId);
             setPost(fetchedPosts);
             setPostContent("");
             setPostRating(0);

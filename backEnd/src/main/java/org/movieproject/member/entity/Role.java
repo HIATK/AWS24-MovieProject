@@ -1,4 +1,4 @@
-package org.movieproject.member.Entity;
+package org.movieproject.member.entity;
 
 public enum Role {
 

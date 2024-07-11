@@ -3,6 +3,8 @@ package org.movieproject.post.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.movieproject.member.entity.Member;
+import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.movie.entity.Movie;
 import org.movieproject.movie.repository.MovieRepository;
 import org.movieproject.post.dto.PageRequestDTO;
@@ -25,6 +27,7 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final MovieRepository movieRepository;
+    private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
 
     //  게시물 등록 기능
@@ -34,11 +37,16 @@ public class PostServiceImpl implements PostService {
         Movie movie = movieRepository.findMovieByMovieId(postDTO.getMovieId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid movie ID"));
 
+        // Member 객체도 가져옴
+        Member member = memberRepository.findByMemberNick(postDTO.getMemberNick())
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
         // PostDTO를 Post 객체로 변환
         Post post = modelMapper.map(postDTO, Post.class);
 
-        // Post 객체에 Movie 설정
+        // Post 객체에 각 객체 세팅
         post.setMovie(movie);
+        post.setMember(member);
 
         // Post 객체 저장
         postRepository.save(post);

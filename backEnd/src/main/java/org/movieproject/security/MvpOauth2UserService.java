@@ -2,8 +2,8 @@ package org.movieproject.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.movieproject.member.Entity.Member;
-import org.movieproject.member.Entity.Role;
+import org.movieproject.member.entity.Member;
+import org.movieproject.member.entity.Role;
 import org.movieproject.member.dto.MemberSecurityDTO;
 import org.movieproject.member.repository.MemberRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

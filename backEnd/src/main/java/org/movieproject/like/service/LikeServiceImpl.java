@@ -5,7 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.movieproject.like.dto.LikeDTO;
 import org.movieproject.like.entity.Like;
 import org.movieproject.like.repository.LikeRepository;
-import org.movieproject.member.Entity.Member;
+import org.movieproject.member.entity.Member;
 import org.movieproject.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

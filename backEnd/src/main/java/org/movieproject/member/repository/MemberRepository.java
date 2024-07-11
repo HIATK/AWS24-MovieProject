@@ -1,7 +1,7 @@
 package org.movieproject.member.repository;
 
 
-import org.movieproject.member.Entity.Member;
+import org.movieproject.member.entity.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,6 +20,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     @EntityGraph(attributePaths = "roleSet")
     Optional<Member> findByMemberEmail(String memberEmail);
+
+    @EntityGraph(attributePaths = "roleSet")
+    Optional<Member> findByMemberNick(String memberNick);
 
     // 아이디 중복 확인
     @Transactional(readOnly = true)
