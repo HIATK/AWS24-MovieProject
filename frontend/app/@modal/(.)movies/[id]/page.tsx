@@ -9,7 +9,7 @@ import { getPostsByMovieId, regPost } from "@/PostService";
 import MovieHeader from '@/(components)/MovieHeader';
 import PostList from '@/(components)/PostList';
 import RatingStars from '@/(components)/RatingStars';
-import { useAuth } from "@/(context)/AuthContext";
+import { useAuth } from "../../../(context)/AuthContext"
 import { PostDetails, MovieDetails } from "@/(types)/types";
 
 const MovieModal: React.FC = () => {
@@ -74,6 +74,7 @@ const MovieModal: React.FC = () => {
             return;
         }
         setErrorMsg("");
+ 
         try {
             await regPost(cleanedContent, postRating, id, regDate, memberNick);
             const fetchedPosts = await getPostsByMovieId(id);
