@@ -1,14 +1,11 @@
 package org.movieproject.member.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.movieproject.member.Entity.Member;
+import org.movieproject.member.entity.Member;
 import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.repository.MemberRepository;
-import org.movieproject.upload.dto.UploadResultDTO;
-import org.movieproject.upload.entity.Image;
 import org.movieproject.upload.repository.ImageRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

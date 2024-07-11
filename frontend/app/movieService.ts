@@ -12,7 +12,7 @@ export const getMovies = async () => {
   }
 };
 
-export const getMovieById = async (id: number) => {
+export const getMovieByMovieId = async (id: number) => {
   try {
     console.log(`무비 아이디 : ${id}`);
     const response = await axios.get(`${API_BASE_URL}/movies/${id}`);

@@ -1,11 +1,10 @@
 package org.movieproject.upload.service;
 
 import lombok.RequiredArgsConstructor;
-import org.movieproject.member.Entity.Member;
+import org.movieproject.member.entity.Member;
 import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.upload.entity.Image;
 import org.movieproject.upload.repository.ImageRepository;
-import org.movieproject.upload.service.ImageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

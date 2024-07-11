@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 import { CgProfile } from 'react-icons/cg';
 import { IoHomeOutline, IoStatsChartOutline } from 'react-icons/io5';
 import { BiLink } from 'react-icons/bi';
@@ -28,13 +27,7 @@ interface MenuItem {
 
 const SidebarClient: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn, checkAuth, setIsLoggedIn } = useAuth();
-  const pathname = usePathname(); // 현재 경로를 가져옴
-
-  useEffect(() => {
-    console.log('pathname 변경 감지됨:', pathname);
-    checkAuth();
-  }, [pathname]);
+  const { isLoggedIn, logout } = useAuth();
 
   const menuItems: MenuItem[] = [
     { icon: <CgProfile />, text: '프로필', href: '/member/profile' },
@@ -59,7 +52,7 @@ const SidebarClient: React.FC = () => {
 
       if (response.ok) {
         alert('로그아웃 되었습니다');
-        setIsLoggedIn(false);
+        logout();
       } else {
         console.error('Failed to logout');
       }

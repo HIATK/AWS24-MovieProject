@@ -30,6 +30,8 @@ public class PostDTO {
 
     private Integer movieId;
 
+    private String memberNick;
+
     // 등록 날짜 (문자열 형태로 전송)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate regDate;

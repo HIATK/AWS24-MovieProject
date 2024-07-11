@@ -1,9 +1,9 @@
 export interface PostDetails {
-    movieId: number;
     postId: number;
     postContent: string;
     ratingStar: number;
     regDate: string;
+    memberNick: string;
 }
 
 export interface MovieDetails {

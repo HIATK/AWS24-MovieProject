@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
-import org.movieproject.member.Entity.Member;
+import org.movieproject.member.entity.Member;
 
 @Entity
 @Getter
