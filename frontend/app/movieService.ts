@@ -14,7 +14,7 @@ export const getMovies = async () => {
 
 export const getMovieById = async (id: number) => {
   try {
-    console.log(`Fetching movie with ID: ${id}`);
+    console.log(`무비 아이디 : ${id}`);
     const response = await axios.get(`${API_BASE_URL}/movies/${id}`);
     console.log("API Response:", response.data);
     return response.data;
