@@ -1,82 +1,114 @@
 .container {
+  /* 전체 화면을 차지하는 플렉스 컨테이너 설정 */
   display: flex;
-  width: 100%;
-  height: 100vh;
-  background-color: #1e1e1e;
-  color: white;
+  width: 100vw; /* 뷰포트 너비 */
+  height: 100vh; /* 뷰포트 높이 */
+  background-color: #1e1e1e; /* 배경색: 어두운 회색 */
+  color: white; /* 텍스트 색상: 흰색 */
+  margin: 0; /* 외부 여백 제거 */
+  padding: 0; /* 내부 여백 제거 */
+  overflow: hidden; /* 넘치는 콘텐츠 숨기기 */
 }
 
 .mainContent {
-  flex: 1;
-  display: flex;
-  padding: 20px;
-  gap: 20px;
+  /* 메인 콘텐츠를 포함하는 플렉스 컨테이너 */
+  flex: 1; /* 남은 공간을 차지 */
+  display: flex; /* 플렉스 컨테이너 */
+  padding: 20px; /* 내부 여백 */
+  gap: 20px; /* 내부 요소들 간의 간격 */
+  overflow: hidden; /* 넘치는 콘텐츠 숨기기 */
+  margin-left: 60px; /* 사이드바 기본 너비만큼 여백 */
 }
 
 .profileSection {
-  flex: 0 0 300px;
-  background-color: #2c2c2c;
-  border-radius: 10px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  /* 프로필 섹션 설정 */
+  flex: 0 0 300px; /* 고정 너비 300px */
+  background-color: #2c2c2c; /* 배경색: 조금 더 밝은 회색 */
+  border-radius: 10px; /* 모서리 둥글게 */
+  padding: 20px; /* 내부 여백 */
+  display: flex; /* 플렉스 컨테이너 */
+  flex-direction: column; /* 세로 방향 정렬 */
+  align-items: center; /* 중앙 정렬 */
+  overflow-y: auto; /* 세로 방향 넘치는 콘텐츠 스크롤 */
+  max-height: calc(100vh - 40px); /* 뷰포트 높이에서 패딩 빼기 */
 }
 
 .contentSection {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  /* 컨텐츠 섹션 설정 */
+  flex: 1; /* 남은 공간을 차지 */
+  display: flex; /* 플렉스 컨테이너 */
+  flex-direction: column; /* 세로 방향 정렬 */
+  gap: 20px; /* 내부 요소들 간의 간격 */
+  overflow-y: auto; /* 세로 방향 넘치는 콘텐츠 스크롤 */
+  max-height: calc(100vh - 40px); /* 뷰포트 높이에서 패딩 빼기 */
 }
 
 .section {
-  background-color: #2c2c2c;
-  border-radius: 10px;
-  padding: 20px;
-  flex: 1;
+  /* 일반 섹션 설정 */
+  background-color: #2c2c2c; /* 배경색: 프로필 섹션과 동일 */
+  border-radius: 10px; /* 모서리 둥글게 */
+  padding: 20px; /* 내부 여백 */
+  flex: 1; /* 남은 공간을 차지 */
 }
 
 .profileImage {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background-color: #3a3a3a;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  margin-bottom: 20px;
+  /* 프로필 이미지 컨테이너 설정 */
+  width: 150px; /* 고정 너비 150px */
+  height: 150px; /* 고정 높이 150px */
+  border-radius: 50%; /* 원형 모양 */
+  background-color: #3a3a3a; /* 배경색: 더 밝은 회색 */
+  display: flex; /* 플렉스 컨테이너 */
+  justify-content: center; /* 가로 방향 중앙 정렬 */
+  align-items: center; /* 세로 방향 중앙 정렬 */
+  overflow: hidden; /* 넘치는 콘텐츠 숨기기 */
+  margin-bottom: 20px; /* 하단 여백 */
 }
 
 .profileImageContent {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  /* 프로필 이미지 설정 */
+  width: 100%; /* 너비 100% */
+  height: 100%; /* 높이 100% */
+  object-fit: cover; /* 이미지가 컨테이너에 맞도록 조정 */
 }
 
 .nickname {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 20px;
+  /* 닉네임 텍스트 설정 */
+  font-size: 1.2em; /* 글자 크기 */
+  font-weight: bold; /* 글자 두께 */
+  margin-bottom: 20px; /* 하단 여백 */
 }
 
 .button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #3a3a3a;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  /* 버튼 스타일 설정 */
+  width: 100%; /* 너비 100% */
+  padding: 10px; /* 내부 여백 */
+  margin-bottom: 10px; /* 하단 여백 */
+  background-color: #3a3a3a; /* 배경색 */
+  color: white; /* 텍스트 색상 */
+  border: none; /* 테두리 없음 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  cursor: pointer; /* 커서 모양 변경 */
 }
 
 .button:hover {
-  background-color: #4a4a4a;
+  /* 버튼 호버 상태 스타일 */
+  background-color: #4a4a4a; /* 배경색 더 밝게 */
+}
+
+.input {
+  /* 입력 필드 스타일 설정 */
+  width: 100%; /* 너비 100% */
+  padding: 10px; /* 내부 여백 */
+  margin-bottom: 10px; /* 하단 여백 */
+  background-color: #3a3a3a; /* 배경색 */
+  color: white; /* 텍스트 색상 */
+  border: none; /* 테두리 없음 */
+  border-radius: 5px; /* 모서리 둥글게 */
 }
 
 .sectionTitle {
-  text-align: right;
-  margin-bottom: 10px;
+  /* 섹션 제목 스타일 설정 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  margin-bottom: 10px; /* 하단 여백 */
+  font-weight: bold; /* 글자 두께 */
 }
