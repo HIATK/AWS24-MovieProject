@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.movieproject.upload.dto.UploadResultDTO;
+import org.movieproject.upload.repository.ImageRepository;
 import org.movieproject.upload.service.ImageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -24,37 +25,53 @@ import java.nio.file.Paths;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/profile/upload")
+@RequestMapping("/api/image/upload")
 @RequiredArgsConstructor
+@Log4j2
 public class UpDownController {
 
     private final ImageService imageService;
+    private static final String UPLOAD_DIR = "C:\\upload";
+    private final ImageRepository imageRepository;
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadProfileImage(@RequestParam("file") MultipartFile file, @RequestParam("memberId") Integer memberId) {
+    @PostMapping
+    @Operation(summary = "이미지 업로드", description = "이미지를 업로드하고 저장합니다.")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file,
+                                                       @RequestParam("memberNo") Integer memberNo) {
         try {
-            String uuid = imageService.uploadImage(file, memberId);
-            return ResponseEntity.ok(uuid);
+            imageService.saveImage(file, memberNo);
+            String fullPath = imageRepository.findByMemberMemberNo(1).orElseThrow().getFilePath();
+            String result = extractPublicPath(fullPath);
+            log.info("파일 패쓰다" +result);
+
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+
         } catch (IOException e) {
+            log.error("이미지 업로드 중 오류 발생", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PutMapping("/{uuid}/update")
-    public ResponseEntity<String> updateProfileImage(@PathVariable String uuid, @RequestParam("file") MultipartFile file) {
+    @GetMapping("/{fileName}")
+    @Operation(summary = "이미지 다운로드", description = "이미지를 다운로드합니다.")
+    public ResponseEntity<Resource> downloadImage(@PathVariable String fileName) {
         try {
-            imageService.modifyImage(uuid, file);
-            return ResponseEntity.ok("Profile image updated successfully.");
+            Path path = Paths.get(UPLOAD_DIR, fileName);
+            Resource resource = new FileSystemResource(path.toFile());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path));
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         } catch (IOException e) {
+            log.error("이미지 다운로드 중 오류 발생", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @DeleteMapping("/{uuid}/delete")
-    public ResponseEntity<String> deleteProfileImage(@PathVariable String uuid) {
-        imageService.removeImage(uuid);
-        return ResponseEntity.ok("Profile image deleted successfully.");
+    public static String extractPublicPath(String fullPath) {
+        String publicDir = "\\profile";
+        int index = fullPath.indexOf(publicDir);
+        return fullPath.substring(index + publicDir.length());
     }
-
 
 }

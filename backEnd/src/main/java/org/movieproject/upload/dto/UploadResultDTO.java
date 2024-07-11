@@ -17,4 +17,6 @@ public class UploadResultDTO {
 
    private Integer memberId;
 
+    public UploadResultDTO(String string, String originalFilename) {
+    }
 }

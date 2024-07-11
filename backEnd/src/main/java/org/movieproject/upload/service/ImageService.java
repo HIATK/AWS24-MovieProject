@@ -8,12 +8,10 @@ import java.io.IOException;
 public interface ImageService {
 
     //  이미지 등록
-    String uploadImage(MultipartFile file, Integer memberId) throws IOException;
-
+    void saveImage(MultipartFile image, Integer memberNo) throws IOException;
     //  이미지 수정
-    void modifyImage(String uuid, MultipartFile file) throws IOException;
 
     //  이미지 삭제
-    void removeImage(String uuid);
+
 
 }

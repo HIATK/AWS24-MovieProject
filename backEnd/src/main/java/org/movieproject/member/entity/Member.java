@@ -49,7 +49,8 @@ public class Member {
     }
 
     // 회원 당 프로필 이미지는 1개만 적용 가능
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uuid")
     private Image image;
 
     // 좋아요 (like) 참조
