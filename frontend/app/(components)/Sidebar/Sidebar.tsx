@@ -80,7 +80,7 @@ const SidebarClient: React.FC = () => {
       </MenuList>
       <SettingsItemWrapper $isOpen={isOpen}>
         {isLoggedIn ? (
-          <Link href="/api/logout" onClick={handleLogout}>
+          <Link href="/logout" onClick={handleLogout}>
             <MenuLink>
               <Icon>{settingsItem2.icon}</Icon>
               <MenuText $isOpen={isOpen}>{settingsItem2.text}</MenuText>
