@@ -26,7 +26,7 @@ const Join: React.FC = () => {
     memberName: '',
     memberPhone: '',
     memberNick: '',
-    roleSet: ['GUEST'],
+    roleSet: ['MEMBER'],
   });
   const [errors, setErrors] = useState<Errors>({});
 
@@ -62,7 +62,7 @@ const Join: React.FC = () => {
           memberName: '',
           memberPhone: '',
           memberNick: '',
-          roleSet: ['GUEST'],
+          roleSet: ['MEMBER'],
         });
         setErrors({});
         joinButtonRef.current?.click();

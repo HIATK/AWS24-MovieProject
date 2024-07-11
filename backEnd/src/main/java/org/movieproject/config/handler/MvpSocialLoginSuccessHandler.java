@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.movieproject.member.dto.MemberSecurityDTO;
 import org.movieproject.security.util.JwtLoginUtil;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
@@ -28,11 +29,11 @@ public class MvpSocialLoginSuccessHandler implements AuthenticationSuccessHandle
         jwtLoginUtil.generateAndSendTokens(response, authentication);
 
         // 임시 비밀번호 사용자 여부에 따라 다른 URL로 리디렉트
-        if (memberSecurityDTO.isSocial() && memberSecurityDTO.getMemberPw().length() == 8) {
-            log.info("임시 비밀번호 사용자");
-            response.sendRedirect("http://localhost:3000/member/login");
+        if (memberSecurityDTO.isSocial() && memberSecurityDTO.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_GUEST"))) {
+            log.info("처음 소셜 로그인 사용자");
+            response.sendRedirect("http://localhost:3000/member/profile");
         } else {
-            response.sendRedirect("http://localhost:3000/member/login");
+            response.sendRedirect("http://localhost:3000/");
         }
     }
 }

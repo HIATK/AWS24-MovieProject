@@ -111,7 +111,7 @@ public class CustomSecurityConfig {
         // 토큰 체크 필터
         http.addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class);
         // 리프레시 토큰 필터
-        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtProvider), TokenCheckFilter.class);
+        http.addFilterBefore(new RefreshTokenFilter("/api/member/check_auth/refresh", jwtProvider), TokenCheckFilter.class);
 
         // remember-me 설정
         http.rememberMe(httpSecurityRememberMeConfigurer -> {

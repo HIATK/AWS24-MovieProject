@@ -72,9 +72,9 @@ public class MvpOauth2UserService extends DefaultOAuth2UserService {
                     .memberNo(null)
                     .memberEmail(memberEmail)
                     .memberPw(randomPassword)
-                    .memberPhone("123")
-                    .memberName("dd")
-                    .memberNick("dd")
+                    .memberPhone("01012345678")
+                    .memberName("임시 사용자")
+                    .memberNick("임시 사용자")
                     .social(true)
                     .build();
 
@@ -83,7 +83,8 @@ public class MvpOauth2UserService extends DefaultOAuth2UserService {
             memberRepository.save(member);
 
             MemberSecurityDTO memberSecurityDTO = new MemberSecurityDTO(
-                    null, memberEmail, "11", "123", "dd",  "dd", true,
+                    null, memberEmail, randomPassword, "임시 사용자",
+                    "01012345678",  "임시 사용자", true,
                     List.of(new SimpleGrantedAuthority("ROLE_GUEST")));
             log.info("멤버시큐리티디티오" + memberSecurityDTO);
             return memberSecurityDTO;

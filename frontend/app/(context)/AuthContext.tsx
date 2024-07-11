@@ -18,6 +18,25 @@
     const [memberNick, setMemberNick] = useState<string | null>(null);
     const [checkedAuth, setCheckedAuth] = useState(false);
 
+    const refreshAccessToken = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/member/check_auth/refresh', {
+          method: 'POST',
+          credentials: 'include',
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to refresh token');
+        }
+  
+        const data = await response.json();
+        return data.accessToken;
+      } catch (error) {
+        console.error('Failed to refresh access token:', error);
+        return null;
+      }
+    };
+
     const checkAuth = useCallback(async (): Promise<void> => {
       if (checkedAuth) return;
 
@@ -29,7 +48,7 @@
 
         if (response.ok) {
           const data = await response.json();
-          setIsLoggedIn(data.roles && data.roles.includes('GUEST'));
+          setIsLoggedIn(data.roles && data.roles.includes('MEMBER') || data.roles.includes('GUEST'));
           setMemberNick(data.memberNick); // 서버에서 닉네임 받아오기
           setCheckedAuth(true);
           console.log("체크어쓰 200" + data.memberNick)
@@ -38,6 +57,12 @@
           setIsLoggedIn(false);
           setMemberNick(null);
           console.log("체크어쓰 401")
+        } else if (response.status === 403) {
+          const retryCheckAuth = await refreshAccessToken();
+          if (retryCheckAuth) {
+            // Retry the checkAuth request with the new access token
+            await checkAuth();
+          }
         } else {
           // Handle other errors
           setIsLoggedIn(false);
@@ -50,7 +75,7 @@
         setMemberNick(null);
         console.log("체크어쓰 캐치에러")
       }
-    }, [checkedAuth]);
+    }, [checkedAuth, refreshAccessToken]);
 
     const logout = useCallback(() => {
       setIsLoggedIn(false);

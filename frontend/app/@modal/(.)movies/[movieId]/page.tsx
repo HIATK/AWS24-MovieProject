@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import styles from './Modal.module.css';
 import { motion } from 'framer-motion'
-import { getMovieByMovieId } from "@/MovieService";
+import { getMovieByMovieId } from "@/movieService";
 import { getPostsByMovieId, regPost } from "@/PostService";
 import MovieHeader from '@/(components)/MovieHeader';
 import PostList from '@/(components)/PostList';
