@@ -1,25 +1,26 @@
-// src/components/DarkmodToggle.tsx
+// components/ThemeToggle.tsx
 'use client'
-import { useState, useEffect } from 'react';
-import {isDarkMode, toggleTheme} from "@/(components)/DarkModToggle/theme";
+import React from 'react';
+import styled from 'styled-components';
+import { FaSun, FaMoon } from 'react-icons/fa';
+import {useTheme} from "@/(components)/DarkModToggle/ThemeContext";
 
-const DarkmodToggle = () => {
-    const [darkMode, setDarkMode] = useState(false);
+const ToggleButton = styled.button`
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 24px;
+`;
 
-    useEffect(() => {
-        setDarkMode(isDarkMode());
-    }, []);
-
-    const handleToggle = () => {
-        toggleTheme();
-        setDarkMode(!darkMode);
-    };
+const ThemeToggle: React.FC = () => {
+    const { theme, toggleTheme } = useTheme();
 
     return (
-        <button onClick={handleToggle}>
-            {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        </button>
+        <ToggleButton onClick={toggleTheme}>
+            {theme === 'light' ? <FaMoon /> : <FaSun />}
+        </ToggleButton>
     );
 };
 
-export default DarkmodToggle;
+export default ThemeToggle;
