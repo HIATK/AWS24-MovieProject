@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface ImageRepository extends JpaRepository<Image, String> {
 
-    Image findByMember(Member member);
-
     Optional<Image> findByMemberMemberNo(Integer memberNo);
 
 }
