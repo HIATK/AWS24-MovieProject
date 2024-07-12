@@ -1,5 +1,6 @@
 package org.movieproject.movie.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.movieproject.movie.entity.Movie;
@@ -31,6 +32,7 @@ public class MovieServiceImpl implements MovieService {
 
     private WebClient webClient;
 
+    @PostConstruct
     private WebClient getWebClient() {
         if (this.webClient == null) {
             this.webClient = webClientBuilder.baseUrl("https://api.themoviedb.org/3").build();
@@ -97,7 +99,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Async
     @Override
-    public CompletableFuture<Map<String, String>> getMovieById(String id) {
+    public CompletableFuture<Map<String, String>> getMovieById(Integer id) {
         return this.getWebClient().get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}")

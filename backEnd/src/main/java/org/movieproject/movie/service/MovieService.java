@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 public interface MovieService {
     CompletableFuture<List<Map<String, String>>> getNowPlayingMovies();
 
-    CompletableFuture<Map<String, String>> getMovieById(String id);
+    CompletableFuture<Map<String, String>> getMovieById(Integer id);
 
     CompletableFuture<List<Map<String, String>>> fetchAndSaveNowPlayingMovies();
 

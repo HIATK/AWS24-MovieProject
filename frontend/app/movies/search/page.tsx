@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { MovieDetails } from '@/(types)/types';
 import styles from './SearchResults.module.css';
+import Link from 'next/link';
 
 const SearchResults = () => {
     const searchParams = useSearchParams();
@@ -39,12 +40,16 @@ const SearchResults = () => {
             {loading ? (
                 <p>Loading...</p>
             ) : results.length > 0 ? (
-                <ul className={styles.resultsList}>
+                <ul className={styles["movie-items"]}>
                     {results.map((movie) => (
-                        <li key={movie.id} className={styles.resultItem}>
-                            <h3>{movie.title}</h3>
-                            <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} />
-                            <p>{movie.overview}</p>
+                        <li key={movie.id} className={styles["movie-item"]}>
+                            <Link href={`/movies/${movie.id}`}>
+                                <img
+                                    src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
+                                    alt={`Poster for ${movie.title}`}
+                                    className={styles["movie-img"]}
+                                />
+                            </Link>
                         </li>
                     ))}
                 </ul>

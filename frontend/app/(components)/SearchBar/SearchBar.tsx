@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import styles from './SearchBar.module.css';
 
 interface SearchBarProps {
@@ -12,7 +12,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ underlineColor = '#ffffff' }) => 
     const [isExpanded, setIsExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
-    const router = useRouter();
+    const hiddenButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         if (isExpanded && inputRef.current) {
@@ -29,8 +29,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ underlineColor = '#ffffff' }) => 
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Searching for:', searchTerm);
-        router.push(`/movies/search?keyword=${encodeURIComponent(searchTerm)}`);
+        setTimeout(() => {
+            if (hiddenButtonRef.current) {
+                hiddenButtonRef.current.click();
+            }
+        }, 1000);
     };
 
     return (
@@ -51,6 +54,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ underlineColor = '#ffffff' }) => 
                     className={styles.searchInput}
                 />
                 <div className={styles.underline} style={{ backgroundColor: underlineColor }}></div>
+                <Link href={`/movies/search?keyword=${encodeURIComponent(searchTerm)}`} passHref>
+                    <button ref={hiddenButtonRef} style={{ display: 'none' }}>Search</button>
+                </Link>
             </form>
         </div>
     );
