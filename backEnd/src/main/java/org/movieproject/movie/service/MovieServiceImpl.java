@@ -1,6 +1,7 @@
 package org.movieproject.movie.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.movieproject.movie.entity.Movie;
 import org.movieproject.movie.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +19,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class MovieServiceImpl implements MovieService {
@@ -111,33 +115,35 @@ public class MovieServiceImpl implements MovieService {
                 .toFuture();
     }
 
-//    @Async
-//    @Override
-//    public CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword) {
-//        return this.webClient.get()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path("/search/movie")
-//                        .queryParam("query", keyword)
-//                        .queryParam("language", "ko-KR")
-//                        .queryParam("page", 1)
-//                        .queryParam("api_key", apiKey)
-//                        .build())
-//                .retrieve()
-//                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
-//                .map(response -> {
-//                    @SuppressWarnings("unchecked")
-//                    List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
-//                    return results.stream()
-//                            .map(movie -> {
-//                                Map<String, String> movieInfo = new HashMap<>();
-//                                movieInfo.put("id", String.valueOf(movie.get("id")));
-//                                movieInfo.put("title", String.valueOf(movie.get("title")));
-//                                movieInfo.put("poster_path", String.valueOf(movie.get("poster_path")));
-//                                movieInfo.put("overview", String.valueOf(movie.get("overview")));
-//                                return movieInfo;
-//                            })
-//                            .collect(Collectors.toList());
-//                })
-//                .toFuture();
-//    }
+    @Async
+    @Override
+    public CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword) {
+        String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+        log.info("인코드키워드 " + encodedKeyword);
+        return this.webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/search/movie")
+                        .queryParam("query", encodedKeyword)
+                        .queryParam("language", "ko-KR")
+                        .queryParam("page", 1)
+                        .queryParam("api_key", apiKey)
+                        .build())
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .map(response -> {
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
+                    return results.stream()
+                            .map(movie -> {
+                                Map<String, String> movieInfo = new HashMap<>();
+                                movieInfo.put("id", String.valueOf(movie.get("id")));
+                                movieInfo.put("title", String.valueOf(movie.get("title")));
+                                movieInfo.put("poster_path", String.valueOf(movie.get("poster_path")));
+                                movieInfo.put("overview", String.valueOf(movie.get("overview")));
+                                return movieInfo;
+                            })
+                            .collect(Collectors.toList());
+                })
+                .toFuture();
+    }
 }

@@ -27,7 +27,7 @@ export default function RootLayout({
       <body>
         {/* 레이아웃에 적용할 내용을 입력 */}
         <AuthProvider>
-
+        <Sidebar />
           {/*다크모드 프로바이더*/}
           <ThemeProvider
           attribute="class"
@@ -36,7 +36,7 @@ export default function RootLayout({
           disableTransitionOnChange>
             {children}
           </ThemeProvider> {/*다크모드 프로바이더 END*/ }
-          <Sidebar />
+          
 
           {modal}
         </AuthProvider>

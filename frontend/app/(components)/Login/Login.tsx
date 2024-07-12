@@ -91,7 +91,7 @@ const Login: React.FC = () => {
         </div>
         <Link href='../../member/join'>회원가입</Link>
       </form>
-      <Link href='/public'>
+      <Link href='/'>
         <button ref={loginButtonRef} style={{ display: 'none' }} />
       </Link>
     </div>

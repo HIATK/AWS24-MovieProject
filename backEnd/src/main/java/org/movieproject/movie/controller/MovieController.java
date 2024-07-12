@@ -3,10 +3,7 @@ package org.movieproject.movie.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.movieproject.movie.service.MovieService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -30,8 +27,9 @@ public class MovieController {
         return movieService.getMovieById(id);
     }
 
-//    @GetMapping("{keyword}")
-//    public CompletableFuture<List<Map<String, String>>> getMovieByKeyword(@PathVariable String keyword) {
-//        return movieService.searchMovieByKeyword(keyword);
-//    }
+    @GetMapping("/search")
+    public CompletableFuture<List<Map<String, String>>> searchMovies(@RequestParam String keyword) {
+        log.info("키워드" + keyword);
+        return movieService.searchMovieByKeyword(keyword);
+    }
 }

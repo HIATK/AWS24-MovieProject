@@ -11,5 +11,5 @@ public interface MovieService {
 
     CompletableFuture<List<Map<String, String>>> fetchAndSaveNowPlayingMovies();
 
-//    CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword);
+    CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword);
 }

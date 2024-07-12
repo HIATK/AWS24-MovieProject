@@ -1,35 +1,37 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
-import styles from './SearchBar.module.css'
+import React, { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import styles from './SearchBar.module.css';
 
 interface SearchBarProps {
     underlineColor?: string;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ underlineColor = '#ffffff' }) => {
-    const [isExpanded, setIsExpanded] = useState(false)
-    const [searchTerm, setSearchTerm] = useState('')
-    const inputRef = useRef<HTMLInputElement>(null)
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null);
+    const router = useRouter();
 
     useEffect(() => {
         if (isExpanded && inputRef.current) {
-            inputRef.current.focus()
+            inputRef.current.focus();
         }
-    }, [isExpanded])
+    }, [isExpanded]);
 
     const handleToggle = () => {
-        setIsExpanded(!isExpanded)
+        setIsExpanded(!isExpanded);
         if (!isExpanded) {
-            setSearchTerm('')
+            setSearchTerm('');
         }
-    }
+    };
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        console.log('Searching for:', searchTerm)
-        // 여기에 검색 로직을 구현합니다
-    }
+        e.preventDefault();
+        console.log('Searching for:', searchTerm);
+        router.push(`/movies/search?keyword=${encodeURIComponent(searchTerm)}`);
+    };
 
     return (
         <div className={`${styles.searchContainer} ${isExpanded ? styles.expanded : ''}`}>
@@ -51,7 +53,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ underlineColor = '#ffffff' }) => 
                 <div className={styles.underline} style={{ backgroundColor: underlineColor }}></div>
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default SearchBar
+export default SearchBar;
