@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import styles from './Modal.module.css';
 import { motion } from 'framer-motion'
-import { getMovieByMovieId } from "@/movieService";
+import { getMovieByMovieId } from "@/MovieService";
 import { getPostsByMovieId, regPost } from "@/PostService";
-import MovieHeader from '@/(components)/MovieHeader';
-import PostList from '@/(components)/PostList';
-import RatingStars from '@/(components)/RatingStars';
+import MovieHeader from '@/(components)/Modal/MovieHeader/MovieHeader';
+import PostList from '@/(components)/Modal/PostList/PostList';
+import RatingStars from '@/(components)/Modal/RatingStar/RatingStars';
 import { useAuth } from "@/(context)/AuthContext"
 import { PostDetails, MovieDetails } from "@/(types)/types";
 
