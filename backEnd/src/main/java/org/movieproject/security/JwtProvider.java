@@ -40,8 +40,6 @@ public class JwtProvider {
     // 토큰 생성
     public String generateToken(Map<String, Object> valueMap, int minute) {
 
-//        String username = ((UserDetails)authentication.getPrincipal()).getUsername();
-
         Map<String, Object> payloads = new HashMap<>(valueMap);
 
         Date now = new Date();
@@ -51,7 +49,6 @@ public class JwtProvider {
                 .header()
                 .add("typ", "JWT")
                 .and()
-//                .subject(username)
                 .claims(payloads)
                 .signWith(this.getSigningKey())
                 .issuedAt(Date.from(ZonedDateTime.now().toInstant()))
@@ -71,5 +68,4 @@ public class JwtProvider {
 
         return claim;
     }
-
 }

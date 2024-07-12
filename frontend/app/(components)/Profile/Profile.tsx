@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef, ChangeEvent, FormEvent} from "react";
 import axios from "axios";
-import styles from "./Profile.module.css";
+import styles from "./profile.module.css";
 import internal from "node:stream";
 
 interface Member {

@@ -49,17 +49,7 @@ public class JwtLoginUtil {
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 
-        // 사용자 역할 가져오기
-        GrantedAuthority grantedAuthority = authentication.getAuthorities().iterator().next();
-        String authority = grantedAuthority.getAuthority();
-
-        Map<String, Object> keyMap = Map.of(
-                "authority", authority
-        );
-
-        log.info("이 내용으로 토큰 생성 : " + keyMap);
-
-        String jsonStr = gson.toJson(keyMap);
+        String jsonStr = gson.toJson(claim);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

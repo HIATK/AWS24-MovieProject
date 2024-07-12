@@ -29,4 +29,9 @@ public class MovieController {
     public CompletableFuture<Map<String, String>> getMovieById(@PathVariable String id) {
         return movieService.getMovieById(id);
     }
+
+//    @GetMapping("{keyword}")
+//    public CompletableFuture<List<Map<String, String>>> getMovieByKeyword(@PathVariable String keyword) {
+//        return movieService.searchMovieByKeyword(keyword);
+//    }
 }

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import styles from "@/page.module.css";
-import Login from "@/(components)/Member/Login";
+import Login from "@/(components)/Login/Login";
 
 export default function login(){
 

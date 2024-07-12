@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from "@/page.module.css";
-import Profile from "@/(components)/Member/Profile";
+import Profile from "@/(components)/Profile/Profile";
 
 export default function profile(){
 
