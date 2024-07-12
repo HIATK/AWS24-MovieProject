@@ -17,7 +17,6 @@ import {
   HoverText,
   SettingsItemWrapper
 } from './SidebarStyles';
-import SearchBar from "@/(components)/SearchBar/SearchBar";
 import ThemeToggle from "@/(components)/DarkModToggle/ThemeToggle";
 
 interface MenuItem {
@@ -69,6 +68,7 @@ const SidebarClient: React.FC = () => {
         {menuItems.map((item, index) => (
           <MenuItemWrapper key={index} $isOpen={isOpen}>
 
+
             <Link href={item.href}>
               <MenuLink>
                 <Icon>{item.icon}</Icon>
@@ -76,10 +76,15 @@ const SidebarClient: React.FC = () => {
               </MenuLink>
             </Link>
             <HoverText $isOpen={isOpen}>{item.text}</HoverText>
-          </MenuItemWrapper>
-        ))}
 
+          </MenuItemWrapper>
+
+        ))}
+        <ThemeToggle/>
+        <MenuText $isOpen={isOpen}></MenuText>
       </MenuList>
+
+
       <SettingsItemWrapper $isOpen={isOpen}>
         {isLoggedIn ? (
           <Link href="/logout" onClick={handleLogout}>
