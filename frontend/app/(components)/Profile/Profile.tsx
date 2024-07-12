@@ -144,6 +144,9 @@ const Profile: React.FC = () => {
       e.preventDefault();
       const validationErrors = validateForm();
 
+      if(updateForm.memberNick == member.memberNick){
+          setIsNicknameChecked(true);
+      }
       if (Object.keys(validationErrors).length > 0) {
           setErrors(validationErrors);
       } else if (!isNicknameChecked || isNicknameDuplicate) {
@@ -157,10 +160,15 @@ const Profile: React.FC = () => {
               }
 
               const { currentPassword, confirmNewPassword, ...updateData } = updateForm;
+
+              if (updateForm.newPassword === undefined || updateForm.newPassword === null || updateForm.newPassword === "") {
+                  updateForm.newPassword = updateForm.currentPassword;
+              }
+
               const { data } = await axios.put<{ message: string, member: Member }>
               ('/api/member/update', {
                   ...updateData,
-                  memberPw: updateForm.newPassword || undefined
+                  memberPw: updateForm.newPassword
               }, {
                   headers: { 'Content-Type': 'application/json' },
                   withCredentials: true,
@@ -185,9 +193,11 @@ const Profile: React.FC = () => {
   };
 
   const handleNicknameCheck = async () => {
-      if (updateForm.memberNick) {
+      if (updateForm.memberNick != member.memberNick) {
           const isDuplicate = await checkNicknameDuplicate(updateForm.memberNick);
           setIsNicknameDuplicate(isDuplicate);
+          setIsNicknameChecked(true);
+      }else {
           setIsNicknameChecked(true);
       }
   };
