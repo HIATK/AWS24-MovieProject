@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -93,16 +94,17 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             log.info("갭 타 임 : " + hours + "시간 " + minutes + "분 " + seconds + "초");
 
             String username = (String)refreshClaims.get("username");
+            Map<String, Object> authority = Map.of("authority", (String)refreshClaims.get("authorities"));
 
             // 여기부터 AccessToken 생성
-            String accessTokenValue = jwtProvider.generateToken(Map.of("username", username), 10);
+            String accessTokenValue = jwtProvider.generateToken(Map.of("username", username, "authority", authority), 10);
 
             String refreshTokenValue = refreshToken;
 
             // refreshToken 만료 시간이 5분 이하일 때
             if (gapTime < (1000 * 60 * 5)) {
                 log.info("리프레시 토큰을 새로 만듭시다");
-                refreshTokenValue = jwtProvider.generateToken(Map.of("username", username), 60);
+                refreshTokenValue = jwtProvider.generateToken(Map.of("username", username, "authority", authority), 60);
             }
 
             log.info("액 세 스 토 큰 : " + accessTokenValue);

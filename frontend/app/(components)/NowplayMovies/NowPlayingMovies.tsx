@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from 'next/link';
 import styles from "./NowPlayingMovies.module.css";
-import { getMovies } from "@/movieService";
+import { getMovies } from "@/MovieService";
 
 type Movie = {
   id: string;

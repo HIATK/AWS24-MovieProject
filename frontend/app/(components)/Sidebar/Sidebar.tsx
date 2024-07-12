@@ -18,6 +18,7 @@ import {
   SettingsItemWrapper
 } from './SidebarStyles';
 import SearchBar from "@/(components)/SearchBar/SearchBar";
+import ThemeToggle from "@/(components)/DarkModToggle/ThemeToggle";
 
 interface MenuItem {
   icon: JSX.Element;
@@ -34,6 +35,7 @@ const SidebarClient: React.FC = () => {
     { icon: <IoHomeOutline />, text: '홈으로', href: '/' },
     { icon: <IoStatsChartOutline />, text: '데이터사용량', href: '/data-usage' },
     { icon: <BiLink />, text: '내URL', href: '/my-url' },
+
   ];
 
   const settingsItem: MenuItem = { icon: <MdLogin />, text: '로그인', href: '/member/login' };

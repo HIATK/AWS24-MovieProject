@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 import styles from './Modal.module.css';
 import { motion } from 'framer-motion'
-import { getMovieByMovieId } from "@/movieService";
+import { getMovieByMovieId } from "@/MovieService";
 import { getPostsByMovieId, regPost } from "@/PostService";
-import MovieHeader from '@/(components)/MovieHeader';
-import PostList from '@/(components)/PostList';
-import RatingStars from '@/(components)/RatingStars';
+import MovieHeader from '@/(components)/Modal/MovieHeader/MovieHeader';
+import PostList from '@/(components)/Modal/PostList/PostList';
+import RatingStars from '@/(components)/Modal/RatingStar/RatingStars';
 import { useAuth } from "@/(context)/AuthContext"
 import { PostDetails, MovieDetails } from "@/(types)/types";
 
@@ -75,6 +75,10 @@ const MovieModal: React.FC = () => {
         }
         setErrorMsg("");
         console.log('멤버닉포스트한다' + memberNick)
+        if (memberNick === null) {
+            alert('먼저 로그인 해주세요')
+            return;
+        }
         try {
             await regPost(cleanedContent, postRating, movieId, regDate, memberNick);
             const fetchedPosts = await getPostsByMovieId(movieId);

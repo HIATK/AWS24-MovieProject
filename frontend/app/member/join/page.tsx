@@ -1,6 +1,6 @@
 "use client";
 
-import Join from "@/(components)/Member/Join";
+import Join from "@/(components)/Join/Join";
 import styles from "@/page.module.css";
 
 export default function join(){

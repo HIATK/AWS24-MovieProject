@@ -59,6 +59,7 @@
           console.log("체크어쓰 401")
         } else if (response.status === 403) {
           const retryCheckAuth = await refreshAccessToken();
+          retryCheckAuth;
           if (retryCheckAuth) {
             // Retry the checkAuth request with the new access token
             await checkAuth();
