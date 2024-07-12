@@ -33,8 +33,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange>
             {children}
+            <Sidebar />
+
           </ThemeProvider>
-          <Sidebar />
           {modal}
         </AuthProvider>
       </body>
