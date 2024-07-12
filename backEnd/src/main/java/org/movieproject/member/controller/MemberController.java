@@ -11,7 +11,6 @@ import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.entity.Member;
 import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.member.service.MemberService;
-import org.movieproject.security.JwtProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,18 +33,17 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
 
     // 회원가입
     @PostMapping("/join")
     public ResponseEntity<?> join(@Valid @RequestBody MemberDTO memberDTO) {
 
-        log.info("회원가입 진행중 !!!");
+        log.info("회원가입 시작 !!!!!!!!!!!!!!!");
         log.info(memberDTO);
 
         try{
             memberService.memberJoin(memberDTO);
-        } catch (MemberService.MidExistException e) {
+        } catch (MemberService.MemberExistException e) {
             return ResponseEntity.badRequest().body("중복된 아이디 입니다 !!!");
         }
         return ResponseEntity.ok("회원가입에 성공하였습니다 !!!");
@@ -54,6 +52,7 @@ public class MemberController {
     // 프로필
     @GetMapping("/profile")
     public ResponseEntity<?> getMemberDetails() {
+        log.info("프로필 입장 !!!!!!!!!!!!!!!");
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -78,9 +77,10 @@ public class MemberController {
         return member.orElseThrow().getLikeMovies();
     }
 
-    // 회원정보 수정 / 비밀번호 검증
+    // 비밀번호 검증(회원정보 수정 중에)
     @PostMapping("/verifyPw")
     public ResponseEntity<Map<String, Object>> verifyPassword(@RequestBody Map<String, String> request) {
+        log.info("비밀번호 검증 시작 !!!!!!!!!!!!!!!");
         log.info("리퀘스트 !!! : " + request);
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -104,31 +104,25 @@ public class MemberController {
         }
     }
 
-    // 회원정보 수정 / 중복된 닉네임 체크
-//    @PostMapping("/verifyNick")
-//    public ResponseEntity<Map<String, Object>> verifyNick(@RequestBody Map<String, String> request) {
-//        log.info("리퀘스트 !!! : " + request);
-//        try {
-//
-//            if (memberOptional.isPresent()) {
-//                Member member = memberOptional.get();
-//                log.info("멤버 !!! : "+ member);
-//                boolean isPasswordValid = passwordEncoder.matches(request.get("password"), member.getMemberPw());
-//                log.info("isPasswordValid !!! : " + isPasswordValid);
-//                return ResponseEntity.ok(Map.of("isValid", (Object) isPasswordValid));
-//            } else {
-//                return ResponseEntity.badRequest().body(Map.of("error", "사용자를 찾을 수 없습니다."));
-//            }
-//        } catch (JwtException e) {
-//            return ResponseEntity.badRequest().body(Map.of("error", "Invalid token"));
-//        }
-//    }
+    // 중복된 닉네임 체크(회원정보 수정 중에)
+    @GetMapping("/checkNickname")
+    public ResponseEntity<?> checkNickname(@RequestParam String nickname) throws MemberService.MemberExistException {
 
+        log.info("닉네임 체크 시작 !!!!!!!!!!!!!!!");
+
+        boolean isDuplicate = memberRepository.existsByMemberNick(nickname);
+
+        Map<String, Boolean> response = new HashMap<>();
+
+        response.put("isDuplicate", isDuplicate);
+        log.info("닉네임이 중복 돼었나요 ? : " + isDuplicate);
+        return ResponseEntity.ok(response);
+    }
 
     // 회원정보 수정
     @PutMapping("/update")
     public ResponseEntity<?> update(@Valid @RequestBody MemberDTO memberDTO) {
-        log.info("회원 정보 업데이트 시작 !!!"+memberDTO);
+        log.info("회원 정보 업데이트 시작 !!!!!!!!!!!!, memberDTO : "+memberDTO);
 
         try{
             memberRepository.updateMember(passwordEncoder.encode(memberDTO.getMemberPw()),

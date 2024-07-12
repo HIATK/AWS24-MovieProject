@@ -22,13 +22,13 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원가입
     @Override
-    public void memberJoin(MemberDTO memberDTO) throws MidExistException {
+    public void memberJoin(MemberDTO memberDTO) throws MemberExistException {
         // 아이디 중복확인
         String email = memberDTO.getMemberEmail();
         boolean exist = memberRepository.existsByMemberEmail(email);
 
         if (exist) {
-            throw new MemberService.MidExistException("아이디가 중복되었습니다 !!! ");
+            throw new MemberService.MemberExistException("아이디가 중복되었습니다 !!! ");
         }
 
         // 비밀번호 암호화
