@@ -75,6 +75,10 @@ const MovieModal: React.FC = () => {
         }
         setErrorMsg("");
         console.log('멤버닉포스트한다' + memberNick)
+        if (memberNick === null) {
+            alert('먼저 로그인 해주세요')
+            return;
+        }
         try {
             await regPost(cleanedContent, postRating, movieId, regDate, memberNick);
             const fetchedPosts = await getPostsByMovieId(movieId);

@@ -10,4 +10,6 @@ public interface MovieService {
     CompletableFuture<Map<String, String>> getMovieById(String id);
 
     CompletableFuture<List<Map<String, String>>> fetchAndSaveNowPlayingMovies();
+
+//    CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword);
 }
