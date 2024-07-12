@@ -1,32 +1,7 @@
 import React, {useState, useEffect, useRef, ChangeEvent, FormEvent} from "react";
 import axios from "axios";
 import styles from "./profile.module.css";
-import internal from "node:stream";
-
-interface Member {
-    memberNo: number;
-    memberEmail: string;
-    memberName: string;
-    memberPhone: string;
-    memberNick: string;
-}
-
-interface UpdateForm {
-    memberEmail: string;
-    memberName: string;
-    memberPhone: string;
-    memberNick: string;
-    currentPassword: string;
-    newPassword: string;
-    confirmNewPassword: string;
-}
-
-interface Errors {
-    currentPassword?: string;
-    newPassword?: string;
-    confirmNewPassword?: string;
-    memberNick?: string;
-}
+import {Member, Errors, UpdateForm} from "@/(types)/types";
 
 const getMemberDetails = async (): Promise<Member> => {
     const response = await axios.get('/api/member/profile', {
