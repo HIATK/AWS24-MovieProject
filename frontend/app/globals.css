@@ -90,7 +90,6 @@
 /*    --background-start-rgb: 39, 45, 49;*/
 /*    --background-end-rgb: 0, 0, 0;*/
 
-/*    !*//주요 글로우 효과 색상 설정*!*/
 /*    --primary-glow: radial-gradient(rgba(0, 20, 81, 0.4), rgba(1, 65, 255, 0));*/
 /*    !*보조 글로우 효과 색상 설정 *!*/
 /*    --secondary-glow: linear-gradient(*/
@@ -99,7 +98,6 @@
 /*      rgba(1, 65, 255, 0),*/
 /*      rgba(1, 65, 255, 0.3)*/
 /*    );*/
-/*    !*//타일의 시작 생상과 끝 색상 설정*!*/
 /*    --tile-start-rgb: 2, 13, 46;*/
 /*    --tile-end-rgb: 2, 5, 19;*/
 /*    --tile-border: conic-gradient(*/
@@ -132,24 +130,20 @@ body {
   overflow-x: hidden;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
+/*body {*/
+/*  color: rgb(var(--foreground-rgb));*/
+/*  background: linear-gradient(*/
+/*      to bottom,*/
+/*      transparent,*/
+/*      rgb(var(--background-end-rgb))*/
+/*    )*/
+/*    rgb(var(--background-start-rgb));*/
+/*}*/
 
+/*사이드바 색상 건들면 이상해집니다.*/
 a {
   color: inherit;
   text-decoration: none;
 }
-/*다크 모드 미디어 쿼리 설정 입니당*/
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
-/*다크 모드 미디어 쿼리 설정 END*/
+/*사이드바 색상 건들면 이상해집니다.END*/
+
