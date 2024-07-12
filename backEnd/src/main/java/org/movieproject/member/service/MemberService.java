@@ -6,17 +6,17 @@ import org.movieproject.upload.dto.UploadResultDTO;
 
 public interface MemberService {
 
-    // 아이디 중복확인
-    public class MidExistException extends Exception {
-        public MidExistException() {
+    // 아이디/닉네임 중복확인
+    public class MemberExistException extends Exception {
+        public MemberExistException() {
             super();
         }
-        public MidExistException(String message) {
+        public MemberExistException(String message) {
             super(message);
         }
     }
 
     // 회원가입
-    void memberJoin(MemberDTO memberDTO) throws MemberService.MidExistException;
+    void memberJoin(MemberDTO memberDTO) throws MemberService.MemberExistException;
 
 }

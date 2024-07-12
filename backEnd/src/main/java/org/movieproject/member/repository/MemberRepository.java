@@ -28,6 +28,10 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     @Transactional(readOnly = true)
     boolean existsByMemberEmail(String memberEmail);
 
+    // 닉네임 중복 확인
+    @Transactional(readOnly = true)
+    boolean existsByMemberNick(String memberNick);
+
     // 회원 정보 수정
     @Modifying
     @Transactional
