@@ -1,5 +1,6 @@
 package org.movieproject.member.controller;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import org.movieproject.member.entity.Member;
 import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.member.service.MemberService;
+import org.movieproject.security.JwtProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -32,6 +34,7 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
     // 회원가입
     @PostMapping("/join")
@@ -48,6 +51,7 @@ public class MemberController {
         return ResponseEntity.ok("회원가입에 성공하였습니다 !!!");
     }
 
+    // 프로필
     @GetMapping("/profile")
     public ResponseEntity<?> getMemberDetails() {
         try {
@@ -67,6 +71,7 @@ public class MemberController {
         }
     }
 
+    // 프로필 찜 목록
     @GetMapping("/likes")
     public List<Like> getLikeMovies(@AuthenticationPrincipal UserDetails userDetails) {
         Optional<Member> member = memberRepository.findByMemberEmailWithRoles(userDetails.getUsername());
@@ -130,7 +135,7 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> logout(HttpServletResponse response) {
         // accessToken 쿠키 삭제
         Cookie accessTokenCookie = new Cookie("accessToken", null);
         accessTokenCookie.setHttpOnly(true);
