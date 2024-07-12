@@ -1,0 +1,23 @@
+/* styles/theme.css */
+:root {
+    --background-light: #ffffff;
+    --text-light: #333333;
+    --background-dark: #333333;
+    --text-dark: #ffffff;
+}
+
+[data-theme='light'] {
+    --background: var(--background-light);
+    --text: var(--text-light);
+}
+
+[data-theme='dark'] {
+    --background: var(--background-dark);
+    --text: var(--text-dark);
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    transition: background-color 0.3s, color 0.3s;
+}
