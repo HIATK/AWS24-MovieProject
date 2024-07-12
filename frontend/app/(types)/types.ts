@@ -15,3 +15,28 @@ export interface MovieDetails {
     runtime: number;
     genres: { name: string }[];
 }
+
+export interface Member {
+    memberNo: number;
+    memberEmail: string;
+    memberName: string;
+    memberPhone: string;
+    memberNick: string;
+}
+
+export interface UpdateForm {
+    memberEmail: string;
+    memberName: string;
+    memberPhone: string;
+    memberNick: string;
+    currentPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
+}
+
+export interface Errors {
+    currentPassword?: string;
+    newPassword?: string;
+    confirmNewPassword?: string;
+    memberNick?: string;
+}
