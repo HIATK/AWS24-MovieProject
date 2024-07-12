@@ -17,21 +17,23 @@ const Profile: React.FC = () => {
   const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
   const [newName, setNewName] = useState("");
   const [newNickname, setNewNickname] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const [newPhone, setNewPhone] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [profileImagePath, setProfileImagePath] = useState("/profile/basic.png"); // 이미지 경로 상태 관리
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const fetchMemberDetails = async () => {
       try {
-        const response = await axios.get<Member>("api/member/profile", {
-          baseURL: "http://localhost:8000",
-          withCredentials: true,
-        });
+        const response = await axios.get<Member>("/api/member/profile");
         setMember(response.data);
         setNewName(response.data.memberName);
         setNewNickname(response.data.memberNick);
         setNewPhone(response.data.memberPhone);
+        //  프로필 이미지 로드
+        const profileImage = await axios.get<string>(`/api/image/read/${response.data.memberNo}`);
+        setProfileImagePath(profileImage.data);
       } catch (error) {
         console.error("Failed to fetch member details", error);
       }
@@ -43,19 +45,18 @@ const Profile: React.FC = () => {
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      setFile(file);
       const formData = new FormData();
-      formData.append("profileImage", file);
+      formData.append("file", file);
+      formData.append("memberNo", member?.memberNo.toString() || ""); // 멤버 번호 사용
+
       axios
-        .post("/api/profile-image", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+        .post<string>("/api/image/upload", formData)
         .then((response) => {
-          console.log("Profile image updated", response.data);
-          window.location.reload();
+          console.log("이미지가 변경되었습니다.", response.data);
+          setProfileImagePath(response.data); // 서버로부터 반환된 이미지 경로로 설정
         })
-        .catch((error) =>
-          console.error("Error updating profile image:", error)
-        );
+        .catch((error) => console.error("이미지 변경에 실패했습니다.", error));
     }
   };
 
@@ -101,7 +102,7 @@ const Profile: React.FC = () => {
         <div className={styles.profileSection}>
           <div className={styles.profileImage}>
             <img
-              src="/profile/basic.png"
+              src={profileImagePath}
               alt="Profile"
               className={styles.profileImageContent}
             />

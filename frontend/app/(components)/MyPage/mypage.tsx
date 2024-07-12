@@ -46,23 +46,26 @@ const MyPage: React.FC = () => {
   }, []);
 
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const memberNo = 1; // 회원 번호를 적절하게 설정하세요.
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setProfileImage(file);
-      const formData = new FormData();
-      formData.append("profileImage", file);
-      axios
-        .post("/api/profile/upload", formData)
-        .then((response) => {
-          console.log("이미지가 변경되었습니다..", response.data);
-          // 새로고침
-          window.location.reload();
-        })
-        .catch((error) =>
-          console.error("이미지 변경에 실패했습니다.", error)
-        );
+        const file = e.target.files[0];
+        setProfileImage(file);
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("memberNo", memberNo.toString()); // memberNo 추가
+
+        axios
+            .post("/api/image/upload", formData)
+            .then((response) => {
+                console.log("이미지가 변경되었습니다.", response.data);
+                // 새로고침
+                window.location.reload();
+            })
+            .catch((error) =>
+                console.error("이미지 변경에 실패했습니다.", error)
+            );
     }
-  };
+};
 
   const handleUpdateProfile = () => {
     setIsEditing(true);
