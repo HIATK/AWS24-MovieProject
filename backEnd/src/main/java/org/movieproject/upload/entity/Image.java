@@ -22,7 +22,5 @@
         @JoinColumn(name = "memberNo")
         private Member member;
 
-        //  프로필 이미지 수정
-        public void changeImage(String filePath){this.filePath = filePath;}
 
     }
