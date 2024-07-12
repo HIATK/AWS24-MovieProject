@@ -29,7 +29,7 @@ interface Errors {
 }
 
 const getMemberDetails = async (): Promise<Member> => {
-    const response = await axios.get('api/member/profile', {
+    const response = await axios.get('/api/member/profile', {
         baseURL: 'http://localhost:8000',
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
@@ -110,6 +110,17 @@ const Profile: React.FC = () => {
                     newPassword: '',
                     confirmNewPassword: '',
                 }));
+
+                //  프로필 이미지 경로 가져오기
+                const profileImagePathReponse = await axios.get<string>("/api/image/profile", {
+                    params: { memberNo: data.memberNo},
+                    baseURL: "http://localhost:8000",
+                    headers: { "Content-Type": "application/json"},
+                    withCredentials: true,
+                    credentials: "include",
+                });
+                setProfileImagePath(`profileImagePathReponse.data`);
+                
             } catch (error) {
                 console.error('Failed to fetch member details', error);
             }
@@ -131,7 +142,7 @@ const Profile: React.FC = () => {
             setFile(file);
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("memberNo", member?.memberNo.toString() || ""); // 멤버 번호 사용
+            formData.append("memberNo", member?.memberNo.toString()); // 멤버 번호 사용
 
             axios
                 .post<string>("/api/image/upload", formData)
@@ -222,7 +233,7 @@ const Profile: React.FC = () => {
                 <div className={styles.profileSection}>
                     <div className={styles.profileImage}>
                         <img
-                            src="/profile/basic.png"
+                            src= {profileImagePath}
                             alt="Profile"
                             className={styles.profileImageContent}
                         />

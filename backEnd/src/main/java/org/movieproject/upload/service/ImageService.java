@@ -15,8 +15,4 @@ public interface ImageService {
     //  이미지 조회
     Image getProfileImage(Integer memberNo);
 
-
-
-
-
 }
