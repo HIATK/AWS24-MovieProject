@@ -1,6 +1,8 @@
 // next.config.js
 module.exports = {
-  async rewrites() {
+    reactStrictMode:true,
+    swcMinify:true,
+    async rewrites() {
       return [
           {
                   ///api/:path* <-들어갈수있음
