@@ -23,7 +23,7 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public CompletableFuture<Map<String, String>> getMovieById(@PathVariable String id) {
+    public CompletableFuture<Map<String, String>> getMovieById(@PathVariable Integer id) {
         return movieService.getMovieById(id);
     }
 
