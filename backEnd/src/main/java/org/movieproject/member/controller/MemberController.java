@@ -140,18 +140,35 @@ public class MemberController {
     }
 
     @GetMapping("/check_auth")
-    public ResponseEntity<Object> checkAuth() {
+    public ResponseEntity<?> checkAuth() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated()) {
+            if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증되지 않은 사용자입니다.");
             }
 
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            Set<String> roles = authorities.stream()
+            String username = null;
+            if (authentication.getPrincipal() instanceof UserDetails userDetails) {
+                username = userDetails.getUsername(); // 일반적으로 이메일이나 ID를 반환
+            }
+
+            Set<String> roles = authentication.getAuthorities().stream()
                     .map(grantedAuthority -> grantedAuthority.getAuthority().replace("ROLE_", ""))
                     .collect(Collectors.toSet());
-            return ResponseEntity.ok(roles);
+
+            String memberNick = null;
+            if (username != null) {
+                Member member = memberRepository.findByMemberEmail(username)
+                        .orElseThrow(() -> new RuntimeException("Member not found"));
+                memberNick = member.getMemberNick();
+            }
+
+            Map<String, Object> authInfo = new HashMap<>();
+            authInfo.put("roles", roles);
+            authInfo.put("memberNick", memberNick);
+            log.info("멤버닉 서버에서 보낸다: " + memberNick);
+
+            return ResponseEntity.ok(authInfo);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("체크어쓰 실패");
