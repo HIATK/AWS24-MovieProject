@@ -23,6 +23,7 @@ public class ImageServiceImpl implements ImageService {
 
     private static final String UPLOAD_DIR = "C:\\Users\\tjoeun\\IdeaProjects\\AWS24-MovieProject\\frontend\\public\\profile";
 
+    //  이미지 등록 및 저장
     @Override
     public void saveImage(MultipartFile file, Integer memberNo) throws IOException {
         //  파일 저장
@@ -40,4 +41,11 @@ public class ImageServiceImpl implements ImageService {
 
         imageRepository.save(image);
     }
+
+    @Override
+    public Image getProfileImage(Integer memberNo) {
+        return imageRepository.findByMemberMemberNo(memberNo)
+                .orElseThrow(() -> new RuntimeException("해당 회원의 프로필 이미지를 찾을 수 없음" + memberNo));
+    }
+
 }

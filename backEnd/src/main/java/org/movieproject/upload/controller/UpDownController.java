@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.movieproject.upload.dto.UploadResultDTO;
+import org.movieproject.upload.entity.Image;
 import org.movieproject.upload.repository.ImageRepository;
 import org.movieproject.upload.service.ImageService;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/image/upload")
+@RequestMapping("/api/image")
 @RequiredArgsConstructor
 @Log4j2
 public class UpDownController {
@@ -34,13 +35,13 @@ public class UpDownController {
     private static final String UPLOAD_DIR = "C:\\upload";
     private final ImageRepository imageRepository;
 
-    @PostMapping
+    @PostMapping("/upload")
     @Operation(summary = "이미지 업로드", description = "이미지를 업로드하고 저장합니다.")
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file,
                                                        @RequestParam("memberNo") Integer memberNo) {
         try {
             imageService.saveImage(file, memberNo);
-            String fullPath = imageRepository.findByMemberMemberNo(1).orElseThrow().getFilePath();
+            String fullPath = imageRepository.findByMemberMemberNo(memberNo).orElseThrow().getFilePath();
             String result = extractPublicPath(fullPath);
             log.info("파일 패쓰다" +result);
 
@@ -52,7 +53,7 @@ public class UpDownController {
         }
     }
 
-    @GetMapping("/{fileName}")
+    @GetMapping("/download/{fileName}")
     @Operation(summary = "이미지 다운로드", description = "이미지를 다운로드합니다.")
     public ResponseEntity<Resource> downloadImage(@PathVariable String fileName) {
         try {
@@ -68,10 +69,30 @@ public class UpDownController {
         }
     }
 
+    @GetMapping("/read/{memberNo}")
+    @Operation(summary = "프로필 이미지 조회", description = "회원 번호를 기준으로 프로필 이미지를 조회합니다.")
+    public ResponseEntity<UploadResultDTO> getProfileImageByMemberNo(@PathVariable Integer memberNo) {
+
+        try {
+            Image image = imageService.getProfileImage(memberNo);
+            UploadResultDTO uploadResultDTO = UploadResultDTO.builder()
+                    .uuid(image.getUuid())
+                    .filePath(image.getFilePath())
+                    .memberId(image.getMember().getMemberNo())
+                    .build();
+            return ResponseEntity.ok(uploadResultDTO);
+        } catch (Exception e) {
+            log.error("프로필 이미지 조회 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
     public static String extractPublicPath(String fullPath) {
         String publicDir = "\\profile";
         int index = fullPath.indexOf(publicDir);
         return fullPath.substring(index + publicDir.length());
     }
+
 
 }
