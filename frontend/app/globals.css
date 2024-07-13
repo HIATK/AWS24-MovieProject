@@ -148,11 +148,13 @@ a {
 /*!*사이드바 색상 건들면 이상해집니다.END*!*/
 
 :root {
-  --background-light: #d8cfcf;
-  --text-light: #333333;
+  --background-light: rgba(241, 241, 241, 0.96);
   --background-dark: rgb(33, 33, 30);
+
+  --text-light: #333333;
   --text-dark: #ffffff;
-  --input-background-light: #f0f0f0;
+
+  --input-background-light: #ffffff;
   --input-background-dark: #555555;
 }
 

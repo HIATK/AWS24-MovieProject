@@ -18,6 +18,8 @@ export const SidebarContainer = styled.div<StyledProps>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-bottom-right-radius: 13px;
+  border-top-right-radius: 13px;
 `;
 
 export const MenuList = styled.ul`
@@ -37,18 +39,22 @@ export const MenuItemWrapper = styled.li<StyledProps>`
   cursor: pointer;
 
   &:hover {
-    background-color: ${({ $isOpen, $theme }) => 
-      $isOpen 
-        ? $theme === 'light' 
-          ? 'rgba(0,0,0,0.05)' 
-          : 'rgba(255,255,255,0.1)'
-        : 'transparent'};
+    background-color: ${({ $isOpen, $theme }) =>
+        $isOpen
+            ? $theme === 'light'
+                ? 'rgba(0,0,0,0.05)'
+                : 'rgba(255,255,255,0.1)'
+            : 'transparent'};
   }
 `;
 
 export const SettingsItemWrapper = styled(MenuItemWrapper)<StyledProps>`
   margin-top: auto;
   margin-bottom: 20px;
+`;
+
+export const ThemeToggleWrapper = styled(MenuItemWrapper)<StyledProps>`
+  margin-top: auto;
 `;
 
 export const MenuLink = styled.div`
@@ -97,4 +103,8 @@ export const HoverText = styled.div<StyledProps>`
     opacity: ${({ $isOpen }) => ($isOpen ? '0' : '1')};
     left: ${({ $isOpen }) => ($isOpen ? '60px' : 'calc(100% + 5px)')};
   }
+`;
+
+export const SearchBarWrapper = styled.div`
+  padding: 10px;
 `;

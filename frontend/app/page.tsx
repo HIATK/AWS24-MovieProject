@@ -7,7 +7,6 @@ export default function Index() {
     <div className={styles.background} />
       <main className={styles.main}>
         <div className={styles.description}>
-          <SearchBar underlineColor="#5FBEBBFF"/>
           <NowPlayingMovies />
         </div>
       </main>
