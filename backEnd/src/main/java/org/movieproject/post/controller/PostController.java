@@ -45,4 +45,10 @@ public class PostController {
     public List<PostDTO> getPostByMovieId(@PathVariable("movieId") Integer movieId) {
         return postService.getPostByMovieId(movieId);
     }
+
+    @GetMapping("/average-rating/{movieId}")
+    public ResponseEntity<Double> getAverageRatingByMovieId(@PathVariable Integer movieId) {
+        Double averageRating = postService.getAverageRatingByMovieId(movieId);
+        return ResponseEntity.ok(averageRating);
+    }
 }

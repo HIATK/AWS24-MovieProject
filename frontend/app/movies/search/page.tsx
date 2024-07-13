@@ -43,7 +43,7 @@ const SearchResults = () => {
                 <ul className={styles["movie-items"]}>
                     {results.map((movie) => (
                         <li key={movie.id} className={styles["movie-item"]}>
-                            <Link href={`/movies/${movie.id}`}>
+                            <Link href={`/movies/details/${movie.id}`}>
                                 <img
                                     src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
                                     alt={`Poster for ${movie.title}`}

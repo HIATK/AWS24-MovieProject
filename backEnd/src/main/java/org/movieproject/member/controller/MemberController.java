@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.movieproject.like.entity.Like;
+import org.movieproject.likes.entity.Likes;
 import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.entity.Member;
 import org.movieproject.member.repository.MemberRepository;
@@ -14,7 +14,6 @@ import org.movieproject.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -72,7 +71,7 @@ public class MemberController {
 
     // 프로필 찜 목록
     @GetMapping("/likes")
-    public List<Like> getLikeMovies(@AuthenticationPrincipal UserDetails userDetails) {
+    public List<Likes> getLikeMovies(@AuthenticationPrincipal UserDetails userDetails) {
         Optional<Member> member = memberRepository.findByMemberEmailWithRoles(userDetails.getUsername());
         return member.orElseThrow().getLikeMovies();
     }
@@ -157,16 +156,20 @@ public class MemberController {
                     .collect(Collectors.toSet());
 
             String memberNick = null;
+            Integer memberNo = null;
             if (username != null) {
                 Member member = memberRepository.findByMemberEmail(username)
                         .orElseThrow(() -> new RuntimeException("Member not found"));
                 memberNick = member.getMemberNick();
+                memberNo = member.getMemberNo(); // memberNo 추가
             }
 
             Map<String, Object> authInfo = new HashMap<>();
             authInfo.put("roles", roles);
             authInfo.put("memberNick", memberNick);
-            log.info("멤버닉 서버에서 보낸다: " + memberNick);
+            authInfo.put("memberNo", memberNo); // memberNo 추가
+            log.info("멤버닉 from 서버 : " + memberNick);
+            log.info("멤버노 from 서버 : " + memberNo);
 
             return ResponseEntity.ok(authInfo);
 
@@ -174,6 +177,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("체크어쓰 실패");
         }
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {

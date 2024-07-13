@@ -3,8 +3,10 @@ package org.movieproject.movie.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.movieproject.likes.entity.Likes;
 import org.movieproject.post.entity.Post;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,5 +24,10 @@ public class Movie {
     private String movieTitle;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> post;
+    @Builder.Default
+    private List<Post> post = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Likes> likes = new ArrayList<>();
 }

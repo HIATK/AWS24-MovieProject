@@ -19,17 +19,30 @@ public class MovieController {
 
     @GetMapping("/now-playing")
     public CompletableFuture<List<Map<String, String>>> getNowPlayingMovies() {
-        return movieService.fetchAndSaveNowPlayingMovies();
+        return movieService.getNowPlayingMovies()
+                .thenApply(movies -> {
+                    movieService.saveMovies(movies); // 검색된 영화를 저장
+                    return movies;
+                });
     }
 
-    @GetMapping("/{id}")
-    public CompletableFuture<Map<String, String>> getMovieById(@PathVariable Integer id) {
-        return movieService.getMovieById(id);
+    @GetMapping("/{movieId}")
+    public CompletableFuture<Map<String, String>> getMovieByMovieId(@PathVariable Integer movieId) {
+        return movieService.getMovieByMovieId(movieId);
     }
 
     @GetMapping("/search")
     public CompletableFuture<List<Map<String, String>>> searchMovies(@RequestParam String keyword) {
-        log.info("키워드" + keyword);
-        return movieService.searchMovieByKeyword(keyword);
+        log.info("키워드: " + keyword);
+        return movieService.searchMovieByKeyword(keyword)
+                .thenApply(movies -> {
+                    movieService.saveMovies(movies); // 검색된 영화를 저장
+                    return movies;
+                });
+    }
+
+    @GetMapping("/videos/{movieId}")
+    public CompletableFuture<List<String>> getVideosByMovieId(@PathVariable Integer movieId) {
+        return movieService.getYoutubeVideoKeys(movieId);
     }
 }

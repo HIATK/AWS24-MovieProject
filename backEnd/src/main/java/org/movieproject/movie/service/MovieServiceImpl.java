@@ -13,10 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -89,23 +86,13 @@ public class MovieServiceImpl implements MovieService {
 
     @Async
     @Override
-    public CompletableFuture<List<Map<String, String>>> fetchAndSaveNowPlayingMovies() {
-        return getNowPlayingMovies()
-                .thenApply(movies -> {
-                    saveMovies(movies);
-                    return movies;
-                });
-    }
-
-    @Async
-    @Override
-    public CompletableFuture<Map<String, String>> getMovieById(Integer id) {
+    public CompletableFuture<Map<String, String>> getMovieByMovieId(Integer movieId) {
         return this.getWebClient().get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}")
                         .queryParam("language", "ko-KR")
                         .queryParam("api_key", apiKey)
-                        .build(id))
+                        .build(movieId))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .map(movie -> Map.of(
@@ -144,6 +131,29 @@ public class MovieServiceImpl implements MovieService {
                                 movieInfo.put("overview", String.valueOf(movie.get("overview")));
                                 return movieInfo;
                             })
+                            .collect(Collectors.toList());
+                })
+                .toFuture();
+    }
+
+    @Async
+    @Override
+    public CompletableFuture<List<String>> getYoutubeVideoKeys(Integer movieId) {
+        return this.webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/{id}/videos")
+                        .queryParam("language", "ko-KR")
+                        .queryParam("api_key", apiKey)
+                        .build(movieId))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .map(response -> {
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, String>> results = (List<Map<String, String>>) response.get("results");
+
+                    return results.stream()
+                            .filter(result -> "YouTube".equalsIgnoreCase(result.get("site")))
+                            .map(result -> result.get("key"))
                             .collect(Collectors.toList());
                 })
                 .toFuture();

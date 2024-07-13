@@ -22,7 +22,7 @@ public class Post {
     private String postContent;
 
     // 별점
-    private int ratingStar;
+    private Integer ratingStar;
 
     // 등록 날짜
     private LocalDate regDate;
@@ -37,15 +37,6 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-
-    // Entity 내에서 변경할 수 있는 내용들을 메소드로 구성
-    public void changeContent(String postContent) {
-        this.postContent = postContent;
-    }
-
-    public void changeRatingStar(int ratingStar) {
-        this.ratingStar = ratingStar;
-    }
 
     @PrePersist
     public void prePersist() {

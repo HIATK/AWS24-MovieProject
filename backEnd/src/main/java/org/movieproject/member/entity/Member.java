@@ -2,7 +2,8 @@ package org.movieproject.member.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.movieproject.like.entity.Like;
+import org.movieproject.likes.entity.Likes;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,11 +52,11 @@ public class Member {
     // 다대일 정의/매핑, 역방향 관계 / member 엔티티의 변경이 like 엔티티에도 전파되도록 설정한 것
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Like> likes = new ArrayList<>();
+    private List<Likes> likes = new ArrayList<>();
 
     // 좋아요 (like) 참조 END
 
-    public List<Like> getLikeMovies() {
+    public List<Likes> getLikeMovies() {
         return likes;
     }
 }

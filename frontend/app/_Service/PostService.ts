@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PostDetails } from './(types)/types';
+import { PostDetails } from '../(types)/types';
 
 export const getPostsByMovieId = async (movieId: number): Promise<PostDetails[]> => {
     try {
@@ -11,13 +11,12 @@ export const getPostsByMovieId = async (movieId: number): Promise<PostDetails[]>
     }
 };
 
-export const regPost = async (content: string, rating: number, movieId: number, regDate: string, memberNick: string): Promise<void> => {
+export const regPost = async (content: string, rating: number, movieId: number, memberNick: string): Promise<void> => {
     try {
         const postData = {
             postContent: content,
             ratingStar: rating,
             movieId: movieId,
-            regDate: regDate,
             memberNick: memberNick
         };
         console.log("Sending post data:", postData);
@@ -27,4 +26,14 @@ export const regPost = async (content: string, rating: number, movieId: number, 
         console.error("Error submitting post:", error);
         throw error;
     }
+};
+
+export const getAverageRatingByMovieId = async (movieId: number) => {
+    try {
+        const response = await axios.get(`/api/posts/average-rating/${movieId}`);
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching average rating:", error);
+        throw error;
+      }
 };
