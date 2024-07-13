@@ -89,16 +89,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Async
     @Override
-    public CompletableFuture<List<Map<String, String>>> fetchAndSaveNowPlayingMovies() {
-        return getNowPlayingMovies()
-                .thenApply(movies -> {
-                    saveMovies(movies);
-                    return movies;
-                });
-    }
-
-    @Async
-    @Override
     public CompletableFuture<Map<String, String>> getMovieById(Integer id) {
         return this.getWebClient().get()
                 .uri(uriBuilder -> uriBuilder

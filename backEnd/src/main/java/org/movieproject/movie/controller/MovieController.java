@@ -19,7 +19,11 @@ public class MovieController {
 
     @GetMapping("/now-playing")
     public CompletableFuture<List<Map<String, String>>> getNowPlayingMovies() {
-        return movieService.fetchAndSaveNowPlayingMovies();
+        return movieService.getNowPlayingMovies()
+                .thenApply(movies -> {
+                    movieService.saveMovies(movies); // 검색된 영화를 저장
+                    return movies;
+                });
     }
 
     @GetMapping("/{id}")
@@ -29,7 +33,11 @@ public class MovieController {
 
     @GetMapping("/search")
     public CompletableFuture<List<Map<String, String>>> searchMovies(@RequestParam String keyword) {
-        log.info("키워드" + keyword);
-        return movieService.searchMovieByKeyword(keyword);
+        log.info("키워드: " + keyword);
+        return movieService.searchMovieByKeyword(keyword)
+                .thenApply(movies -> {
+                    movieService.saveMovies(movies); // 검색된 영화를 저장
+                    return movies;
+                });
     }
 }
