@@ -85,7 +85,7 @@
 
 .textarea:focus {
   height: 10rem;
-  padding: 1rem;
+  padding: 0.3rem;
 }
 
 .ratingAndButton {

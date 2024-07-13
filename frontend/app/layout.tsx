@@ -25,13 +25,16 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+
+
       <ThemeProvider>
-        <AuthProvider>
-        {modal}
+          <AuthProvider>
+
           {children}
-        <Sidebar />
-          
-        </AuthProvider>
+          <Sidebar />
+          {modal}
+
+          </AuthProvider>
       </ThemeProvider>
       </body>
     </html>
