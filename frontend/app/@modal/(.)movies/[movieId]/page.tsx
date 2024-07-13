@@ -11,8 +11,10 @@ import PostList from '@/(components)/Modal/PostList/PostList';
 import RatingStars from '@/(components)/Modal/RatingStar/RatingStars';
 import { useAuth } from "@/(context)/AuthContext"
 import { PostDetails, MovieDetails } from "@/(types)/types";
+import useTheme from "next-theme";
 
 const MovieModal: React.FC = () => {
+    const { theme } = useTheme();
     const { memberNick } = useAuth();
     const regDate = ''
     const pathname = usePathname();
@@ -117,23 +119,23 @@ const MovieModal: React.FC = () => {
     }
 
     return (
-        <div className={styles.modalOverlay} onClick={handleOverlayClick}>
+        <div className={`${styles.modalOverlay} ${styles[theme]}`} onClick={handleOverlayClick}>
             <motion.div
-                className={styles.modalContent}
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                className={`${styles.modalContent} ${styles[theme]}`}
+                initial={{opacity: 0, y: -50}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5}}
                 onClick={(e) => e.stopPropagation()}
             >
-                <button className={styles.closeButton} onClick={closeModal}>X</button>
-                <div className={styles.content}>
-                    <MovieHeader movie={movie} liked={liked} onLike={handleLike} />
-                    <form onSubmit={handlePostSubmit} className={styles.form}>
-                        <label className={styles.label}>
+                <button className={`${styles.closeButton} ${styles[theme]}`} onClick={closeModal}>X</button>
+                <div className={`${styles.content} ${styles[theme]}`}>
+                    <MovieHeader movie={movie} liked={liked} onLike={handleLike}/>
+                    <form onSubmit={handlePostSubmit} className={`${styles.form} ${styles[theme]}`}>
+                        <label className={`${styles.label} ${styles[theme]}`}>
                             <textarea
                                 value={postContent}
                                 onChange={(e) => setPostContent(e.target.value)}
-                                className={`${styles.textarea} ${postContent ? styles.expandedTextarea : ''}`}
+                                className={`${styles.textarea} ${postContent ? styles.expandedTextarea : ''} ${styles[theme]}`}
                                 onFocus={() => setShowRating(true)}
                             />
                         </label>
@@ -148,7 +150,7 @@ const MovieModal: React.FC = () => {
                                     />
                                     {ratingError && <div className={styles.ratingError}>{ratingError}</div>}
                                     <div className={styles.buttonContainer}>
-                                        <button type='submit' className={styles.button}>
+                                        <button type='submit' className={`${styles.button} ${styles[theme]}`}>
                                             게시
                                         </button>
                                     </div>
@@ -157,7 +159,7 @@ const MovieModal: React.FC = () => {
                         </div>
                     </form>
                     <div className={styles.postListWrapper}>
-                        <PostList posts={posts} />
+                        <PostList posts={posts}/>
                     </div>
                 </div>
             </motion.div>
