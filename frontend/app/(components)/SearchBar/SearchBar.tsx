@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './SearchBar.module.css';
+import { useTheme } from '@/(components)/DarkModToggle/ThemeContext';
+import { FaSearch } from 'react-icons/fa';
 
 interface SearchBarProps {
     underlineColor?: string;
@@ -13,6 +15,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ underlineColor = '#ffffff' }) => 
     const [searchTerm, setSearchTerm] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
     const hiddenButtonRef = useRef<HTMLButtonElement>(null);
+    const { theme } = useTheme();
 
     useEffect(() => {
         if (isExpanded && inputRef.current) {
@@ -29,20 +32,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ underlineColor = '#ffffff' }) => 
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setTimeout(() => {
-            if (hiddenButtonRef.current) {
-                hiddenButtonRef.current.click();
-            }
-        }, 1000);
+        if (hiddenButtonRef.current) {
+            hiddenButtonRef.current.click();
+        }
     };
 
     return (
         <div className={`${styles.searchContainer} ${isExpanded ? styles.expanded : ''}`}>
             <button type="button" onClick={handleToggle} className={styles.searchButton}>
-                <svg className={styles.searchIcon} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
+                <FaSearch className={`${styles.searchIcon} ${styles[theme]}`} size={24} />
             </button>
             <form onSubmit={handleSearch} className={styles.searchForm}>
                 <input
@@ -54,10 +52,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ underlineColor = '#ffffff' }) => 
                     className={styles.searchInput}
                 />
                 <div className={styles.underline} style={{ backgroundColor: underlineColor }}></div>
-                <Link href={`/movies/search?keyword=${encodeURIComponent(searchTerm)}`} passHref>
-                    <button ref={hiddenButtonRef} style={{ display: 'none' }}>Search</button>
-                </Link>
             </form>
+            <Link href={`/movies/search?keyword=${encodeURIComponent(searchTerm)}`} passHref>
+                <button ref={hiddenButtonRef} style={{ display: 'none' }}>Search</button>
+            </Link>
         </div>
     );
 };
