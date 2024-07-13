@@ -23,13 +23,14 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body>
       <ThemeProvider>
         <AuthProvider>
+        {modal}
           {children}
         <Sidebar />
-          {modal}
+          
         </AuthProvider>
       </ThemeProvider>
       </body>

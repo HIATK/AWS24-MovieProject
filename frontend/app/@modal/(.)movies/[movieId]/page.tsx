@@ -13,7 +13,7 @@ import { useAuth } from "@/(context)/AuthContext"
 import { PostDetails, MovieDetails } from "@/(types)/types";
 
 const MovieModal: React.FC = () => {
-    const { memberNick } = useAuth(); // useAuth 훅에서 memberNick 추출
+    const { memberNick } = useAuth();
     const regDate = ''
     const pathname = usePathname();
     const movieId = parseInt(pathname.split('/').pop() || '0', 10);
@@ -28,10 +28,23 @@ const MovieModal: React.FC = () => {
     const [ratingError, setErrorMsg] = useState("");
     const [posts, setPost] = useState<PostDetails[]>([]);
 
+    // 모달창 스크롤 방지 스크립트
+    useEffect(() => {
+        // 모달이 열릴 때 body에 overflow: hidden 적용
+        document.body.style.overflow = 'hidden';
+        
+        // 컴포넌트가 언마운트될 때 원래 상태로 복구
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
+   
     const closeModal = () => {
+        // 모달을 닫을 때 body 스타일 복구
+        document.body.style.overflow = 'unset';
         window.history.back();
     };
-
+     //모달창 스크롤방지 스크립트 END
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (e.target === e.currentTarget) {
             closeModal();
