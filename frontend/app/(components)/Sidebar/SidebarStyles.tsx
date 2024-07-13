@@ -18,6 +18,8 @@ export const SidebarContainer = styled.div<StyledProps>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-bottom-right-radius: 13px;
+  border-top-right-radius: 13px;
 `;
 
 export const MenuList = styled.ul`
