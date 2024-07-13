@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 interface StyledProps {
-  $isOpen: boolean; // Transient prop
+  $isOpen: boolean;
+  $theme?: 'light' | 'dark';
 }
 
 export const SidebarContainer = styled.div<StyledProps>`
@@ -10,9 +11,9 @@ export const SidebarContainer = styled.div<StyledProps>`
   left: 0;
   width: ${({$isOpen}) => ($isOpen ? '150px' : '60px')};
   height: 100vh;
-  background-color: rgba(33, 33, 33, 0.53);
-  color: #5fbebb;
-  transition: width 0.3s ease;
+  background-color: ${({$theme}) => $theme === 'light' ? 'rgba(240, 240, 240, 0.9)' : 'rgba(33, 33, 33, 0.9)'};
+  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
+  transition: width 0.3s ease, background-color 0.3s ease, color 0.3s ease;
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -36,7 +37,12 @@ export const MenuItemWrapper = styled.li<StyledProps>`
   cursor: pointer;
 
   &:hover {
-    background-color: ${({ $isOpen }) => ($isOpen ? 'rgba(255,255,255,0.03)' : 'transparent')};
+    background-color: ${({ $isOpen, $theme }) => 
+      $isOpen 
+        ? $theme === 'light' 
+          ? 'rgba(0,0,0,0.05)' 
+          : 'rgba(255,255,255,0.1)'
+        : 'transparent'};
   }
 `;
 
@@ -54,19 +60,21 @@ export const MenuLink = styled.div`
   cursor: pointer;
 `;
 
-export const Icon = styled.div`
+export const Icon = styled.div<{$theme?: 'light' | 'dark'}>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
   flex-shrink: 0;
+  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
 `;
 
 export const MenuText = styled.div<StyledProps>`
   margin-left: 10px;
   white-space: nowrap;
   display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
+  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
 `;
 
 export const HoverText = styled.div<StyledProps>`
@@ -74,8 +82,8 @@ export const HoverText = styled.div<StyledProps>`
   left: ${({ $isOpen }) => ($isOpen ? '60px' : '100%')};
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(33, 33, 33, 0.85);
-  color: #5fbebb;
+  background-color: ${({$theme}) => $theme === 'light' ? 'rgba(240, 240, 240, 0.9)' : 'rgba(33, 33, 33, 0.9)'};
+  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
   padding: 5px 10px;
   border-radius: 4px;
   font-size: 14px;

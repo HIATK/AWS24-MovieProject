@@ -1,9 +1,10 @@
 /* styles/theme.css */
 :root {
-    --background-light: #ffffff;
+    --background: var(--background-light);
     --text-light: #333333;
     --background-dark: #333333;
     --text-dark: #ffffff;
+    
 }
 
 [data-theme='light'] {
