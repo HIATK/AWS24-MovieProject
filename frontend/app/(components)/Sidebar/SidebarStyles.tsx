@@ -11,7 +11,7 @@ export const SidebarContainer = styled.div<StyledProps>`
   left: 0;
   width: ${({$isOpen}) => ($isOpen ? '150px' : '60px')};
   height: 100vh;
-  background-color: ${({$theme}) => $theme === 'light' ? 'rgba(240, 240, 240, 0.9)' : 'rgba(33, 33, 33, 0.9)'};
+  background-color: ${({$theme}) => $theme === 'light' ? 'rgb(188,182,182)' : 'rgba(16,16,16,0.9)'};
   color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
   transition: width 0.3s ease, background-color 0.3s ease, color 0.3s ease;
   z-index: 1000;

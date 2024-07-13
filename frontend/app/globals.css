@@ -148,22 +148,25 @@ a {
 /*!*사이드바 색상 건들면 이상해집니다.END*!*/
 
 :root {
-  --background-light: #adabb3;
+  --background-light: #d8cfcf;
   --text-light: #333333;
-  --background-dark: #393636;
+  --background-dark: rgb(33, 33, 30);
   --text-dark: #ffffff;
+  --input-background-light: #f0f0f0;
+  --input-background-dark: #555555;
 }
 
 [data-theme='light'] {
   --background: var(--background-light);
   --text: var(--text-light);
+  --input-background: var(--input-background-light);
 }
 
 [data-theme='dark'] {
   --background: var(--background-dark);
   --text: var(--text-dark);
+  --input-background: var(--input-background-dark);
 }
-
 body {
   background-color: var(--background);
   color: var(--text);
