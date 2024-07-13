@@ -1,43 +1,45 @@
 .searchContainer {
-    position: fixed;
-    top: 20px;
-    right: 40px; /* 더 오른쪽으로 이동 */
+    position: relative;
     display: flex;
     align-items: center;
     background-color: rgba(142, 68, 173, 0);
     border-radius: 24px;
-    height: 48px;
+    height: 40px;
     transition: width 0.3s ease;
     overflow: hidden;
-    width: 48px;
+    width: 40px;
 }
 
 .searchContainer.expanded {
-    width: 300px;
+    width: 100%;
 }
 
 .searchButton {
     position: absolute;
-    right: 0;
+    left: 0;
     background: transparent;
     border: none;
     cursor: pointer;
-    padding: 12px;
+    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     z-index: 2;
 }
 
 .searchIcon {
     width: 24px;
     height: 24px;
+}
+
+.searchIcon.light {
+    color: #333333;
+}
+
+.searchIcon.dark {
     color: #5fbebb;
-    background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
 .searchForm {
@@ -45,22 +47,29 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-left: 12px;
-    padding-right: 48px;
+    padding-left: 40px;
+    padding-right: 8px;
     height: 100%;
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+.expanded .searchForm {
+    width: calc(100% - 40px);
 }
 
 .searchInput {
     width: 100%;
     border: none;
     background: transparent;
-    color: #5fbebb;
-    font-size: 16px;
+    color: inherit;
+    font-size: 14px;
     outline: none;
 }
 
 .searchInput::placeholder {
-    color: rgb(95, 190, 187);
+    color: inherit;
+    opacity: 0.7;
 }
 
 .underline {
