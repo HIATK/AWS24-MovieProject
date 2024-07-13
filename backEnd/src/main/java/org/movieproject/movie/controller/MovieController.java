@@ -26,9 +26,9 @@ public class MovieController {
                 });
     }
 
-    @GetMapping("/{id}")
-    public CompletableFuture<Map<String, String>> getMovieById(@PathVariable Integer id) {
-        return movieService.getMovieById(id);
+    @GetMapping("/{movieId}")
+    public CompletableFuture<Map<String, String>> getMovieByMovieId(@PathVariable Integer movieId) {
+        return movieService.getMovieByMovieId(movieId);
     }
 
     @GetMapping("/search")
@@ -39,5 +39,10 @@ public class MovieController {
                     movieService.saveMovies(movies); // 검색된 영화를 저장
                     return movies;
                 });
+    }
+
+    @GetMapping("/videos/{movieId}")
+    public CompletableFuture<List<String>> getVideosByMovieId(@PathVariable Integer movieId) {
+        return movieService.getYoutubeVideoKeys(movieId);
     }
 }

@@ -86,4 +86,9 @@ public class PostServiceImpl implements PostService {
                 .map(post -> modelMapper.map(post, PostDTO.class))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Double getAverageRatingByMovieId(Integer movieId) {
+        return postRepository.findAverageRatingByMovieId(movieId);
+    }
 }

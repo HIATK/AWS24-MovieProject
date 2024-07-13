@@ -4,6 +4,7 @@
 
   interface AuthContextType {
     isLoggedIn: boolean;
+    memberNo: number | null;
     memberNick: string | null;
     checkAuth: () => Promise<void>;
     setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,6 +17,7 @@
   export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [memberNick, setMemberNick] = useState<string | null>(null);
+    const [memberNo, setMemberNo] = useState<number | null>(null);
     const [checkedAuth, setCheckedAuth] = useState(false);
 
     const refreshAccessToken = async () => {
@@ -49,12 +51,14 @@
         if (response.ok) {
           const data = await response.json();
           setIsLoggedIn(data.roles && data.roles.includes('MEMBER') || data.roles.includes('GUEST'));
-          setMemberNick(data.memberNick); // 서버에서 닉네임 받아오기
+          setMemberNo(data.memberNo); 
+          setMemberNick(data.memberNick); 
           setCheckedAuth(true);
           console.log("체크어쓰 200" + data.memberNick)
         } else if (response.status === 401) {
           // Handle unauthorized status
           setIsLoggedIn(false);
+          setMemberNo(null);
           setMemberNick(null);
           console.log("체크어쓰 401")
         } else if (response.status === 403) {
@@ -67,12 +71,14 @@
         } else {
           // Handle other errors
           setIsLoggedIn(false);
+          setMemberNo(null);
           setMemberNick(null);
           console.log("체크어쓰 에러")
         }
       } catch (error) {
         console.error('Failed to check auth:', error);
         setIsLoggedIn(false);
+        setMemberNo(null);
         setMemberNick(null);
         console.log("체크어쓰 캐치에러")
       }
@@ -80,6 +86,7 @@
 
     const logout = useCallback(() => {
       setIsLoggedIn(false);
+      setMemberNo(null);
       setMemberNick(null);
       setCheckedAuth(false);
     }, []);
@@ -93,7 +100,7 @@
     }, [checkAuth]);
 
     return (
-      <AuthContext.Provider value={{ isLoggedIn, memberNick, checkAuth, setIsLoggedIn, setMemberNick, logout }}>
+      <AuthContext.Provider value={{ isLoggedIn, memberNick, memberNo, checkAuth, setIsLoggedIn, setMemberNick, logout }}>
         {children}
       </AuthContext.Provider>
     );
