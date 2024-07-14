@@ -1,13 +1,10 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  ChangeEvent,
-  FormEvent,
-} from "react";
+'use client';
+
+import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import styles from "./profile.module.css";
 import { Member, Errors, UpdateForm } from "@/(types)/types";
+import { useAuth } from '@/(context)/AuthContext';
 
 const getMemberDetails = async (): Promise<Member> => {
   const response = await axios.get("/api/member/profile", {
@@ -55,6 +52,7 @@ const checkNicknameDuplicate = async (nickname: string): Promise<boolean> => {
 };
 
 const Profile: React.FC = () => {
+  const { isLoggedIn } = useAuth();
   const [member, setMember] = useState<Member>({
     memberNo: 0,
     memberEmail: "",
@@ -113,13 +111,16 @@ const Profile: React.FC = () => {
         console.error("Failed to fetch member details", error);
       }
     };
-    fetchMemberDetails();
-  }, []);
+    if (isLoggedIn) {
+      fetchMemberDetails();
+    }
+  }, [isLoggedIn]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUpdateForm({ ...updateForm, [name]: value });
   };
+
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -151,6 +152,7 @@ const Profile: React.FC = () => {
     }
     return newErrors;
   };
+
   const handleUpdateProfile = () => {
     setIsEditing(true);
   };
@@ -230,7 +232,9 @@ const Profile: React.FC = () => {
     }
   };
 
-  if (!member) return <div className={styles.container}>Loading...</div>;
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <div className={styles.container}>

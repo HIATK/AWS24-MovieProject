@@ -1,19 +1,21 @@
+/* 모달 오버레이 배경, 모달이 열릴 때 배경을 어둡게 하는 역할 */
 .modalOverlay {
-  position: fixed;
+  position: fixed; /* 화면에 고정 */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.36);
+  background-color: rgba(0, 0, 0, 0.36); /* 반투명 검정 배경 */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1000; /* 다른 요소보다 위에 위치 */
 }
 
+/* 모달 백드롭, 모달의 배경으로 사용됨 */
 .modalBackdrop {
-  background-color: rgba(51, 51, 51, 0.56);
-  position: fixed;
+  background-color: rgba(51, 51, 51, 0.56); /* 반투명 회색 배경 */
+  position: fixed; /* 화면에 고정 */
   top: 0;
   left: 0;
   width: 100%;
@@ -21,119 +23,131 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  overflow: hidden;
+  z-index: 1000; /* 다른 요소보다 위에 위치 */
 }
 
+/* 모달 다이얼로그, 모달의 주요 컨테이너 */
 .dialog {
-  border: none;
+  border: none; /* 테두리 없음 */
   padding: 0;
-  background: transparent;
+  background: transparent; /* 배경 없음 */
   width: 90%;
-  max-width: 800px; /* 최대 너비를 줄임 */
-  height: 90vh;
-  margin: 0 auto;
-  position: relative; /* 상대 위치 설정 */
+  max-width: 800px; /* 최대 너비 */
+  height: 90vh; /* 뷰포트 높이의 90% */
+  margin: 0 auto; /* 중앙 정렬 */
+  position: relative; /* 상대 위치 */
 }
 
+/* 모달 컨텐츠, 모달 내부의 내용 */
 .modalContent {
-  background-color: var(--background);
-  color: var(--text);
-  padding: 2rem 2rem 2rem 2rem; /* 상단 패딩 증가 */
-  border-radius: 8px;
+  background-color: var(--background); /* 변수로 정의된 배경 색상 */
+  color: var(--text); /* 변수로 정의된 텍스트 색상 */
+  padding: 2rem 2rem 2rem 2rem; /* 내부 여백 */
+  border-radius: 8px; /* 모서리 둥글게 */
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  position: relative;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  position: relative; /* 상대 위치 */
+  -ms-overflow-style: none; /* IE and Edge에서 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox에서 스크롤바 숨기기 */
 }
 .modalContent::-webkit-scrollbar {
-  display: none;
+  display: none; /* Chrome, Safari에서 스크롤바 숨기기 */
 }
 
+/* 모달 닫기 버튼 */
 .closeButton {
-  color: var(--text);
-  position: absolute;
+  color: var(--text); /* 변수로 정의된 텍스트 색상 */
+  position: absolute; /* 절대 위치 */
   top: 10px;
   right: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  z-index: 1001; /* 다른 요소들보다 위에 오도록 */
+  background: none; /* 배경 없음 */
+  border: none; /* 테두리 없음 */
+  font-size: 1.5rem; /* 폰트 크기 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  z-index: 1001; /* 다른 요소보다 위에 위치 */
 }
 
+/* 모달 내부 컨텐츠 레이아웃 */
 .content {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  color: var(--text);
+  flex-direction: column; /* 세로 방향 정렬 */
+  gap: 2rem; /* 요소 간 간격 */
+  color: var(--text); /* 변수로 정의된 텍스트 색상 */
 }
 
+/* 폼 스타일 */
 .form {
-  background-color: var(--background);
-  color: var(--text);
+  background-color: var(--background); /* 변수로 정의된 배경 색상 */
+  color: var(--text); /* 변수로 정의된 텍스트 색상 */
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  flex-direction: column; /* 세로 방향 정렬 */
+  gap: 1rem; /* 요소 간 간격 */
   width: 100%;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 8px; /* 모서리 둥글게 */
+  font-size: 1rem; /* 폰트 크기 */
 }
 
+/* 레이블 스타일 */
 .label {
   display: flex;
-  flex-direction: column;
-  font-size: 1rem;
-  color: var(--text);
+  flex-direction: column; /* 세로 방향 정렬 */
+  font-size: 1rem; /* 폰트 크기 */
+  color: var(--text); /* 변수로 정의된 텍스트 색상 */
 }
 
+/* 텍스트 영역 스타일 */
 .textarea {
-  background-color: var(--input-background);
-  color: var(--text);
+  background-color: var(--input-background); /* 변수로 정의된 입력 배경 색상 */
+  color: var(--text); /* 변수로 정의된 텍스트 색상 */
   width: 100%;
-  height: 2rem;
-  padding: 0.5rem;
-  margin-top: 0.5rem;
-  border: none;
-  border-radius: 4px;
-  resize: none;
-  transition: height 0.3s ease, padding 0.3s ease;
+  height: 2rem; /* 기본 높이 */
+  padding: 0.5rem; /* 내부 여백 */
+  margin-top: 0.5rem; /* 상단 여백 */
+  border: none; /* 테두리 없음 */
+  border-radius: 4px; /* 모서리 둥글게 */
+  resize: none; /* 크기 조정 불가 */
+  transition: height 0.3s ease, padding 0.3s ease; /* 높이 및 여백 변경 애니메이션 */
 }
 
+/* 텍스트 영역 확장 스타일 */
 .textarea.expandedTextarea {
-  height: 10rem;
-  padding: 1rem;
+  height: 10rem; /* 확장된 높이 */
+  padding: 1rem; /* 확장된 여백 */
 }
 
+/* 텍스트 영역 포커스 스타일 */
 .textarea:focus {
-  height: 5rem;
-  padding: 0.2rem;
+  height: 5rem; /* 포커스 시 높이 */
+  padding: 0.2rem; /* 포커스 시 여백 */
 }
 
+/* 평점 및 버튼 컨테이너 */
 .ratingAndButton {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1rem;
+  justify-content: space-between; /* 요소 간 공간 분배 */
+  align-items: center; /* 세로 정렬 */
+  margin-top: 1rem; /* 상단 여백 */
 }
 
+/* 버튼 컨테이너 */
 .buttonContainer {
-  margin-left: auto;
+  margin-left: auto; /* 왼쪽 여백 자동 */
 }
 
+/* 버튼 스타일 */
 .button {
-  background-color: var(--input-background);
-  color: var(--text);
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
+  background-color: var(--input-background); /* 변수로 정의된 입력 배경 색상 */
+  color: var(--text); /* 변수로 정의된 텍스트 색상 */
+  padding: 0.5rem 1rem; /* 내부 여백 */
+  border: none; /* 테두리 없음 */
+  border-radius: 4px; /* 모서리 둥글게 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  text-align: center; /* 텍스트 중앙 정렬 */
 }
 
+/* 포스트 리스트 래퍼 */
 .postListWrapper {
   width: 100%;
-  margin-top: 2rem;
+  margin-top: 2rem; /* 상단 여백 */
 }

@@ -1,7 +1,10 @@
-import React, {useState, ChangeEvent, FormEvent, useRef} from 'react';
+'use client';
+
+import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
 import styles from "./Join.module.css";
 import axios from 'axios';
 import Link from "next/link";
+import { useAuth } from '../../(context)/AuthContext';
 
 interface FormData {
   memberEmail: string;
@@ -19,6 +22,7 @@ interface Errors {
 
 const Join: React.FC = () => {
   const joinButtonRef = useRef<HTMLButtonElement>(null);
+  const { isLoggedIn } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     memberEmail: '',
     memberPw: '',
@@ -31,7 +35,7 @@ const Join: React.FC = () => {
   const [errors, setErrors] = useState<Errors>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({...formData, [e.target.name]: e.target.value,});
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const validateForm = (): Errors => {
@@ -76,77 +80,80 @@ const Join: React.FC = () => {
     }
   };
 
-  return (
-  <div>
-    <form onSubmit={handleSubmit} className={styles.formContainer}>
-      <div>
-        <input
-          type="email"
-          name="memberEmail"
-          placeholder="Email"
-          value={formData.memberEmail}
-          onChange={handleChange}
-          required
-        />
-      </div>
+  if (isLoggedIn) {
+    return null; // 로그인 상태면 회원가입 페이지 렌더링 안 함
+  }
 
-      <div>
-        <input
-          type="password"
-          name="memberPw"
-          placeholder="Password"
-          value={formData.memberPw}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <input
-          type="password"
-          name="memberPwConfirm"
-          placeholder="Confirm Password"
-          value={formData.memberPwConfirm}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      {errors.memberPwConfirm && <span style={{ color: 'red' }}>{errors.memberPwConfirm}</span>}
-      <div>
-        <input
-          type="text"
-          name="memberName"
-          placeholder="Name"
-          value={formData.memberName}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <input
-          type="text"
-          name="memberNick"
-          placeholder="Nickname"
-          value={formData.memberNick}
-          onChange={handleChange}
-          required       
-        />
-      </div>
-      <div>
-        <input
-          type=""
-          name="memberPhone"
-          placeholder="Phone('-' 생략)"
-          value={formData.memberPhone}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <button type="submit">가입하기</button>
-    </form>
-    <Link href='/member/login'>
-      <button ref={joinButtonRef} style={{ display: 'none' }} />
-    </Link>
-  </div>
+  return (
+    <div>
+      <form onSubmit={handleSubmit} className={styles.formContainer}>
+        <div>
+          <input
+            type="email"
+            name="memberEmail"
+            placeholder="Email"
+            value={formData.memberEmail}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            name="memberPw"
+            placeholder="Password"
+            value={formData.memberPw}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            name="memberPwConfirm"
+            placeholder="Confirm Password"
+            value={formData.memberPwConfirm}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        {errors.memberPwConfirm && <span style={{ color: 'red' }}>{errors.memberPwConfirm}</span>}
+        <div>
+          <input
+            type="text"
+            name="memberName"
+            placeholder="Name"
+            value={formData.memberName}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            name="memberNick"
+            placeholder="Nickname"
+            value={formData.memberNick}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <input
+            type=""
+            name="memberPhone"
+            placeholder="Phone('-' 생략)"
+            value={formData.memberPhone}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit">가입하기</button>
+      </form>
+      <Link href='/member/login'>
+        <button ref={joinButtonRef} style={{ display: 'none' }} />
+      </Link>
+    </div>
   );
 };
 
