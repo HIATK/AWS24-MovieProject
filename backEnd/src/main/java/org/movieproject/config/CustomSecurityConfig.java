@@ -56,33 +56,23 @@ public class CustomSecurityConfig {
         log.info("--------------------configure-------------------");
 
         http
-            .cors(cors -> {
+            .cors(cors -> { // CORS 설정
                 CorsConfigurationSource source = corsConfigurationSource();
                 cors.configurationSource(source);
             })
-            .csrf(AbstractHttpConfigurer::disable)
+            .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화
             .sessionManagement(httpSecuritySessionManagementConfigurer ->   // 세션 비활성화
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize // 권한 설정
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .anyRequest().permitAll()
                     )
-//                .formLogin(form ->{form.loginPage("/login") // 로그인 설정
-//                        .loginProcessingUrl("/login/auth")
-//                        .successHandler(apiLoginSuccessHandler())
-//                        .permitAll();
-//                })
+            .formLogin(AbstractHttpConfigurer::disable) // 기본 로그인폼 비활성화
             .oauth2Login(httpSecurityOauth2LoginConfigurer -> { // 소셜 로그인 설정
                 httpSecurityOauth2LoginConfigurer.loginPage("/member/login")
                         .successHandler(mvpSocialLoginSuccessHandler());
             })
-            .logout(logout -> logout    // 로그아웃 설정
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/")
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID")
-                    .permitAll()
-            );
+            .logout(AbstractHttpConfigurer::disable);   // 기본 로그아웃 비활성화
 
 
         // 인 증 매 니 저 설 정
@@ -94,33 +84,24 @@ public class CustomSecurityConfig {
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
         // 인 증 매 니 저 등 록
         http.authenticationManager(authenticationManager);
-        // API 로 그 인 필 터 설 정
+
+        // 로그인 필터 설정
         APILoginFilter apiLoginFilter = new APILoginFilter("/api/login");
-
         apiLoginFilter.setAuthenticationManager(authenticationManager);
-        // APILoginFilter 위치 조정 - UsernamePasswordAuthenticationFilter 이전에 동작해야함
-        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
-        // APILoginSuccessHandler
+        // 로그인 성공 핸들러
         APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtLoginUtil);
-        // SuccessHandler 설정
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
-
+        // 로그인 실패 핸들러
         APILoginFailureHandler failureHandler = new APILoginFailureHandler();
-
         apiLoginFilter.setAuthenticationFailureHandler(failureHandler);
+
+        // 필터 위치 조정
+        // 로그인 필터
+        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
         // 토큰 체크 필터
         http.addFilterBefore(tokenCheckFilter(jwtProvider, mvpUserDetailsService), UsernamePasswordAuthenticationFilter.class);
         // 리프레시 토큰 필터
         http.addFilterBefore(new RefreshTokenFilter("/api/member/check_auth/refresh", jwtProvider), TokenCheckFilter.class);
-
-        // remember-me 설정
-        http.rememberMe(httpSecurityRememberMeConfigurer -> {
-            httpSecurityRememberMeConfigurer.key("123456789")
-                    .tokenRepository(persistentTokenRepository())
-                    .userDetailsService(mvpUserDetailsService)
-                    .tokenValiditySeconds(60*5);     // 5분
-        });
-
 
         http.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
             httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(accessDeniedHandler());
@@ -147,7 +128,6 @@ public class CustomSecurityConfig {
 
     @Bean   // 엑세스 디나이드 핸들러
     public AccessDeniedHandler accessDeniedHandler() {
-
         return new Custom403Handler();
     }
 

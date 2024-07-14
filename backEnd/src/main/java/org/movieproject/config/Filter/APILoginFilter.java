@@ -29,14 +29,10 @@ public class APILoginFilter extends AbstractAuthenticationProcessingFilter {
         if (request.getMethod().equalsIgnoreCase("GET")) {
             return null;
         }
-        log.info("리 퀘 스 트 : " + request.getRequestURI());
         Map<String, String> jsonData = parseRequestJSON(request);
-        log.info("제 이 슨 데 이 터 생 성");
-        log.info(jsonData);
-        log.info("제 이 슨 데 이 터 유 저 네 임 : " + jsonData.get("username"));
+        log.info("제이슨데이터 : " + jsonData);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(jsonData.get("username"), jsonData.get("password"));
-        log.info("인 증 토 큰 이 름 : " + authenticationToken.getName());
         return getAuthenticationManager().authenticate(authenticationToken);
     }
 
@@ -46,7 +42,6 @@ public class APILoginFilter extends AbstractAuthenticationProcessingFilter {
         try (Reader reader = new InputStreamReader(request.getInputStream())) {
 
             Gson gson = new Gson();
-            log.info("지 슨 생 성");
             return gson.fromJson(reader, Map.class);
 
         } catch (Exception e) {
