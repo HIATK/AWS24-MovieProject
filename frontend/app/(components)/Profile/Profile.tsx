@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useRef, ChangeEvent, FormEvent} from "react";
 import axios from "axios";
 import styles from "./profile.module.css";
-import {Member, Errors, UpdateForm} from "@/(types)/types";
+import { Member, Errors, UpdateForm } from "@/(types)/types";
+import { useAuth } from '@/(context)/AuthContext';
 
 // profile 유저 정보 가져오기
 const getMemberDetails = async (): Promise<Member> => {
@@ -52,6 +53,7 @@ const checkNicknameDuplicate = async (nickname: string): Promise<boolean> => {
 
 // 프로필 컴포넌트!
 const Profile: React.FC = () => {
+    const { isLoggedIn } = useAuth();
     const [member, setMember] = useState<Member>({
         memberNo: 0,
         memberEmail: '',
@@ -96,22 +98,24 @@ const Profile: React.FC = () => {
           confirmNewPassword: "",
         }));
 
-                //  프로필 이미지 경로 가져오기
-                const profileImagePathReponse = await axios.get<string>("/api/image/profile", {
-                    params: { memberNo: data.memberNo},
-                    baseURL: "http://localhost:8000",
-                    headers: { "Content-Type": "application/json"},
-                    withCredentials: true,
-                    credentials: "include",
-                });
-                setProfileImagePath(`profileImagePathReponse.data`);
+          //  프로필 이미지 경로 가져오기
+          const profileImagePathReponse = await axios.get<string>("/api/image/profile", {
+              params: { memberNo: data.memberNo},
+              baseURL: "http://localhost:8000",
+              headers: { "Content-Type": "application/json"},
+              withCredentials: true,
+              credentials: "include",
+          });
+          setProfileImagePath(`profileImagePathReponse.data`);
 
-            } catch (error) {
-                console.error('Failed to fetch member details', error);
-            }
-        };
-        fetchMemberDetails();
-    }, []);
+      } catch (error) {
+          console.error('Failed to fetch member details', error);
+      }
+    };
+    if (isLoggedIn) {
+      fetchMemberDetails();
+    }
+  }, [isLoggedIn]);
 
     // 정보수정 성공시 페이지에 나타나는 정보도 같이 바뀌도록 설정
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -222,7 +226,9 @@ const Profile: React.FC = () => {
     }
   };
 
-  if (!member) return <div className={styles.container}>Loading...</div>;
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <div className={styles.container}>

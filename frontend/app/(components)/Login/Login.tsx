@@ -3,15 +3,15 @@
 import React, { useState, useRef } from 'react';
 import styles from './Login.module.css';
 import Link from 'next/link';
-import { useAuth } from '../../(context)/AuthContext'; // useAuth 임포트
-import { login } from '@/_Service/MemberService'; // MemberService의 login 함수 임포트
+import { useAuth } from '../../(context)/AuthContext';
+import { login } from '@/_Service/MemberService';
 import axios from 'axios';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const loginButtonRef = useRef<HTMLButtonElement>(null);
-  const { checkAuth } = useAuth(); // useAuth 훅에서 checkAuth 추출
+  const { checkAuth } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

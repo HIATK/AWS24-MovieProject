@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
     try {
       const data = await checkAuthService();
-      setIsLoggedIn(data.roles && data.roles.includes('MEMBER') || data.roles.includes('GUEST'));
+      setIsLoggedIn(data.roles && (data.roles.includes('MEMBER') || data.roles.includes('GUEST')));
       setMemberNo(data.memberNo);
       setMemberNick(data.memberNick);
       setCheckedAuth(true);
@@ -35,7 +35,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.status === 401) {
-          // Handle unauthorized status
           setIsLoggedIn(false);
           setMemberNo(null);
           setMemberNick(null);
@@ -43,18 +42,15 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         } else if (error.response && error.response.status === 403) {
           const retryCheckAuth = await refreshAccessTokenService();
           if (retryCheckAuth) {
-            // Retry the checkAuth request with the new access token
             await checkAuth();
           }
         } else {
-          // Handle other errors
           setIsLoggedIn(false);
           setMemberNo(null);
           setMemberNick(null);
           console.log("체크어쓰 에러");
         }
       } else {
-        // Handle non-Axios errors
         console.error('Failed to check auth:', error);
         setIsLoggedIn(false);
         setMemberNo(null);
@@ -70,10 +66,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     setMemberNick(null);
     setCheckedAuth(false);
   }, []);
-
-  useEffect(() => {
-    memberNick
-  }, [memberNick]);
 
   useEffect(() => {
     checkAuth();
