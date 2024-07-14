@@ -1,0 +1,33 @@
+/* Search.module.css */
+.main {
+  padding: 20px;
+  height: 100vh; /* 전체 뷰포트 높이를 유지 */
+  display: flex;
+  flex-direction: column;
+}
+
+.description {
+  margin-bottom: 20px;
+}
+
+.posterSection { /* poster-section 클래스 추가 */
+  flex: 1;
+  overflow-y: auto; /* 포스터 섹션의 스크롤을 활성화 */
+}
+
+.movie-items {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.movie-item {
+  flex: 1 1 calc(20% - 20px); /* 5개씩 1줄에 배치 */
+}
+
+.movie-img {
+  width: 100%;
+  height: auto;
+}
