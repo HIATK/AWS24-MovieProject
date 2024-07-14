@@ -36,18 +36,12 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
       scrollPosition.current = window.scrollY; // 현재 스크롤 위치 저장
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollPosition.current}px`;
-      document.body.style.left = '0';
-      document.body.style.right = '0';
       document.body.style.width = '100%';
 
       return () => {
-        const scrollY = document.body.style.top;
         document.body.style.position = '';
         document.body.style.top = '';
-        document.body.style.left = '';
-        document.body.style.right = '';
-        document.body.style.width = '';
-        window.scrollTo(0, parseInt(scrollY || '0') * -1); // 이전 스크롤 위치로 복원
+        window.scrollTo(0, scrollPosition.current); // 이전 스크롤 위치로 복원
       };
     }
   }, [isClient]);
