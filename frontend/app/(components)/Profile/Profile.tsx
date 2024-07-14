@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "./profile.module.css";
 import {Member, Errors, UpdateForm} from "@/(types)/types";
 
+// profile 유저 정보 가져오기
 const getMemberDetails = async (): Promise<Member> => {
     const response = await axios.get('/api/member/profile', {
         baseURL: 'http://localhost:8000',
@@ -13,6 +14,7 @@ const getMemberDetails = async (): Promise<Member> => {
     return response.data;
 };
 
+// 정보수정 할 때 입력된 '현재 비밀번호' 서버에 보내서 실제 로그인한 사람의 비밀번호가 맞는지 검증하기.
 const verifyPassword = async (password: string): Promise<boolean> => {
     try {
         const response = await axios.post('api/member/verifyPw', {password}, {
@@ -27,7 +29,7 @@ const verifyPassword = async (password: string): Promise<boolean> => {
         return false;
     }
 };
-
+// 닉네임 중복체크를 위해 입력된 '닉네임' 서버에 보내서 중복되는지 검증
 const checkNicknameDuplicate = async (nickname: string): Promise<boolean> => {
     try {
         const response = await axios.get(`/api/member/checkNickname`, {
@@ -44,6 +46,7 @@ const checkNicknameDuplicate = async (nickname: string): Promise<boolean> => {
     }
 };
 
+// 프로필 컴포넌트!
 const Profile: React.FC = () => {
     const [member, setMember] = useState<Member>({
         memberNo: 0,
@@ -66,8 +69,11 @@ const Profile: React.FC = () => {
     const [file, setFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [profileImagePath, setProfileImagePath] = useState("/profile/basic.png"); // 이미지 경로 상태 관리
-    const [isNicknameChecked, setIsNicknameChecked] = useState(false);
-    const [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
+    let [isNicknameChecked, setIsNicknameChecked] = useState(false);
+    let [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
+    // const [reviews, setReviews] = useState<Review[]>([]);
+    // const [likedMovies, setLikedMovies] = useState<Movie[]>([]);
+
 
 
     useEffect(() => {
@@ -104,6 +110,7 @@ const Profile: React.FC = () => {
         fetchMemberDetails();
     }, []);
 
+    // 정보수정 성공시 페이지에 나타나는 정보도 같이 바뀌도록 설정
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setUpdateForm({ ...updateForm, [name]: value });
@@ -126,12 +133,13 @@ const Profile: React.FC = () => {
         }
     };
 
+    // 비밀번호 미/오입력시 에러를 나타내는 함수
     const validateForm = (): Errors => {
         const newErrors: Errors = {};
         if (!updateForm.currentPassword) {
             newErrors.currentPassword = '현재 비밀번호를 입력해주세요.';
         }
-        if (updateForm.newPassword && updateForm.newPassword !== updateForm.confirmNewPassword) {
+        if (updateForm.newPassword !== updateForm.confirmNewPassword) {
             newErrors.confirmNewPassword = '새 비밀번호가 일치하지 않습니다.';
         }
         return newErrors;
@@ -140,15 +148,20 @@ const Profile: React.FC = () => {
     setIsEditing(true);
   };
 
+  // 회원정보 수정!!!
   const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();
       const validationErrors = validateForm();
 
+      // 닉네임을 수정하지 않았다면 닉네임 중복 체크를 하지 않습니다!
       if(updateForm.memberNick == member.memberNick){
-          setIsNicknameChecked(true);
+          isNicknameChecked = true;
+          isNicknameDuplicate= false;
       }
+
       if (Object.keys(validationErrors).length > 0) {
           setErrors(validationErrors);
+
       } else if (!isNicknameChecked || isNicknameDuplicate) {
           setErrors({ ...validationErrors, memberNick: '닉네임 중복 체크를 해주세요.' });
       } else {
@@ -192,6 +205,7 @@ const Profile: React.FC = () => {
     setIsEditing(false);
   };
 
+  // 닉네임 중복체크 버튼
   const handleNicknameCheck = async () => {
       if (updateForm.memberNick != member.memberNick) {
           const isDuplicate = await checkNicknameDuplicate(updateForm.memberNick);
@@ -258,7 +272,7 @@ const Profile: React.FC = () => {
                                onChange={handleChange} placeholder="이름" className={styles.input} required/>
 
                         <input type="text" name="memberNick" value={updateForm.memberNick}
-                               onChange={handleChange} placeholder="닉네임" className={styles.input} required/>
+                               onChange={handleChange} className={styles.input} required/>
 
                         <button type="button" onClick={handleNicknameCheck} className={styles.button}>
                             닉네임 중복 체크
