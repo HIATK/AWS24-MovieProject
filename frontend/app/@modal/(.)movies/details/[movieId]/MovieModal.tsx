@@ -29,6 +29,18 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
   const dialogRef = useRef<ElementRef<'dialog'>>(null);
   const [isClient, setIsClient] = useState(false);
 
+  //모달창 내에서 바탕화면 스크롤 막는 코드입니다.
+  useEffect(() => {
+    if (isClient) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [isClient]);
+//모달창 내에서 바탕화면 스크롤 막는 코드입니다.
+
+
   useEffect(() => {
     setIsClient(true);
   }, []);
