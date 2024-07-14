@@ -4,6 +4,8 @@ import React, { useState, useRef } from 'react';
 import styles from './Login.module.css';
 import Link from 'next/link';
 import { useAuth } from '../../(context)/AuthContext'; // useAuth 임포트
+import { login } from '@/_Service/MemberService'; // MemberService의 login 함수 임포트
+import axios from 'axios';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -15,40 +17,20 @@ const Login: React.FC = () => {
     event.preventDefault();
     console.log({ email, password });
 
-    const loginData = { username: email, password };
-
     try {
-      const response = await fetch('http://localhost:8000/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
-        credentials: 'include'
-      });
+      const data = await login(email, password);
+      checkAuth(); // 로그인 성공 시 checkAuth 호출하여 인증 상태 업데이트
+      console.log('Login successful:', data);
 
-      if (response.ok) {
-        const data = await response.json();
-        
-        checkAuth(); // 로그인 성공 시 checkAuth 호출하여 인증 상태 업데이트
-        
-        console.log('Login successful:', data);
-
-        alert('로그인 성공!');
-        
-        
-
-        loginButtonRef.current?.click();
-
-        // 리디렉션하거나 추가 동작을 수행할 수 있습니다.
-      } else if (response.status === 401) {
+      alert('로그인 성공!');
+      loginButtonRef.current?.click();
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
         alert('아이디 혹은 비밀번호가 올바르지 않습니다');
       } else {
-        throw new Error('로그인 에러');
+        console.error('An error occurred:', error);
+        alert('로그인 중 문제가 발생했습니다.');
       }
-    } catch (error) {
-      console.error('An error occurred:', error);
-      alert('로그인 중 문제가 발생했습니다.');
     }
   };
 

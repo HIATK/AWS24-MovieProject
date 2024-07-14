@@ -7,7 +7,6 @@ import { BiLink } from 'react-icons/bi';
 import { MdLogin, MdLogout } from 'react-icons/md';
 import Link from 'next/link';
 import { useAuth } from '../../(context)/AuthContext';
-
 import {
     SidebarContainer,
     MenuList,
@@ -23,6 +22,7 @@ import {
 import ThemeToggle from "@/(components)/DarkModToggle/ThemeToggle";
 import { useTheme } from '../DarkModToggle/ThemeContext';
 import SearchBar from '@/(components)/SearchBar/SearchBar';
+import { logout as logoutService } from '@/_Service/MemberService'; // 경로를 프로젝트 구조에 맞게 수정
 
 interface MenuItem {
     icon: JSX.Element;
@@ -48,20 +48,9 @@ const SidebarClient: React.FC = () => {
     const handleLogout = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         event.preventDefault();
         try {
-            const response = await fetch('/api/member/logout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            });
-
-            if (response.ok) {
-                alert('로그아웃 되었습니다');
-                logout();
-            } else {
-                console.error('Failed to logout');
-            }
+            await logoutService();
+            alert('로그아웃 되었습니다');
+            logout();
         } catch (error) {
             console.error('An error occurred:', error);
         }
