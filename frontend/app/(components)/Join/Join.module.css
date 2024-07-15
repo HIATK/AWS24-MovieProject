@@ -24,7 +24,7 @@
 .formContainer input {
   width: 300px; /* 입력 필드 너비 설정 */
   padding: 10px;
-  border: 1px solid rgba(179, 75, 61, 0.6); /* 빨간 테두리와 약간의 투명도 */
+  border: 1px solid #5fbebb; /* 빨간 테두리와 약간의 투명도 */
   background: rgba(0, 0, 0, 0.5); /* 약간 투명하게 설정 */
   color: white;
   border-radius: 4px;
@@ -50,6 +50,6 @@
 }
 
 .error {
-  color: red;
+  color: #5fbebb;
   font-size: 0.875rem;
 }

@@ -19,21 +19,19 @@
 
 .poster {
   width: 200px; /* 부모 요소의 전체 너비 사용 */
-  height: 350px;
-  height: auto; /* 자동 높이 조정 */
+  height: 287.5px;
   display: block;
 }
 
 .ratingLikeSection {
-  position: absolute; /* 포스터 위에 절대 위치 */
+  position: absolute; /* 포스터 기준으로 절대 위치 */
   bottom: 0; /* 포스터 하단에 위치 */
   left: 0; /* 포스터 왼쪽에 위치 */
   display: flex; /* Flexbox 레이아웃 사용 */
   background-color: rgba(0, 0, 0, 0.7); /* 배경색 및 투명도 설정 */
-  padding: 5px 10px; /* 내부 여백 설정 */
+  padding: 3px 5px; /* 내부 여백 설정 */
   gap: 1rem; /* 각 항목 간의 간격 설정 */
   align-items: center; /* 요소를 수직 중앙에 정렬 */
-  border-top-right-radius: 8px; /* 상단 오른쪽 모서리 둥글게 설정 */
 }
 
 .averageRating {
