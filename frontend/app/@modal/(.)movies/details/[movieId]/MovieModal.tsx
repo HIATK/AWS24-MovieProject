@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect, useRef, type ElementRef } from "react";
 import styles from '@/@modal/(.)movies/details/[movieId]/MovieModal.module.css';
@@ -143,7 +143,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
           transition={{ duration: 0.5 }}
           onClick={(e) => e.stopPropagation()}
         >
-          <button className={styles.closeButton} onClick={closeModal}>X</button>
+          {/* <button className={styles.closeButton} onClick={closeModal}>X</button> */}
           <div className={styles.content}>
             <MovieHeader movie={movie} averageRating={averageRating} />
             <form onSubmit={handlePostSubmit} className={styles.form}>
