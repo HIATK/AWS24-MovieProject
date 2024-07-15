@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import styles from './MovieHeader.module.css';
+import React, { useState, useEffect } from "react";
+import styles from "./MovieHeader.module.css";
 import { FaHeart, FaStar } from "react-icons/fa"; // FaStar 아이콘 추가
-import { MovieDetails } from '@/(types)/types';
-import { useAuth } from '@/(context)/AuthContext';
-import { fetchLikeStatus, updateLikeStatus } from '@/_Service/LikeService';
-import { getAverageRatingByMovieId } from '@/_Service/PostService'; // 필요한 import 추가
-import { getVideosByMovieId } from '@/_Service/MovieService';
+import { MovieDetails } from "@/(types)/types";
+import { useAuth } from "@/(context)/AuthContext";
+import { fetchLikeStatus, updateLikeStatus } from "@/_Service/LikeService";
+import { getAverageRatingByMovieId } from "@/_Service/PostService"; // 필요한 import 추가
+import { getVideosByMovieId } from "@/_Service/MovieService";
 
 interface MovieHeaderProps {
   movie: MovieDetails;
@@ -49,7 +49,7 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
 
   const handleLikeClick = async () => {
     if (memberNo === null) {
-      setError('로그인이 필요합니다.');
+      setError("로그인이 필요합니다.");
       return;
     }
 
@@ -59,7 +59,7 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
       await updateLikeStatus(memberNo, movie.id, !liked);
       setLiked(!liked);
     } catch (err) {
-      setError('좋아요 상태 업데이트 실패');
+      setError("좋아요 상태 업데이트 실패");
     } finally {
       setLoading(false);
     }
@@ -89,7 +89,7 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
         </div>
         {videoKey && (
           <div className={styles.video}>
-            <h3>트레일러</h3>
+            {/* <h3>트레일러</h3> */}
             <div className={styles.iframeContainer}>
               <iframe
                 width="560"
@@ -106,11 +106,11 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
       </div>
       <div className={styles.movieInfo}>
         <h1>{movie.title}</h1>
-        <h2>
+        {/* <h2>
           {movie.release_date} ·{" "}
           {movie.genres?.map((g) => g.name).join(", ") || "장르 정보 없음"}{" "}
           · {movie.runtime ? `${movie.runtime}분` : "상영 시간 정보 없음"}
-        </h2>
+        </h2> */}
         <p>{movie.overview}</p>
         {error && <p className={styles.error}>{error}</p>}
       </div>
