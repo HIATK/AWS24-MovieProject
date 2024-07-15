@@ -16,7 +16,8 @@
   align-items: center;
 }
 
-.postHeader, .postBody {
+.postHeader,
+.postBody {
   display: flex;
   align-items: center;
 }
@@ -40,4 +41,8 @@
 
 .postDate {
   padding-left: 1rem; /* Ensure some spacing between content and date */
+}
+
+.withmargin {
+  margin-left: 5px;
 }
