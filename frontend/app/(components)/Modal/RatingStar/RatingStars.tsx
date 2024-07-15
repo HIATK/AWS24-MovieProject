@@ -21,6 +21,7 @@ const RatingStars: React.FC<RatingStarsProps> = ({ rating, hoverRating, onHover,
                         className={`${styles.star} ${styles.starFilled}`}
                         onMouseEnter={() => onHover(i)}
                         onMouseLeave={() => onHover(0)}
+                        onMouseDown={(e) => e.preventDefault()} // 포커스 유지
                         onClick={() => onClick(i)}
                     />
                 );
@@ -31,6 +32,7 @@ const RatingStars: React.FC<RatingStarsProps> = ({ rating, hoverRating, onHover,
                         className={`${styles.star} ${styles.starHalf}`}
                         onMouseEnter={() => onHover(i - 0.5)}
                         onMouseLeave={() => onHover(0)}
+                        onMouseDown={(e) => e.preventDefault()} // 포커스 유지
                         onClick={() => onClick(i - 0.5)}
                     />
                 );
@@ -41,6 +43,7 @@ const RatingStars: React.FC<RatingStarsProps> = ({ rating, hoverRating, onHover,
                         className={styles.star}
                         onMouseEnter={() => onHover(i)}
                         onMouseLeave={() => onHover(0)}
+                        onMouseDown={(e) => e.preventDefault()} // 포커스 유지
                         onClick={() => onClick(i)}
                     />
                 );
@@ -50,7 +53,7 @@ const RatingStars: React.FC<RatingStarsProps> = ({ rating, hoverRating, onHover,
     };
 
     return (
-        <div className={styles.starRating}>
+        <div className={styles.starRating} onMouseDown={(e) => e.preventDefault()}> {/* 포커스 유지 */}
             {renderStars()}
         </div>
     );
