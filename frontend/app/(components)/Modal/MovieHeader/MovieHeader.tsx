@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import styles from "./MovieHeader.module.css";
-import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa"; // FaStar 아이콘 추가
+import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
 import { MovieDetails } from "@/(types)/types";
 import { useAuth } from "@/(context)/AuthContext";
-import { fetchLikeStatus, updateLikeStatus } from "@/_Service/LikeService";
-import { getAverageRatingByMovieId } from "@/_Service/PostService"; // 필요한 import 추가
+import {
+  fetchLikeStatus,
+  updateLikeStatus,
+  fetchLikesCount,
+} from "@/_Service/LikeService";
+import { getAverageRatingByMovieId } from "@/_Service/PostService";
 import { getVideosByMovieId } from "@/_Service/MovieService";
 
 interface MovieHeaderProps {
   movie: MovieDetails;
-  averageRating: number; // averageRating prop 추가
+  averageRating: number;
 }
 
 const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
@@ -18,6 +22,7 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [videoKey, setVideoKey] = useState<string | null>(null);
+  const [likesCount, setLikesCount] = useState<number>(0);
 
   useEffect(() => {
     const fetchLikeStatusWrapper = async () => {
@@ -33,6 +38,19 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
 
     fetchLikeStatusWrapper();
   }, [memberNo, movie.id]);
+
+  useEffect(() => {
+    const fetchLikesCountWrapper = async () => {
+      try {
+        const count = await fetchLikesCount(movie.id);
+        setLikesCount(count);
+      } catch (error) {
+        console.error("Error fetching likes count:", error);
+      }
+    };
+
+    fetchLikesCountWrapper();
+  }, [movie.id]);
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -57,7 +75,8 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
     setError(null);
     try {
       await updateLikeStatus(memberNo, movie.id, !liked);
-      setLiked(!liked); // 좋아요 폰트 지움
+      setLiked(!liked);
+      setLikesCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1)); // 좋아요 상태에 따라 좋아요 수 업데이트
     } catch (err) {
       setError("좋아요 상태 업데이트 실패");
     } finally {
@@ -74,7 +93,7 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
             alt={`Poster for ${movie.title}`}
             className={styles.poster}
           />
-          <div className={styles.likeSection}>
+          <div className={styles.ratingLikeSection}>
             <span className={styles.averageRating}>
               <FaStar /> {averageRating.toFixed(1)}
             </span>
@@ -83,13 +102,13 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
               onClick={handleLikeClick}
               disabled={loading}
             >
-              <FaHeart /> {liked}
+              {liked ? <FaHeart /> : <FaRegHeart />}
+              <span className={styles.likesCount}>{likesCount}</span>
             </button>
           </div>
         </div>
         {videoKey && (
           <div className={styles.video}>
-            {/* <h3>트레일러</h3> */}
             <div className={styles.iframeContainer}>
               <iframe
                 width="560"
@@ -106,11 +125,6 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
       </div>
       <div className={styles.movieInfo}>
         <h1>{movie.title}</h1>
-        {/* <h2>
-          {movie.release_date} ·{" "}
-          {movie.genres?.map((g) => g.name).join(", ") || "장르 정보 없음"}{" "}
-          · {movie.runtime ? `${movie.runtime}분` : "상영 시간 정보 없음"}
-        </h2> 상영시간 지우기*/}
         <p>{movie.overview}</p>
         {error && <p className={styles.error}>{error}</p>}
       </div>
