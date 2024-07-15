@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./MovieHeader.module.css";
-import { FaHeart, FaStar } from "react-icons/fa"; // FaStar 아이콘 추가
+import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa"; // FaStar 아이콘 추가
 import { MovieDetails } from "@/(types)/types";
 import { useAuth } from "@/(context)/AuthContext";
 import { fetchLikeStatus, updateLikeStatus } from "@/_Service/LikeService";
@@ -57,7 +57,7 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
     setError(null);
     try {
       await updateLikeStatus(memberNo, movie.id, !liked);
-      setLiked(!liked);
+      setLiked(!liked); // 좋아요 폰트 지움
     } catch (err) {
       setError("좋아요 상태 업데이트 실패");
     } finally {
@@ -83,7 +83,7 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
               onClick={handleLikeClick}
               disabled={loading}
             >
-              <FaHeart /> {liked ? "좋아요 취소" : "좋아요"}
+              <FaHeart /> {liked}
             </button>
           </div>
         </div>
@@ -110,7 +110,7 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
           {movie.release_date} ·{" "}
           {movie.genres?.map((g) => g.name).join(", ") || "장르 정보 없음"}{" "}
           · {movie.runtime ? `${movie.runtime}분` : "상영 시간 정보 없음"}
-        </h2> */}
+        </h2> 상영시간 지우기*/}
         <p>{movie.overview}</p>
         {error && <p className={styles.error}>{error}</p>}
       </div>

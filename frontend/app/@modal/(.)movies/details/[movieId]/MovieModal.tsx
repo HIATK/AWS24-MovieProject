@@ -1,17 +1,21 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect, useRef, type ElementRef } from "react";
-import styles from '@/@modal/(.)movies/details/[movieId]/MovieModal.module.css';
-import { motion } from 'framer-motion';
+import styles from "@/@modal/(.)movies/details/[movieId]/MovieModal.module.css";
+import { motion } from "framer-motion";
 import { getMovieByMovieId } from "@/_Service/MovieService";
-import { getPostsByMovieId, regPost, getAverageRatingByMovieId } from "@/_Service/PostService";
-import MovieHeader from '@/(components)/Modal/MovieHeader/MovieHeader';
-import PostList from '@/(components)/Modal/PostList/PostList';
-import RatingStars from '@/(components)/Modal/RatingStar/RatingStars';
+import {
+  getPostsByMovieId,
+  regPost,
+  getAverageRatingByMovieId,
+} from "@/_Service/PostService";
+import MovieHeader from "@/(components)/Modal/MovieHeader/MovieHeader";
+import PostList from "@/(components)/Modal/PostList/PostList";
+import RatingStars from "@/(components)/Modal/RatingStar/RatingStars";
 import { useAuth } from "@/(context)/AuthContext";
-import { PostDetails, MovieDetails } from "@/(types)/types"
-import { createPortal } from 'react-dom';
-import { useRouter } from 'next/navigation';
+import { PostDetails, MovieDetails } from "@/(types)/types";
+import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 
 const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
   const numericMovieId = parseInt(movieId, 10);
@@ -26,7 +30,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
   const [posts, setPost] = useState<PostDetails[]>([]);
   const [averageRating, setAverageRating] = useState<number>(0); // 기본값을 0으로 설정
   const router = useRouter();
-  const dialogRef = useRef<ElementRef<'dialog'>>(null);
+  const dialogRef = useRef<ElementRef<"dialog">>(null);
   const [isClient, setIsClient] = useState(false);
   const scrollPosition = useRef(0); // 현재 스크롤 위치 저장
 
@@ -34,13 +38,13 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
   useEffect(() => {
     if (isClient) {
       scrollPosition.current = window.scrollY; // 현재 스크롤 위치 저장
-      document.body.style.position = 'fixed';
+      document.body.style.position = "fixed";
       document.body.style.top = `-${scrollPosition.current}px`;
-      document.body.style.width = '100%';
+      document.body.style.width = "100%";
 
       return () => {
-        document.body.style.position = '';
-        document.body.style.top = '';
+        document.body.style.position = "";
+        document.body.style.top = "";
         window.scrollTo(0, scrollPosition.current); // 이전 스크롤 위치로 복원
       };
     }
@@ -91,8 +95,8 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
 
   const handlePostSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let cleanedContent = postContent.replace(/^\s+|\s+$/g, '');
-    if (cleanedContent === '') {
+    let cleanedContent = postContent.replace(/^\s+|\s+$/g, "");
+    if (cleanedContent === "") {
       setErrorMsg("글이 비어있습니다");
       return;
     }
@@ -102,7 +106,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
     }
     setErrorMsg("");
     if (memberNick === null) {
-      alert('먼저 로그인 해주세요');
+      alert("먼저 로그인 해주세요");
       return;
     }
     try {
@@ -124,7 +128,9 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
   }
 
   if (!movie) {
-    return <div className={styles.modalOverlay}>Loading movie information...</div>;
+    return (
+      <div className={styles.modalOverlay}>Loading movie information...</div>
+    );
   }
 
   if (!isClient) {
@@ -133,7 +139,11 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
 
   return createPortal(
     <div className={styles.modalBackdrop} onClick={handleOverlayClick}>
-      <dialog ref={dialogRef} className={styles.dialog} style={{ display: 'block' }}>
+      <dialog
+        ref={dialogRef}
+        className={styles.dialog}
+        style={{ display: "block" }}
+      >
         <motion.div
           className={styles.modalContent}
           initial={{ opacity: 0, y: -50 }}
@@ -141,7 +151,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
           transition={{ duration: 0.5 }}
           onClick={(e) => e.stopPropagation()}
         >
-          <button className={styles.closeButton} onClick={closeModal}>X</button>
+          {/* <button className={styles.closeButton} onClick={closeModal}>X</button> */}
           <div className={styles.content}>
             <MovieHeader movie={movie} averageRating={averageRating} />
             <form onSubmit={handlePostSubmit} className={styles.form}>
@@ -149,7 +159,9 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
                 <textarea
                   value={postContent}
                   onChange={(e) => setPostContent(e.target.value)}
-                  className={`${styles.textarea} ${postContent ? styles.expandedTextarea : ''}`}
+                  className={`${styles.textarea} ${
+                    postContent ? styles.expandedTextarea : ""
+                  }`}
                   onFocus={() => setShowRating(true)}
                 />
               </label>
@@ -162,9 +174,11 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
                       onHover={setPostHoverRating}
                       onClick={setPostRating}
                     />
-                    {ratingError && <div className={styles.ratingError}>{ratingError}</div>}
+                    {ratingError && (
+                      <div className={styles.ratingError}>{ratingError}</div>
+                    )}
                     <div className={styles.buttonContainer}>
-                      <button type='submit' className={styles.button}>
+                      <button type="submit" className={styles.button}>
                         게시
                       </button>
                     </div>
@@ -179,7 +193,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
         </motion.div>
       </dialog>
     </div>,
-    document.getElementById('modal-root')!
+    document.getElementById("modal-root")!
   );
 };
 
