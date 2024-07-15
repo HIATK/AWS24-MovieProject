@@ -50,7 +50,13 @@ const Profile: React.FC = () => {
 
         try {
             const data = await getMemberDetails();
+
+            setMember(data);
             console.error("멤버 데이터 !!!", data);
+
+
+            await fetchLikedMovies(data.memberNo);
+            await fetchImage(); // 이미지 불러오기 추가
 
             if (!data || data.memberNo == null) {
                 console.error('memberNo가 응답에 포함되지 않음 : ', data);
@@ -107,42 +113,43 @@ const Profile: React.FC = () => {
   };
 
   // 프로필 이미지 업로드
-  const handleProfileImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0];
-        setFile(file);
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("memberNo", member?.memberNo?.toString() || "");
+    const handleProfileImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setFile(file);
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("memberNo", member?.memberNo?.toString() || "");
 
-        try {
-            const response = await axios.post<string>("/api/image/upload", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
-            setProfileImagePath(response.data);
-        } catch (error) {
-            console.error("이미지 업로드 실패", error);
+            try {
+                await axios.post("/api/image/upload", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+                await fetchImage(); // 이미지 업로드 후 이미지 다시 불러오기
+            } catch (error) {
+                console.error("이미지 업로드 실패", error);
+            }
         }
-    }
-};
+    };
 
 // 이미지 조회
-const fetchImage = async () => {
-  try {
-      const response = await axios.get<Blob>(`/api/image/read/${member?.memberNo}`, {
-          responseType: "blob",
-      });
+    const fetchImage = async () => {
+        try {
+            const response = await axios.get(`/api/image/read/${member?.memberNo}`, {
+                responseType: "blob",
+            });
 
-      if (response.data) {
-          const imageUrl = URL.createObjectURL(response.data);
-          setProfileImagePath(imageUrl);
-      } else {
-          setProfileImagePath("/profile/basic.png"); // 이미지가 없을 경우 기본 이미지로 설정
-      }
-  } catch (error) {
-      console.error("이미지 조회 실패", error);
-  }
-};
+            if (response.data) {
+                const imageUrl = URL.createObjectURL(response.data);
+                setProfileImagePath(imageUrl);
+            } else {
+                setProfileImagePath("/profile/basic.png"); // 이미지가 없을 경우 기본 이미지로 설정
+            }
+        } catch (error) {
+            console.error("이미지 조회 실패", error);
+            setProfileImagePath("/profile/basic.png"); // 에러 발생 시에도 기본 이미지로 설정
+        }
+    };
 
   // 이미지 수정
   const updateImage = async (file: File) => {
@@ -161,13 +168,13 @@ const fetchImage = async () => {
 
     // 프로필 이미지 삭제
     const handleProfileImageDelete = async () => {
-      try {
-          await axios.delete(`/api/image/delete/${member?.memberNo}`);
-          setProfileImagePath("/profile/basic.png"); // 삭제 후 프로필 이미지 경로 업데이트
-      } catch (error) {
-          console.error("이미지 삭제 실패", error);
-      }
-  };
+        try {
+            await axios.delete(`/api/image/delete/${member?.memberNo}`);
+            setProfileImagePath("/profile/basic.png"); // 삭제 후 프로필 이미지 경로 업데이트
+        } catch (error) {
+            console.error("이미지 삭제 실패", error);
+        }
+    };
 
   // 비밀번호 미/오입력시 에러를 나타내는 함수
   const validateForm = (): Errors => {
@@ -272,19 +279,23 @@ const fetchImage = async () => {
     <div className={styles.container}>
       <div className={styles.mainContent}>
         <div className={styles.profileSection}>
-          <div className={styles.profileImage}>
-            <img
-              src={profileImagePath}
-              alt="Profile"
-              className={styles.profileImageContent}
-            />
-          </div>
-          <div className={styles.nickname}>{member.memberNick}님</div>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onClick={() => fileInputRef.current?.click()}
-            style={{ display: "none" }}
+            <div className={styles.profileImage}>
+                <img
+                    src={profileImagePath}
+                    alt="Profile"
+                    className={styles.profileImageContent}
+                    onError={(e) => {
+                        e.currentTarget.src = "/profile/basic.png"; // 이미지 로드 실패 시 기본 이미지로 대체
+                    }}
+                />
+
+            </div>
+            <div className={styles.nickname}>{member.memberNick}님</div>
+            <input
+                type="file"
+                ref={fileInputRef}
+                onClick={() => fileInputRef.current?.click()}
+                style={{ display: "none" }}
             onChange={handleProfileImageChange}
           />
           <button
