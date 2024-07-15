@@ -48,19 +48,19 @@ const Profile: React.FC = () => {
     useEffect(() => {
         const fetchMemberDetails = async () => {
             try {
-                const data = await getMemberDetails();
-                setMember(data);
-                console.error("멤버 데이터 !!!", data);
+                const data = await getMemberDetails(); // 회원 정보를 가져옵니다.
+                setMember(data); // 가져온 회원 정보를 상태에 저장합니다.
+                console.error("멤버 데이터 !!!", data); // 디버깅을 위해 콘솔에 출력합니다.
 
-                await fetchLikedMovies(data.memberNo);
-                await fetchImage(data.memberNo); // 이미지 불러오기 추가
+                await fetchLikedMovies(data.memberNo); // 좋아요 누른 영화를 가져옵니다.
+                await fetchImage(data.memberNo); // 이미지를 가져옵니다.
 
                 if (!data || data.memberNo == null) {
-                    console.error('memberNo가 응답에 포함되지 않음 : ', data);
+                    console.error('memberNo가 응답에 포함되지 않음 : ', data); // 에러 로그를 출력합니다.
                     return;
                 }
 
-                console.error("멤버 데이터 !!!" + data);
+                console.error("멤버 데이터 !!!" + data); // 디버깅을 위해 콘솔에 출력합니다.
 
                 setUpdateForm((prevForm) => ({
                     ...prevForm,
@@ -71,73 +71,74 @@ const Profile: React.FC = () => {
                     currentPassword: '',
                     newPassword: '',
                     confirmNewPassword: '',
-                }));
+                })); // updateForm 상태를 업데이트합니다.
 
                 if(!data.memberNo){
-                    console.error('memberNo가 응답에 포함되지 않음 : ',data);
+                    console.error('memberNo가 응답에 포함되지 않음 : ',data); // 에러 로그를 출력합니다.
                     return;
                 }
 
-                setMember(data);
-                console.log("설정된 멤버 데이터 : ",data)
+                setMember(data); // 멤버 데이터를 상태에 저장합니다.
+                console.log("설정된 멤버 데이터 : ",data); // 디버깅을 위해 콘솔에 출력합니다.
 
-                await fetchLikedMovies(data.memberNo);
+                await fetchLikedMovies(data.memberNo); // 좋아요 누른 영화를 가져옵니다.
             } catch (error) {
-                console.error('데이터 가져오기 실패', error);
+                console.error('데이터 가져오기 실패', error); // 에러 로그를 출력합니다.
             }
         };
 
         const fetchLikedMovies = async (memberNo: number) => {
             try {
-                console.log("멤버 번호 : "+memberNo)
-                const response = await axios.get(`/api/movies/likes/${memberNo}`);
-                setLikedMovies(response.data);
-                console.log("리스폰스 데이터 !!!!!" + response);
+                console.log("멤버 번호 : "+memberNo); // 디버깅을 위해 콘솔에 출력합니다.
+                const response = await axios.get(`/api/movies/likes/${memberNo}`); // 좋아요 누른 영화를 가져옵니다.
+                setLikedMovies(response.data); // 가져온 영화를 상태에 저장합니다.
+                console.log("리스폰스 데이터 !!!!!" + response); // 디버깅을 위해 콘솔에 출력합니다.
             } catch (error) {
-                console.error('좋아요 누른 영화 가져오기 실패 !!!', error);
+                console.error('좋아요 누른 영화 가져오기 실패 !!!', error); // 에러 로그를 출력합니다.
             }
         };
 
         if (isLoggedIn) {
-            fetchMemberDetails();
+            fetchMemberDetails(); // 회원 정보를 가져옵니다.
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn]); // 의존성 배열에 isLoggedIn을 추가합니다.
+
 
     // 이미지 조회
     const fetchImage = async (memberNo: number) => {
         try {
             const response = await axios.get(`/api/image/read/${memberNo}`, {
                 responseType: "blob",
-            });
+            }); // 이미지를 가져옵니다.
 
             if (response.data) {
-                const imageUrl = URL.createObjectURL(response.data);
-                setProfileImagePath(imageUrl);
+                const imageUrl = URL.createObjectURL(response.data); // 가져온 데이터를 Blob URL로 변환합니다.
+                setProfileImagePath(imageUrl); // 변환된 URL을 상태에 저장합니다.
             } else {
-                setProfileImagePath("/profile/basic.png"); // 이미지가 없을 경우 기본 이미지로 설정
+                setProfileImagePath("/profile/basic.png"); // 이미지가 없을 경우 기본 이미지로 설정합니다.
             }
         } catch (error) {
-            console.error("이미지 조회 실패", error);
-            setProfileImagePath("/profile/basic.png"); // 에러 발생 시에도 기본 이미지로 설정
+            console.error("이미지 조회 실패", error); // 에러 로그를 출력합니다.
+            setProfileImagePath("/profile/basic.png"); // 에러 발생 시 기본 이미지로 설정합니다.
         }
     };
 
     // 프로필 이미지 업로드
     const handleProfileImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setFile(file);
+            const file = e.target.files[0]; // 선택된 파일을 가져옵니다.
+            setFile(file); // 선택된 파일을 상태에 저장합니다.
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("memberNo", member?.memberNo?.toString() || "");
+            formData.append("memberNo", member?.memberNo?.toString() || ""); // 폼 데이터를 설정합니다.
 
             try {
                 await axios.post("/api/image/upload", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                });
-                await fetchImage(member.memberNo); // 이미지 업로드 후 이미지 다시 불러오기
+                }); // 이미지를 업로드합니다.
+                await fetchImage(member.memberNo); // 이미지 업로드 후 다시 이미지를 가져옵니다.
             } catch (error) {
-                console.error("이미지 업로드 실패", error);
+                console.error("이미지 업로드 실패", error); // 에러 로그를 출력합니다.
             }
         }
     };
@@ -146,24 +147,24 @@ const Profile: React.FC = () => {
     const updateImage = async (file: File) => {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("memberNo", member?.memberNo?.toString() || "");
+        formData.append("memberNo", member?.memberNo?.toString() || ""); // 폼 데이터를 설정합니다.
 
         try {
             await axios.put(`/api/image/update/${member?.memberNo}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
-            });
+            }); // 이미지를 수정합니다.
         } catch (error) {
-            console.error("이미지 수정 실패", error);
+            console.error("이미지 수정 실패", error); // 에러 로그를 출력합니다.
         }
     };
 
     // 프로필 이미지 삭제
     const handleProfileImageDelete = async () => {
         try {
-            await axios.delete(`/api/image/delete/${member?.memberNo}`);
-            setProfileImagePath("/profile/basic.png"); // 삭제 후 프로필 이미지 경로 업데이트
+            await axios.delete(`/api/image/delete/${member?.memberNo}`); // 이미지를 삭제합니다.
+            setProfileImagePath("/profile/basic.png"); // 삭제 후 프로필 이미지 경로를 기본 이미지로 설정합니다.
         } catch (error) {
-            console.error("이미지 삭제 실패", error);
+            console.error("이미지 삭제 실패", error); // 에러 로그를 출력합니다.
         }
     };
 
