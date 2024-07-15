@@ -42,12 +42,8 @@ export interface Errors {
 }
 
 export interface Likes {
-    likeId: number;
-    movie: {
-        movieId: number;
-        // 필요한 다른 영화 정보들...
-    };
-    liked: boolean;
+    movieId: number;
+    movieTitle: string;
 }
 
 export interface Posts{
