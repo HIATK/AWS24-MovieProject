@@ -6,8 +6,8 @@ import { useAuth } from "@/(context)/AuthContext";
 import {
   fetchLikeStatus,
   updateLikeStatus,
-  fetchLikesCount,
-} from "@/_Service/LikeService"; // 좋아요 관련 함수 임포트
+  fetchLikeCounts,
+} from "@/_Service/LikeService";
 import { getAverageRatingByMovieId } from "@/_Service/PostService";
 import { getVideosByMovieId } from "@/_Service/MovieService";
 
@@ -18,41 +18,30 @@ interface MovieHeaderProps {
 
 const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
   const { memberNo } = useAuth();
-  const [liked, setLiked] = useState(false); // 좋아요 상태
+  const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [videoKey, setVideoKey] = useState<string | null>(null);
-  const [likesCount, setLikesCount] = useState<number>(0); // 좋아요 수
+  const [likesCount, setLikesCount] = useState<number>(0);
 
   // 좋아요 상태 가져오기
   useEffect(() => {
-    const fetchLikeStatusWrapper = async () => {
+    const fetchLikeStatusAndCounts = async () => {
       if (memberNo === null) return;
 
       try {
         const likedStatus = await fetchLikeStatus(memberNo, movie.id);
         setLiked(likedStatus);
-      } catch (error) {
-        console.error("Error fetching like status:", error);
-      }
-    };
-
-    fetchLikeStatusWrapper();
-  }, [memberNo, movie.id]);
-
-  // 좋아요 수 가져오기
-  useEffect(() => {
-    const fetchLikesCountWrapper = async () => {
-      try {
-        const count = await fetchLikesCount(movie.id);
+        
+        const count = await fetchLikeCounts(movie.id);
         setLikesCount(count);
       } catch (error) {
-        console.error("Error fetching likes count:", error);
+        console.error("Error fetching like status or likes count:", error);
       }
     };
 
-    fetchLikesCountWrapper();
-  }, [movie.id]);
+    fetchLikeStatusAndCounts();
+  }, [memberNo, movie.id]);
 
   // 비디오 키 가져오기
   useEffect(() => {
@@ -80,7 +69,10 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
     try {
       await updateLikeStatus(memberNo, movie.id, !liked);
       setLiked(!liked);
-      setLikesCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1)); // 좋아요 상태에 따라 좋아요 수 업데이트
+
+      // 좋아요 상태 업데이트 후 좋아요 수 다시 가져오기
+      const count = await fetchLikeCounts(movie.id);
+      setLikesCount(count);
     } catch (err) {
       setError("좋아요 상태 업데이트 실패");
     } finally {
@@ -102,14 +94,12 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
               <FaStar /> {averageRating.toFixed(1)}
             </span>
             <button
-              className={`${styles.likeButton} ${liked ? styles.liked : ""}`} // 좋아요 상태에 따라 클래스 변경
+              className={`${styles.likeButton} ${liked ? styles.liked : ""}`}
               onClick={handleLikeClick}
               disabled={loading}
             >
-              {liked ? <FaHeart /> : <FaRegHeart />}{" "}
-              {/* 좋아요 상태에 따라 아이콘 변경 */}
-              <span className={styles.likesCount}>{likesCount}</span>{" "}
-              {/* 좋아요 수 표시 */}
+              {liked ? <FaHeart /> : <FaRegHeart />}
+              <span className={styles.likesCount}>{likesCount}</span>
             </button>
           </div>
         </div>

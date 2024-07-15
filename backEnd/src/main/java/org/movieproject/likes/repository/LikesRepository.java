@@ -17,4 +17,7 @@ public interface LikesRepository extends JpaRepository<Likes, Integer> {
 
     @Query("select l from Likes l where l.member.memberNo = :memberNo AND l.liked = true")
     List<Likes> findByMemberNo(@Param("memberNo")Integer memberNo);
+
+    @Query("SELECT COUNT(l) FROM Likes l WHERE l.movie.movieId = :movieId AND l.liked = true")
+    Integer countByMovieIdAndLiked(@Param("movieId") Integer movieId);
 }
