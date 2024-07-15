@@ -54,6 +54,11 @@ public class MovieController {
         return movieService.getYoutubeVideoKeys(movieId);
     }
 
+    @GetMapping("/images/{movieId}")
+    public CompletableFuture<List<String>> getImagesByMovieId(@PathVariable Integer movieId) {
+        return movieService.getMovieImages(movieId);
+    }
+
     @GetMapping("/likes/{memberNo}")
     public ResponseEntity<List<Integer>> getLikes(@PathVariable Integer memberNo) {
 

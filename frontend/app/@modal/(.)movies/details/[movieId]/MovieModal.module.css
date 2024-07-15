@@ -32,7 +32,7 @@
   padding: 0;
   background: transparent; /* 배경 없음 */
   width: 90%;
-  max-width: 800px; /* 최대 너비 */
+  max-width: 900px; /* 최대 너비 */
   height: 90vh; /* 뷰포트 높이의 90% */
   margin: 0 auto; /* 중앙 정렬 */
   position: relative; /* 상대 위치 */

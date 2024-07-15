@@ -1,6 +1,5 @@
 package org.movieproject.config.Filter;
 
-import com.google.gson.Gson;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -17,13 +16,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -62,20 +57,21 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         log.info("액세스 토큰 : " + accessToken);
         log.info("리프레시 토큰 : " + refreshToken);
 
-        try {   // 엑 세 스 토 큰 체 크
+        boolean accessTokenValid = true;
+        try {
             checkAccessToken(accessToken);
         } catch (RefreshTokenException refreshTokenException) {
-            refreshTokenException.sendResponseError(response);
+            accessTokenValid = false;
         }
 
         Map<String, Object> refreshClaims = null;
 
         try {
             refreshClaims = checkRefreshToken(refreshToken);
-            log.info(refreshClaims);
+            log.info("리프레시클레임"+refreshClaims);
 
             // refreshToken 의 유효기간이 얼마 남지 않은 경우
-            long exp = (long)refreshClaims.get("exp");
+            long exp = (long) refreshClaims.get("exp");
 
             Date expTime = new Date(Instant.ofEpochMilli(exp).toEpochMilli() * 1000);
 
@@ -93,11 +89,17 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             log.info("만 료 시 간 : " + expTime);
             log.info("갭 타 임 : " + hours + "시간 " + minutes + "분 " + seconds + "초");
 
-            String username = (String)refreshClaims.get("username");
-            Map<String, Object> authority = Map.of("authority", (String)refreshClaims.get("authorities"));
-
+            String username = (String) refreshClaims.get("username");
+            log.info("리프레시유저네임 " +username);
+            Map<String, Object> authority = Map.of("authority", refreshClaims.get("authority"));
+            log.info("리프레시인증 " + authority);
             // 여기부터 AccessToken 생성
-            String accessTokenValue = jwtProvider.generateToken(Map.of("username", username, "authority", authority), 10);
+            String accessTokenValue;
+            if (accessTokenValid) {
+                accessTokenValue = accessToken;
+            } else {
+                accessTokenValue = jwtProvider.generateToken(Map.of("username", username, "authority", authority), 10);
+            }
 
             String refreshTokenValue = refreshToken;
 
@@ -113,22 +115,21 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             sendTokens(accessTokenValue, refreshTokenValue, response);
         } catch (RefreshTokenException refreshTokenException) {
             refreshTokenException.sendResponseError(response);
-            return;
         }
-
     }
-    
+
     private void checkAccessToken(String accessToken) throws RefreshTokenException {
         try {
             jwtProvider.extractClaim(accessToken);
         } catch (ExpiredJwtException expiredJwtException) {
             log.info("액 세 스 토 큰 이 만 료 되 었 다");
+            throw new RefreshTokenException(RefreshTokenException.ErrorCase.NO_ACCESS); // RefreshTokenException을 던짐
         } catch (Exception exception) {
             throw new RefreshTokenException(RefreshTokenException.ErrorCase.NO_ACCESS);
         }
     }
 
-    private Map <String, Object> checkRefreshToken(String refreshToken) throws RefreshTokenException {
+    private Map<String, Object> checkRefreshToken(String refreshToken) throws RefreshTokenException {
         try {
             Map<String, Object> values = jwtProvider.extractClaim(refreshToken);
             return values;
@@ -137,10 +138,9 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         } catch (MalformedJwtException malformedJwtException) {
             log.info("말 폼 드 J W T 익 셉 션");
             throw new RefreshTokenException(RefreshTokenException.ErrorCase.NO_REFRESH);
-        }  catch (Exception exception) {
-            new RefreshTokenException(RefreshTokenException.ErrorCase.NO_REFRESH);
+        } catch (Exception exception) {
+            throw new RefreshTokenException(RefreshTokenException.ErrorCase.NO_REFRESH);
         }
-        return null;
     }
 
     private void sendTokens(String accessTokenValue, String refreshTokenValue, HttpServletResponse response) {

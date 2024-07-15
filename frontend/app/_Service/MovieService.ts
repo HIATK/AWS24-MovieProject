@@ -36,3 +36,15 @@ export const getVideosByMovieId = async (id: number) => {
     throw error;
   }
 }
+
+export const getMoviesByMovieId = async (id: number) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/images/${id}`);
+    console.log("이미지 요청이다" + response.data);
+    const images = response.data;
+    return images;
+  } catch (error) {
+    console.error("이미지 요청 실패다", error);
+    throw error;
+  }
+}

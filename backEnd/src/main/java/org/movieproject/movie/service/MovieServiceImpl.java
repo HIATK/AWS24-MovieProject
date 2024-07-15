@@ -25,7 +25,7 @@ public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
 
     @Value("${apiKey}")
-    private String apiKey;
+    private String API_KEY;
 
     private WebClient webClient;
 
@@ -45,7 +45,7 @@ public class MovieServiceImpl implements MovieService {
                         .path("/movie/now_playing")
                         .queryParam("language", "ko-KR")
                         .queryParam("page", 1)
-                        .queryParam("api_key", apiKey)
+                        .queryParam("api_key", API_KEY)
                         .build())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
@@ -91,7 +91,7 @@ public class MovieServiceImpl implements MovieService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}")
                         .queryParam("language", "ko-KR")
-                        .queryParam("api_key", apiKey)
+                        .queryParam("api_key", API_KEY)
                         .build(movieId))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
@@ -115,7 +115,7 @@ public class MovieServiceImpl implements MovieService {
                         .queryParam("query", encodedKeyword)
                         .queryParam("language", "ko-KR")
                         .queryParam("page", 1)
-                        .queryParam("api_key", apiKey)
+                        .queryParam("api_key", API_KEY)
                         .build())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
@@ -143,7 +143,7 @@ public class MovieServiceImpl implements MovieService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}/videos")
                         .queryParam("language", "ko-KR")
-                        .queryParam("api_key", apiKey)
+                        .queryParam("api_key", API_KEY)
                         .build(movieId))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
@@ -158,6 +158,30 @@ public class MovieServiceImpl implements MovieService {
                 })
                 .toFuture();
     }
+
+    @Async
+    @Override
+    public CompletableFuture<List<String>> getMovieImages(Integer movieId) {
+        return webClientBuilder.build()
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/{id}/images")
+                        .queryParam("api_key", API_KEY)
+                        .build(movieId))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .map(response -> {
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> backdrops = (List<Map<String, Object>>) response.get("backdrops");
+
+                    return backdrops.stream()
+                            .filter(image -> image.get("iso_639_1") == null && ((Integer) image.get("height")) < ((Integer) image.get("width")))
+                            .map(image -> (String) image.get("file_path"))
+                            .collect(Collectors.toList());
+                })
+                .toFuture();
+    }
+
     @Override
     public List<Integer> getLikedMoviesByMemberNo(Integer memberNo){
         List<Movie> movies = movieRepository.findLikedMoviesByMemberNo(memberNo);  // 회원이 좋아요를 누른 영화 목록을 가져옴

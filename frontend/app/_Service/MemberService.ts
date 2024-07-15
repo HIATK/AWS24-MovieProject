@@ -32,7 +32,7 @@ export const checkAuth = async () => {
 export const refreshAccessToken = async () => {
   try {
     const response = await axios.post(`${API_URL}/check_auth/refresh`, {}, { withCredentials: true });
-    return response.data.accessToken;
+    return response.data;
   } catch (error) {
     throw new Error('Failed to refresh token');
   }

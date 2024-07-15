@@ -16,6 +16,14 @@ const Search = () => {
   const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
+    // 검색어가 변경될 때마다 결과와 페이지를 초기화
+    setResults([]);
+    setPage(1);
+    setHasMore(true);
+    setLoading(true);
+  }, [searchTerm]);
+
+  useEffect(() => {
     const fetchResults = async () => {
       if (searchTerm) {
         try {
@@ -46,7 +54,7 @@ const Search = () => {
     fetchResults();
   }, [searchTerm, page]); // searchTerm 또는 page가 변경될 때만 실행
 
-  const lastPosterElementRef = useRef<HTMLDivElement>(null);
+  const lastPosterElementRef = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
     if (loading) return;

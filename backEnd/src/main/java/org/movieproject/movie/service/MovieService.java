@@ -17,5 +17,7 @@ public interface MovieService {
 
     CompletableFuture<List<String>> getYoutubeVideoKeys(Integer movieId);
 
+    CompletableFuture<List<String>> getMovieImages(Integer movieId);
+
     List<Integer> getLikedMoviesByMemberNo(Integer memberNo);
 }
