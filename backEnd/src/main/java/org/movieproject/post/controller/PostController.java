@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,11 @@ public class PostController {
 
     @GetMapping("/movie/{movieId}")
     public List<PostDTO> getPostByMovieId(@PathVariable("movieId") Integer movieId) {
-        return postService.getPostByMovieId(movieId);
+        List<PostDTO> postDTOs = postService.getPostByMovieId(movieId);
+        if (postDTOs == null || postDTOs.isEmpty()) {
+            return new ArrayList<>(); // 빈 리스트 반환
+        }
+        return postDTOs;
     }
 
     @GetMapping("/average-rating/{movieId}")

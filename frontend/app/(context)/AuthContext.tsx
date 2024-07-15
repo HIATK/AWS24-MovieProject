@@ -22,25 +22,34 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [memberNo, setMemberNo] = useState<number | null>(null);
   const [checkedAuth, setCheckedAuth] = useState(false);
 
-  const checkAuth = useCallback(async (): Promise<void> => {
-    if (checkedAuth) return;
+  const refreshAccessToken = useCallback(async (): Promise<boolean> => {
+    try {
+      await refreshAccessTokenService();
+      return true;
+    } catch (error) {
+      console.error('Failed to refresh access token:', error);
+      return false;
+    }
+  }, []);
 
+  const checkAuth = useCallback(async (): Promise<void> => {
     try {
       const data = await checkAuthService();
       setIsLoggedIn(data.roles && (data.roles.includes('MEMBER') || data.roles.includes('GUEST')));
       setMemberNo(data.memberNo);
       setMemberNick(data.memberNick);
       setCheckedAuth(true);
-      console.log("체크어쓰 200" + data.memberNick);
+      console.log("체크어쓰 200, 사용자 닉네임 : " + data.memberNick);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.status === 401) {
+          console.log("체크어쓰 401");
           setIsLoggedIn(false);
           setMemberNo(null);
           setMemberNick(null);
-          console.log("체크어쓰 401");
         } else if (error.response && error.response.status === 403) {
-          const retryCheckAuth = await refreshAccessTokenService();
+          console.log("체크어쓰 403");
+          const retryCheckAuth = await refreshAccessToken();
           if (retryCheckAuth) {
             await checkAuth();
           }
@@ -57,19 +66,29 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         setMemberNick(null);
         console.log("체크어쓰 캐치에러");
       }
+      setCheckedAuth(false); // 인증 체크 실패 시 상태 초기화
     }
-  }, [checkedAuth]);
+  }, [refreshAccessToken]);
 
   const logout = useCallback(() => {
     setIsLoggedIn(false);
     setMemberNo(null);
     setMemberNick(null);
-    setCheckedAuth(false);
+    setCheckedAuth(false); // 로그아웃 시 상태 초기화
   }, []);
 
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+    const authenticate = async () => {
+      if (!checkedAuth) {
+        console.log("리프레시토큰 요청 실행")
+        const refreshResult = await refreshAccessToken();
+        if (refreshResult) {
+          await checkAuth();
+        }
+      }
+    };
+    authenticate();
+  }, [checkedAuth, refreshAccessToken, checkAuth]);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, memberNick, memberNo, checkAuth, setIsLoggedIn, setMemberNick, logout }}>

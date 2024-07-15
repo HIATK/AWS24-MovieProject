@@ -9,7 +9,7 @@ import {
   fetchLikeCounts,
 } from "@/_Service/LikeService";
 import { getAverageRatingByMovieId } from "@/_Service/PostService";
-import { getVideosByMovieId } from "@/_Service/MovieService";
+import { getVideosByMovieId, getMoviesByMovieId } from "@/_Service/MovieService";
 
 interface MovieHeaderProps {
   movie: MovieDetails;
@@ -20,9 +20,12 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
   const { memberNo } = useAuth();
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingContent, setLoadingContent] = useState(true); // 로딩 상태 추가
   const [error, setError] = useState<string | null>(null);
   const [videoKey, setVideoKey] = useState<string | null>(null);
   const [likesCount, setLikesCount] = useState<number>(0);
+  const [images, setImages] = useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // 좋아요 상태 가져오기
   useEffect(() => {
@@ -43,19 +46,37 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
     fetchLikeStatusAndCounts();
   }, [memberNo, movie.id]);
 
-  // 비디오 키 가져오기
+  // 비디오 키 가져오기 및 이미지 가져오기
   useEffect(() => {
-    const fetchVideo = async () => {
+    const fetchVideoAndImages = async () => {
+      setLoadingContent(true); // 로딩 시작
       try {
         const videoData = await getVideosByMovieId(movie.id);
-        setVideoKey(videoData);
+        if (videoData && videoData.length > 0) {
+          setVideoKey(videoData);
+        } else {
+          const imagesData = await getMoviesByMovieId(movie.id);
+          setImages(imagesData);
+        }
       } catch (error) {
         console.error("트레일러 요청 실패: ", error);
+      } finally {
+        setLoadingContent(false); // 로딩 완료
       }
     };
 
-    fetchVideo();
+    fetchVideoAndImages();
   }, [movie.id]);
+
+  // 슬라이드 이미지 변경
+  useEffect(() => {
+    if (images.length > 0) {
+      const intervalId = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }, 3000);
+      return () => clearInterval(intervalId);
+    }
+  }, [images]);
 
   // 좋아요 클릭 핸들러
   const handleLikeClick = async () => {
@@ -103,21 +124,38 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
             </button>
           </div>
         </div>
-        {videoKey && (
+        {loadingContent ? (
+          <div className={styles.loader}></div>
+        ) : videoKey ? (
           <div className={styles.video}>
             <div className={styles.iframeContainer}>
               <iframe
-                width="540"
-                height="286.6"
+                className={styles.iframe}
                 src={`https://www.youtube.com/embed/${videoKey}`}
                 title="YouTube video player"
-                frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
             </div>
           </div>
-        )}
+        ) : images.length > 0 ? (
+          <div className={styles.imageSlider}>
+            {images.map((image, index) => (
+              <img
+                key={index}
+                src={`https://image.tmdb.org/t/p/w500${image}`}
+                alt="Movie backdrop"
+                className={`${styles.sliderImage} ${
+                  index === currentImageIndex ? styles.active : ""
+                } ${
+                  index === (currentImageIndex - 1 + images.length) % images.length ? styles.prev : ""
+                } ${
+                  index === (currentImageIndex + 1) % images.length ? styles.next : ""
+                }`}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
       <div className={styles.movieInfo}>
         <h1>{movie.title}</h1>
