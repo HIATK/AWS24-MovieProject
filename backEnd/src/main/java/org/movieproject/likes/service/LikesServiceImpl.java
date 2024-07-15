@@ -10,11 +10,7 @@ import org.movieproject.member.entity.Member;
 import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.movie.entity.Movie;
 import org.movieproject.movie.repository.MovieRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -56,6 +52,11 @@ public class LikesServiceImpl implements LikesService {
         return likesRepository.findByMemberAndMovie(member, movie)
                 .map(Likes::isLiked)
                 .orElse(false);
+    }
+
+    @Override
+    public Integer getMovieLikesCount(Integer movieId) {
+        return likesRepository.countByMovieIdAndLiked(movieId);
     }
 
 //    @Override

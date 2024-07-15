@@ -23,7 +23,7 @@ public class LikesController {
     private final LikesRepository likesRepository;
     private final MemberRepository memberRepository;
 
-    @PostMapping
+    @PostMapping("/update")
     public ResponseEntity<String> likeMovie(@RequestBody LikesDTO likesDTO) {
         likesService.toggleLike(likesDTO);
         return ResponseEntity.ok("Like status updated successfully");
@@ -34,6 +34,13 @@ public class LikesController {
         boolean liked = likesService.getLikeStatus(memberNo, movieId);
         return ResponseEntity.ok(liked);
     }
+
+    @GetMapping("/likesMovie")
+    public ResponseEntity<Integer> getMovieLikes(@RequestParam Integer movieId) {
+        Integer likeCount = likesService.getMovieLikesCount(movieId);
+        return ResponseEntity.ok(likeCount);
+    }
+
     @GetMapping("/{memberNo}")
     public ResponseEntity<List<Likes>> getLikes(@PathVariable Integer memberNo) {
         List<Likes> likes = likesRepository.findByMemberNo(memberNo);

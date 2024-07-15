@@ -11,6 +11,9 @@ public interface LikesService {
     void toggleLike(LikesDTO likesDTO);
 
     boolean getLikeStatus(Integer memberNo, Integer movieId);
+
+    Integer getMovieLikesCount(Integer movieId);
+
 //    Likes addLikes(LikesDTO likeDTO);
 //
 //    void removeLikesByMember(int memberNo); // 수정된 메서드 추가
