@@ -3,12 +3,13 @@ package org.movieproject.likes.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.movieproject.member.entity.Member;
+import org.movieproject.member.entity.QMember;
 import org.movieproject.movie.entity.Movie;
 
 @Data
 @Entity
 @Getter
-@ToString
+@ToString(exclude = "member")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Likes {

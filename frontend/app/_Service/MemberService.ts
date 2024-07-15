@@ -1,4 +1,6 @@
 import axios from 'axios';
+import {Member} from "@/(types)/types";
+import stringifySafe from 'json-stringify-safe';
 
 const API_URL = 'http://localhost:8000/api/member';
 
@@ -45,3 +47,55 @@ export const logout = async () => {
   }
 };
 
+// profile 유저 정보 가져오기
+    export const getMemberDetails = async (): Promise<Member> => {
+      try {
+        const response = await axios.get('/api/member/profile', {
+          baseURL: 'http://localhost:8000',
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+          credentials: 'include',
+        });
+  } catch (error) {
+    console.error('프로필 정보 가져오기 실패:', error);
+    throw error;
+  }
+};
+
+// profile 정보수정 할 때 입력된 '현재 비밀번호' 서버에 보내서 실제 로그인한 사람의 비밀번호가 맞는지 검증하기.
+export const verifyPassword = async (password: string): Promise<boolean> => {
+  try {
+    const response = await axios.post(
+        "api/member/verifyPw",
+        { password },
+        {
+          baseURL: "http://localhost:8000",
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+          credentials: "include",
+        }
+    );
+    return response.data.isValid;
+  } catch (error) {
+    console.error("Password verification failed", error);
+    return false;
+  }
+};
+
+
+// 닉네임 중복체크를 위해 입력된 '닉네임' 서버에 보내서 중복되는지 검증
+export const checkNicknameDuplicate = async (nickname: string): Promise<boolean> => {
+  try {
+    const response = await axios.get(`/api/member/checkNickname`, {
+      params: { nickname },
+      baseURL: "http://localhost:8000",
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+      credentials: "include",
+    });
+    return response.data.isDuplicate;
+  } catch (error) {
+    console.error("닉네임 중복 체크 실패", error);
+    return false;
+  }
+};

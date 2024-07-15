@@ -40,3 +40,19 @@ export interface Errors {
     confirmNewPassword?: string;
     memberNick?: string;
 }
+
+export interface Likes {
+    likeId: number;
+    movie: {
+        movieId: number;
+        // 필요한 다른 영화 정보들...
+    };
+    liked: boolean;
+}
+
+export interface Posts{
+    postContent: string;
+    ratingStar: number;
+    regDate: string;
+    movieId: number;
+}
