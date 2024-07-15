@@ -7,118 +7,103 @@ import React, {
 } from "react";
 import axios from "axios";
 import styles from "./profile.module.css";
-import { Member, Errors, UpdateForm } from "@/(types)/types";
-import { useAuth } from "@/(context)/AuthContext";
 
-// profile 유저 정보 가져오기
-const getMemberDetails = async (): Promise<Member> => {
-  const response = await axios.get("/api/member/profile", {
-    baseURL: "http://localhost:8000",
-    headers: { "Content-Type": "application/json" },
-    withCredentials: true,
-    credentials: "include",
-  });
-  return response.data;
-};
+import {Member, Errors, UpdateForm, Posts, Likes} from "@/(types)/types";
+import { useAuth } from '@/(context)/AuthContext';
+import {checkNicknameDuplicate, getMemberDetails, verifyPassword} from "@/_Service/MemberService";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
-// 정보수정 할 때 입력된 '현재 비밀번호' 서버에 보내서 실제 로그인한 사람의 비밀번호가 맞는지 검증하기.
-const verifyPassword = async (password: string): Promise<boolean> => {
-  try {
-    const response = await axios.post(
-      "api/member/verifyPw",
-      { password },
-      {
-        baseURL: "http://localhost:8000",
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-        credentials: "include",
-      }
-    );
-    return response.data.isValid;
-  } catch (error) {
-    console.error("Password verification failed", error);
-    return false;
-  }
-};
-// 닉네임 중복체크를 위해 입력된 '닉네임' 서버에 보내서 중복되는지 검증
-const checkNicknameDuplicate = async (nickname: string): Promise<boolean> => {
-  try {
-    const response = await axios.get(`/api/member/checkNickname`, {
-      params: { nickname },
-      baseURL: "http://localhost:8000",
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true,
-      credentials: "include",
-    });
-    return response.data.isDuplicate;
-  } catch (error) {
-    console.error("닉네임 중복 체크 실패", error);
-    return false;
-  }
-};
 
 // 프로필 컴포넌트!
 const Profile: React.FC = () => {
-  const { isLoggedIn } = useAuth();
-  const [member, setMember] = useState<Member>({
-    memberNo: 0,
-    memberEmail: "",
-    memberName: "",
-    memberPhone: "",
-    memberNick: "",
-  });
-  const [updateForm, setUpdateForm] = useState<UpdateForm>({
-    memberEmail: "",
-    memberName: "",
-    memberPhone: "",
-    memberNick: "",
-    currentPassword: "",
-    newPassword: "",
-    confirmNewPassword: "",
-  });
-  const [errors, setErrors] = useState<Errors>({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [profileImagePath, setProfileImagePath] =
-    useState("/profile/basic.png"); // 이미지 경로 상태 관리
-  let [isNicknameChecked, setIsNicknameChecked] = useState(false);
-  let [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
-  // const [reviews, setReviews] = useState<Review[]>([]);
-  // const [likedMovies, setLikedMovies] = useState<Movie[]>([]);
+    const { isLoggedIn } = useAuth();
+    const [member, setMember] = useState<Member>({
+        memberNo: 0,
+        memberEmail: '',
+        memberName: '',
+        memberPhone: '',
+        memberNick: '',
+    });
+    const [posts, setPosts] = useState<Posts[]>([]);
+    const [likedMovies, setLikedMovies] = useState<Likes[]>([]);
+    const [updateForm, setUpdateForm] = useState<UpdateForm>({
+        memberEmail: '',
+        memberName: '',
+        memberPhone: '',
+        memberNick: '',
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: '',
+    });
+    const [errors, setErrors] = useState<Errors>({});
+    const [isEditing, setIsEditing] = useState(false);
+    const [file, setFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [profileImagePath, setProfileImagePath] = useState("/profile/basic.png"); // 이미지 경로 상태 관리
+    let [isNicknameChecked, setIsNicknameChecked] = useState(false);
+    let [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
+
 
   useEffect(() => {
     const fetchMemberDetails = async () => {
-      try {
-        const data = await getMemberDetails();
-        setMember(data);
-        console.log(data);
-        setUpdateForm((prevForm) => ({
-          ...prevForm,
-          memberEmail: data.memberEmail,
-          memberName: data.memberName,
-          memberNick: data.memberNick,
-          memberPhone: data.memberPhone,
-          currentPassword: "",
-          newPassword: "",
-          confirmNewPassword: "",
-        }));
 
-        //  프로필 이미지 경로 가져오기
-        const profileImagePathReponse = await axios.get<string>(
-          "/api/image/profile",
-          {
-            params: { memberNo: data.memberNo },
-            baseURL: "http://localhost:8000",
-            headers: { "Content-Type": "application/json" },
-            withCredentials: true,
-            credentials: "include",
+        try {
+            const data = await getMemberDetails();
+            console.log("멤버 데이터 !!!", data);
+
+            if (!data || data.memberNo == null) {
+                console.error('memberNo가 응답에 포함되지 않음 : ', data);
+                return;
+            }
+
+            console.log("멤버 데이터 !!!" + data);
+
+          setUpdateForm((prevForm) => ({
+              ...prevForm,
+              memberEmail: data.memberEmail || '',
+              memberName: data.memberName || '',
+              memberNick: data.memberNick || '',
+              memberPhone: data.memberPhone || '',
+              currentPassword: '',
+              newPassword: '',
+              confirmNewPassword: '',
+          }));
+
+          if(!data.memberNo){
+              console.error('memberNo가 응답에 포함되지 않음 : ',data);
+              return;
           }
-        );
-        setProfileImagePath(`profileImagePathReponse.data`);
+
+          setMember(data);
+          console.log("설정된 멤버 데이터 : ",data)
+
+          await fetchLikedMovies(data.memberNo);
       } catch (error) {
-        console.error("Failed to fetch member details", error);
+          console.error('데이터 가져오기 실패', error);
       }
+    };
+
+
+          // //  프로필 이미지 경로 가져오기
+          // const profileImagePathReponse = await axios.get<string>("/api/image/profile", {
+          //     params: { memberNo: data.memberNo},
+          //     baseURL: "http://localhost:8000",
+          //     headers: { "Content-Type": "application/json"},
+          //     withCredentials: true,
+          //     credentials: "include",
+          // });
+          // setProfileImagePath(`profileImagePathReponse.data`);
+
+        const fetchLikedMovies = async (memberNo: number) => {
+            try {
+                console.log("왜 값이 안가냐!!!!!!!, 멤버 번호 : "+memberNo)
+                const response = await axios.get(`/api/likes/${memberNo}`);
+                setLikedMovies(response.data);
+                console.log("리스폰스 데이터 !!!!!" + response.data);
+            } catch (error) {
+                console.error('좋아요 누른 영화 가져오기 실패 !!!', error);
+            }
     };
     if (isLoggedIn) {
       fetchMemberDetails();
@@ -384,11 +369,19 @@ const Profile: React.FC = () => {
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>내가 남긴 리뷰</h2>
             {/* 리뷰 내용 */}
+            {/*  {posts}*/}
           </div>
-          <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>좋아요 누른 영화</h2>
-            {/* 좋아요 누른 영화 목록 */}
-          </div>
+            <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>좋아요 누른 영화</h2>
+                <ul>
+                    {likedMovies.map((likedMovie) => (
+                        <li key={likedMovie.likeId}>
+                            {likedMovie.movie.movieId}
+                            {likedMovie.liked ? ' (좋아요)' : ' (좋아요 취소)'}
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
       </div>
     </div>

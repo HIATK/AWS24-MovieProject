@@ -2,6 +2,7 @@ package org.movieproject.likes.service;
 
 import org.movieproject.likes.dto.LikesDTO;
 import org.movieproject.likes.entity.Likes;
+import org.movieproject.member.entity.Member;
 
 import java.util.List;
 

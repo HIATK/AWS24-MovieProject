@@ -1,11 +1,13 @@
 package org.movieproject.member.controller;
 
 import io.jsonwebtoken.JwtException;
+import io.swagger.v3.core.jackson.ModelResolver;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.movieproject.likes.entity.Likes;
 import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.entity.Member;
@@ -32,6 +34,7 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     // 회원가입
     @PostMapping("/join")
@@ -54,12 +57,16 @@ public class MemberController {
         log.info("프로필 입장 !!!!!!!!!!!!!!!");
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
             log.info("프린서펄 값 !!!: {}", username);
 
-            Optional<Member> member = memberRepository.findByMemberEmailWithRoles(username);
-            if (member.isPresent()) {
-                return ResponseEntity.ok(member.get());
+            Optional<Member> memberOptional = memberRepository.findByMemberEmailWithRoles(username);
+
+            if (memberOptional.isPresent()) {
+                Member member = memberOptional.get();
+                log.info(member);
+                MemberDTO profileDTO = modelMapper.map(member, MemberDTO.class);
+                log.info("멤버 정보 DTO: {}", profileDTO);
+                return ResponseEntity.ok(profileDTO);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("멤버를 찾을 수 없습니다.");
             }
