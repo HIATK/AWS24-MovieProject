@@ -32,7 +32,7 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
       try {
         const likedStatus = await fetchLikeStatus(memberNo, movie.id);
         setLiked(likedStatus);
-        
+
         const count = await fetchLikeCounts(movie.id);
         setLikesCount(count);
       } catch (error) {
