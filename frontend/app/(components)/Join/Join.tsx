@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useRef } from "react";
 import styles from "./Join.module.css";
-import axios from 'axios';
+import axios from "axios";
 import Link from "next/link";
-import { useAuth } from '../../(context)/AuthContext';
+import { useAuth } from "../../(context)/AuthContext";
 
 interface FormData {
   memberEmail: string;
@@ -24,13 +24,13 @@ const Join: React.FC = () => {
   const joinButtonRef = useRef<HTMLButtonElement>(null);
   const { isLoggedIn } = useAuth();
   const [formData, setFormData] = useState<FormData>({
-    memberEmail: '',
-    memberPw: '',
-    memberPwConfirm: '',
-    memberName: '',
-    memberPhone: '',
-    memberNick: '',
-    roleSet: ['MEMBER'],
+    memberEmail: "",
+    memberPw: "",
+    memberPwConfirm: "",
+    memberName: "",
+    memberPhone: "",
+    memberNick: "",
+    roleSet: ["MEMBER"],
   });
   const [errors, setErrors] = useState<Errors>({});
 
@@ -41,7 +41,7 @@ const Join: React.FC = () => {
   const validateForm = (): Errors => {
     const newErrors: Errors = {};
     if (formData.memberPw !== formData.memberPwConfirm) {
-      newErrors.memberPwConfirm = '비밀번호가 일치하지 않습니다. !!!';
+      newErrors.memberPwConfirm = "비밀번호가 일치하지 않습니다. !!!";
     }
     return newErrors;
   };
@@ -53,20 +53,20 @@ const Join: React.FC = () => {
       setErrors(validationErrors);
     } else {
       try {
-        const response = await axios.post('/api/member/join', formData, {
+        const response = await axios.post("/api/member/join", formData, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
         alert(response.data);
         setFormData({
-          memberEmail: '',
-          memberPw: '',
-          memberPwConfirm: '',
-          memberName: '',
-          memberPhone: '',
-          memberNick: '',
-          roleSet: ['MEMBER'],
+          memberEmail: "",
+          memberPw: "",
+          memberPwConfirm: "",
+          memberName: "",
+          memberPhone: "",
+          memberNick: "",
+          roleSet: ["MEMBER"],
         });
         setErrors({});
         joinButtonRef.current?.click();
@@ -74,7 +74,7 @@ const Join: React.FC = () => {
         if (axios.isAxiosError(error) && error.response) {
           alert(error.response.data);
         } else {
-          alert('An unexpected error occurred');
+          alert("An unexpected error occurred");
         }
       }
     }
@@ -85,7 +85,7 @@ const Join: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className={styles.fullHeightContainer}>
       <form onSubmit={handleSubmit} className={styles.formContainer}>
         <div>
           <input
@@ -117,7 +117,9 @@ const Join: React.FC = () => {
             required
           />
         </div>
-        {errors.memberPwConfirm && <span style={{ color: 'red' }}>{errors.memberPwConfirm}</span>}
+        {errors.memberPwConfirm && (
+          <span className={styles.error}>{errors.memberPwConfirm}</span>
+        )}
         <div>
           <input
             type="text"
@@ -140,7 +142,7 @@ const Join: React.FC = () => {
         </div>
         <div>
           <input
-            type=""
+            type="text"
             name="memberPhone"
             placeholder="Phone('-' 생략)"
             value={formData.memberPhone}
@@ -148,10 +150,11 @@ const Join: React.FC = () => {
             required
           />
         </div>
-        <button type="submit">가입하기</button>
+        <button type="submit">가입하기</button> {/* 회원가입 버튼 */}
       </form>
-      <Link href='/member/login'>
-        <button ref={joinButtonRef} style={{ display: 'none' }} />
+      <Link href="/member/login">
+        <button ref={joinButtonRef} style={{ display: "none" }} />{" "}
+        {/* 로그인 페이지로 이동하는 숨겨진 버튼 */}
       </Link>
     </div>
   );
