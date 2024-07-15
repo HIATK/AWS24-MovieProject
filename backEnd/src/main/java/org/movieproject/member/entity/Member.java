@@ -3,6 +3,7 @@ package org.movieproject.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.movieproject.likes.entity.Likes;
+import org.movieproject.upload.entity.Image;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -38,6 +39,11 @@ public class Member {
     private String memberNick;
 
     private boolean social;
+
+    //  이미지 연관관계 설정
+    //  회원 삭제 시 이미지 데이터도 같이 삭제되도록 구성
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Image image;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)

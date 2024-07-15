@@ -48,7 +48,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ underlineColor = '#ffffff' }) => 
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Type to search.."
+                    //검색바 플레이스홀더
+                    placeholder=""
                     className={styles.searchInput}
                 />
                 <div className={styles.underline} style={{ backgroundColor: underlineColor }}></div>

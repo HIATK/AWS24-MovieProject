@@ -43,7 +43,7 @@ a {
 
   --primary-glow: conic-gradient(
     from 180deg at 50% 50%,
-    #16abff33 0deg,
+    rgba(30, 30, 30, 0.2) 0deg,
     #0885ff33 55deg,
     #54d6ff33 120deg,
     #0071ff33 160deg,
@@ -71,21 +71,24 @@ a {
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
 
-  --background-light: rgba(241, 241, 241, 0.96);
+  --background-light: rgb(179, 171, 162);
   --background-dark: rgb(33, 33, 30);
 
   --text-light: #333333;
-  --text-dark: #ffffff;
+  /*--text-dark: #ffffff;*/
 
-  --input-background-light: #ffffff;
+  --input-background-light: rgb(85, 85, 85);
   --input-background-dark: #555555;
 }
 
 /* 되살린 부분 END */
 
 [data-theme='light'] {
+  /*라이트모드 배경 (모달포함)*/
   --background: var(--background-light);
+  /*라이트모드 텍스트 색상 */
   --text: var(--text-light);
+  /*모달 텍스트창 색*/
   --input-background: var(--input-background-light);
 }
 

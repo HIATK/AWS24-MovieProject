@@ -13,10 +13,10 @@ public class UploadResultDTO {
 
     private String uuid;
 
-   private String filePath;
+    private String filePath;
 
-   private Integer memberId;
+    private String thumbnailPath;
 
-    public UploadResultDTO(String string, String originalFilename) {
-    }
+    private Integer memberNo;
+
 }
