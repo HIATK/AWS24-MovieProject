@@ -1,5 +1,7 @@
 package org.movieproject.movie.service;
 
+import org.movieproject.movie.entity.Movie;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -14,4 +16,6 @@ public interface MovieService {
     void saveMovies(List<Map<String, String>> movies);
 
     CompletableFuture<List<String>> getYoutubeVideoKeys(Integer movieId);
+
+    List<Integer> getLikedMoviesByMemberNo(Integer memberNo);
 }

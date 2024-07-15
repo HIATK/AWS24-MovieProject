@@ -158,4 +158,15 @@ public class MovieServiceImpl implements MovieService {
                 })
                 .toFuture();
     }
+    @Override
+    public List<Integer> getLikedMoviesByMemberNo(Integer memberNo){
+        List<Movie> movies = movieRepository.findLikedMoviesByMemberNo(memberNo);  // 회원이 좋아요를 누른 영화 목록을 가져옴
+        List<Integer> movieIds = new ArrayList<>();  // 영화 ID를 저장할 리스트
+
+        for(Movie movieEntity : movies){
+            Integer movieId = movieEntity.getMovieId();  // 각 영화 객체의 movieId를 가져옴
+            movieIds.add(movieId);  // movieIds 리스트에 추가
+        }
+        return movieIds;
+    }
 }

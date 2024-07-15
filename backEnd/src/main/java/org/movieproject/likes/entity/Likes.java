@@ -9,7 +9,7 @@ import org.movieproject.movie.entity.Movie;
 @Data
 @Entity
 @Getter
-@ToString(exclude = "member")
+@ToString(exclude = {"member","movie"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Likes {

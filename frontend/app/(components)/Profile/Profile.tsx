@@ -13,7 +13,7 @@ import { useAuth } from '@/(context)/AuthContext';
 import {checkNicknameDuplicate, getMemberDetails, verifyPassword} from "@/_Service/MemberService";
 import {Simulate} from "react-dom/test-utils";
 import error = Simulate.error;
-
+import {List} from "lucide-react";
 
 // 프로필 컴포넌트!
 const Profile: React.FC = () => {
@@ -26,7 +26,7 @@ const Profile: React.FC = () => {
         memberNick: '',
     });
     const [posts, setPosts] = useState<Posts[]>([]);
-    const [likedMovies, setLikedMovies] = useState<Likes[]>([]);
+    const [likedMovies, setLikedMovies] = useState<List<Likes>[]>([]);
     const [updateForm, setUpdateForm] = useState<UpdateForm>({
         memberEmail: '',
         memberName: '',
@@ -50,14 +50,14 @@ const Profile: React.FC = () => {
 
         try {
             const data = await getMemberDetails();
-            console.log("멤버 데이터 !!!", data);
+            console.error("멤버 데이터 !!!", data);
 
             if (!data || data.memberNo == null) {
                 console.error('memberNo가 응답에 포함되지 않음 : ', data);
                 return;
             }
 
-            console.log("멤버 데이터 !!!" + data);
+            console.error("멤버 데이터 !!!" + data);
 
           setUpdateForm((prevForm) => ({
               ...prevForm,
@@ -87,10 +87,10 @@ const Profile: React.FC = () => {
 
         const fetchLikedMovies = async (memberNo: number) => {
             try {
-                console.log("왜 값이 안가냐!!!!!!!, 멤버 번호 : "+memberNo)
-                const response = await axios.get(`/api/likes/${memberNo}`);
+                console.log("멤버 번호 : "+memberNo)
+                const response = await axios.get(`/api/movies/likes/${memberNo}`);
                 setLikedMovies(response.data);
-                console.log("리스폰스 데이터 !!!!!" + response.data);
+                console.log("리스폰스 데이터 !!!!!" + response);
             } catch (error) {
                 console.error('좋아요 누른 영화 가져오기 실패 !!!', error);
             }
@@ -414,14 +414,7 @@ const fetchImage = async () => {
           </div>
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>좋아요 누른 영화</h2>
-                <ul>
-                    {likedMovies.map((likedMovie) => (
-                        <li key={likedMovie.likeId}>
-                            {likedMovie.movie.movieId}
-                            {likedMovie.liked ? ' (좋아요)' : ' (좋아요 취소)'}
-                        </li>
-                    ))}
-                </ul>
+                {likedMovies}
             </div>
         </div>
       </div>

@@ -56,6 +56,8 @@ export const logout = async () => {
           withCredentials: true,
           credentials: 'include',
         });
+        console.error(response);
+        return response.data;
   } catch (error) {
     console.error('프로필 정보 가져오기 실패:', error);
     throw error;

@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "post")
+@ToString(exclude = {"post", "likes"})
 public class Movie {
 
     @Id

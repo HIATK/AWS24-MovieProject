@@ -40,10 +40,4 @@ public class LikesController {
         Integer likeCount = likesService.getMovieLikesCount(movieId);
         return ResponseEntity.ok(likeCount);
     }
-
-    @GetMapping("/{memberNo}")
-    public ResponseEntity<List<Likes>> getLikes(@PathVariable Integer memberNo) {
-        List<Likes> likes = likesRepository.findByMemberNo(memberNo);
-        return ResponseEntity.ok(likes);
-    }
 }
