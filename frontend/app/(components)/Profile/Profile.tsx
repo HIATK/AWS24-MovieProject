@@ -1,18 +1,24 @@
-import React, {useState, useEffect, useRef, ChangeEvent, FormEvent} from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEvent,
+  FormEvent,
+} from "react";
 import axios from "axios";
 import styles from "./profile.module.css";
 import { Member, Errors, UpdateForm } from "@/(types)/types";
-import { useAuth } from '@/(context)/AuthContext';
+import { useAuth } from "@/(context)/AuthContext";
 
 // profile 유저 정보 가져오기
 const getMemberDetails = async (): Promise<Member> => {
-    const response = await axios.get('/api/member/profile', {
-        baseURL: 'http://localhost:8000',
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true,
-        credentials: 'include',
-    });
-    return response.data;
+  const response = await axios.get("/api/member/profile", {
+    baseURL: "http://localhost:8000",
+    headers: { "Content-Type": "application/json" },
+    withCredentials: true,
+    credentials: "include",
+  });
+  return response.data;
 };
 
 // 정보수정 할 때 입력된 '현재 비밀번호' 서버에 보내서 실제 로그인한 사람의 비밀번호가 맞는지 검증하기.
@@ -53,33 +59,33 @@ const checkNicknameDuplicate = async (nickname: string): Promise<boolean> => {
 
 // 프로필 컴포넌트!
 const Profile: React.FC = () => {
-    const { isLoggedIn } = useAuth();
-    const [member, setMember] = useState<Member>({
-        memberNo: 0,
-        memberEmail: '',
-        memberName: '',
-        memberPhone: '',
-        memberNick: '',
-    });
-    const [updateForm, setUpdateForm] = useState<UpdateForm>({
-        memberEmail: '',
-        memberName: '',
-        memberPhone: '',
-        memberNick: '',
-        currentPassword: '',
-        newPassword: '',
-        confirmNewPassword: '',
-    });
-    const [errors, setErrors] = useState<Errors>({});
-    const [isEditing, setIsEditing] = useState(false);
-    const [file, setFile] = useState<File | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [profileImagePath, setProfileImagePath] = useState("/profile/basic.png"); // 이미지 경로 상태 관리
-    let [isNicknameChecked, setIsNicknameChecked] = useState(false);
-    let [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
-    // const [reviews, setReviews] = useState<Review[]>([]);
-    // const [likedMovies, setLikedMovies] = useState<Movie[]>([]);
-
+  const { isLoggedIn } = useAuth();
+  const [member, setMember] = useState<Member>({
+    memberNo: 0,
+    memberEmail: "",
+    memberName: "",
+    memberPhone: "",
+    memberNick: "",
+  });
+  const [updateForm, setUpdateForm] = useState<UpdateForm>({
+    memberEmail: "",
+    memberName: "",
+    memberPhone: "",
+    memberNick: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const [errors, setErrors] = useState<Errors>({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [profileImagePath, setProfileImagePath] =
+    useState("/profile/basic.png"); // 이미지 경로 상태 관리
+  let [isNicknameChecked, setIsNicknameChecked] = useState(false);
+  let [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
+  // const [reviews, setReviews] = useState<Review[]>([]);
+  // const [likedMovies, setLikedMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
     const fetchMemberDetails = async () => {
@@ -98,18 +104,20 @@ const Profile: React.FC = () => {
           confirmNewPassword: "",
         }));
 
-          //  프로필 이미지 경로 가져오기
-          const profileImagePathReponse = await axios.get<string>("/api/image/profile", {
-              params: { memberNo: data.memberNo},
-              baseURL: "http://localhost:8000",
-              headers: { "Content-Type": "application/json"},
-              withCredentials: true,
-              credentials: "include",
-          });
-          setProfileImagePath(`profileImagePathReponse.data`);
-
+        //  프로필 이미지 경로 가져오기
+        const profileImagePathReponse = await axios.get<string>(
+          "/api/image/profile",
+          {
+            params: { memberNo: data.memberNo },
+            baseURL: "http://localhost:8000",
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+            credentials: "include",
+          }
+        );
+        setProfileImagePath(`profileImagePathReponse.data`);
       } catch (error) {
-          console.error('Failed to fetch member details', error);
+        console.error("Failed to fetch member details", error);
       }
     };
     if (isLoggedIn) {
@@ -117,73 +125,82 @@ const Profile: React.FC = () => {
     }
   }, [isLoggedIn]);
 
-    // 정보수정 성공시 페이지에 나타나는 정보도 같이 바뀌도록 설정
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setUpdateForm({ ...updateForm, [name]: value });
-    };
-    const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setFile(file);
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("memberNo", member?.memberNo.toString()); // 멤버 번호 사용
+  // 정보수정 성공시 페이지에 나타나는 정보도 같이 바뀌도록 설정
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUpdateForm({ ...updateForm, [name]: value });
+  };
+  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setFile(file);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("memberNo", member?.memberNo.toString()); // 멤버 번호 사용
 
-            axios
-                .post<string>("/api/image/upload", formData)
-                .then((response) => {
-                    console.log("이미지가 변경되었습니다.", response.data);
-                    setProfileImagePath(response.data); // 서버로부터 반환된 이미지 경로로 설정
-                })
-                .catch((error) => console.error("이미지 변경에 실패했습니다.", error));
-        }
-    };
+      axios
+        .post<string>("/api/image/upload", formData)
+        .then((response) => {
+          console.log("이미지가 변경되었습니다.", response.data);
+          setProfileImagePath(response.data); // 서버로부터 반환된 이미지 경로로 설정
+        })
+        .catch((error) => console.error("이미지 변경에 실패했습니다.", error));
+    }
+  };
 
-    // 비밀번호 미/오입력시 에러를 나타내는 함수
-    const validateForm = (): Errors => {
-        const newErrors: Errors = {};
-        if (!updateForm.currentPassword) {
-            newErrors.currentPassword = '현재 비밀번호를 입력해주세요.';
-        }
-        if (updateForm.newPassword !== updateForm.confirmNewPassword) {
-            newErrors.confirmNewPassword = '새 비밀번호가 일치하지 않습니다.';
-        }
-        return newErrors;
-    };
+  // 비밀번호 미/오입력시 에러를 나타내는 함수
+  const validateForm = (): Errors => {
+    const newErrors: Errors = {};
+    if (!updateForm.currentPassword) {
+      newErrors.currentPassword = "현재 비밀번호를 입력해주세요.";
+    }
+    if (updateForm.newPassword !== updateForm.confirmNewPassword) {
+      newErrors.confirmNewPassword = "새 비밀번호가 일치하지 않습니다.";
+    }
+    return newErrors;
+  };
   const handleUpdateProfile = () => {
     setIsEditing(true);
   };
 
   // 회원정보 수정!!!
   const handleSubmit = async (e: FormEvent) => {
-      e.preventDefault();
-      const validationErrors = validateForm();
+    e.preventDefault();
+    const validationErrors = validateForm();
 
-      // 닉네임을 수정하지 않았다면 닉네임 중복 체크를 하지 않습니다!
-      if(updateForm.memberNick == member.memberNick){
-          isNicknameChecked = true;
-          isNicknameDuplicate= false;
-      }
+    // 닉네임을 수정하지 않았다면 닉네임 중복 체크를 하지 않습니다!
+    if (updateForm.memberNick == member.memberNick) {
+      isNicknameChecked = true;
+      isNicknameDuplicate = false;
+    }
 
-      if (Object.keys(validationErrors).length > 0) {
-          setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+    } else if (!isNicknameChecked || isNicknameDuplicate) {
+      setErrors({
+        ...validationErrors,
+        memberNick: "닉네임 중복 체크를 해주세요.",
+      });
+    } else {
+      try {
+        const isPasswordValid = await verifyPassword(
+          updateForm.currentPassword
+        );
+        if (!isPasswordValid) {
+          setErrors({ currentPassword: "현재 비밀번호가 올바르지 않습니다." });
+          return;
+        }
 
-      } else if (!isNicknameChecked || isNicknameDuplicate) {
-          setErrors({ ...validationErrors, memberNick: '닉네임 중복 체크를 해주세요.' });
-      } else {
-          try {
-              const isPasswordValid = await verifyPassword(updateForm.currentPassword);
-              if (!isPasswordValid) {
-                  setErrors({ currentPassword: '현재 비밀번호가 올바르지 않습니다.' });
-                  return;
-              }
+        const { currentPassword, confirmNewPassword, ...updateData } =
+          updateForm;
 
-              const { currentPassword, confirmNewPassword, ...updateData } = updateForm;
-
-              if (updateForm.newPassword === undefined || updateForm.newPassword === null || updateForm.newPassword === "") {
-                  updateForm.newPassword = updateForm.currentPassword;
-              }
+        if (
+          updateForm.newPassword === undefined ||
+          updateForm.newPassword === null ||
+          updateForm.newPassword === ""
+        ) {
+          updateForm.newPassword = updateForm.currentPassword;
+        }
 
         const { data } = await axios.put<{ message: string; member: Member }>(
           "/api/member/update",
