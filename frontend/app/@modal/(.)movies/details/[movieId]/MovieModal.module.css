@@ -112,14 +112,14 @@
 
 /* 텍스트 영역 확장 스타일 */
 .textarea.expandedTextarea {
-  height: 10rem; /* 확장된 높이 */
+  height: 5rem; /* 확장된 높이 */
   padding: 1rem; /* 확장된 여백 */
 }
 
 /* 텍스트 영역 포커스 스타일 */
 .textarea:focus {
   height: 5rem; /* 포커스 시 높이 */
-  padding: 0.2rem; /* 포커스 시 여백 */
+  padding: 1rem; /* 포커스 시 여백 */
 }
 
 /* 평점 및 버튼 컨테이너 */

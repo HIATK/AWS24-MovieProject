@@ -13,7 +13,7 @@ body {
   overflow-y: overlay; /* 반드시 overlay 처리 */
 }
 
-body {
+/* body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -21,7 +21,7 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-}
+} */
 
 /*!*사이드바 색상 건들면 이상해집니다.*!*/
 a {

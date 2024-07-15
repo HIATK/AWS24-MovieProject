@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import React, { useState, useEffect, useRef, type ElementRef } from "react";
 import styles from '@/@modal/(.)movies/details/[movieId]/MovieModal.module.css';
@@ -29,6 +29,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
   const dialogRef = useRef<ElementRef<'dialog'>>(null);
   const [isClient, setIsClient] = useState(false);
   const scrollPosition = useRef(0); // 현재 스크롤 위치 저장
+  const [isTextareaFocused, setIsTextareaFocused] = useState(false); // 추가된 상태
 
   //모달창 내에서 바탕화면 스크롤 막는 코드입니다.
   useEffect(() => {
@@ -91,7 +92,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
 
   const handlePostSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let cleanedContent = postContent.replace(/^\s+|\s+$/g, '');
+    let cleanedContent = postContent.replace(/^\s+|\s+$/g, '').replace(/\r?\n|\r/g, ' ');
     if (cleanedContent === '') {
       setErrorMsg("글이 비어있습니다");
       return;
@@ -114,6 +115,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
       setPostContent("");
       setPostRating(0);
       setShowRating(false);
+      setIsTextareaFocused(false); // 텍스트 영역 포커스 해제
     } catch (error) {
       console.error("Post submission error:", error);
     }
@@ -149,8 +151,16 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
                 <textarea
                   value={postContent}
                   onChange={(e) => setPostContent(e.target.value)}
-                  className={`${styles.textarea} ${postContent ? styles.expandedTextarea : ''}`}
-                  onFocus={() => setShowRating(true)}
+                  className={`${styles.textarea} ${isTextareaFocused ? styles.expandedTextarea : ''}`}
+                  onFocus={() => {
+                    setShowRating(true);
+                    setIsTextareaFocused(true);
+                  }}
+                  onBlur={() => {
+                    if (!postContent) {
+                      setIsTextareaFocused(false);
+                    }
+                  }}
                 />
               </label>
               <div className={styles.ratingAndButton}>
@@ -161,6 +171,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
                       hoverRating={postHoverRating}
                       onHover={setPostHoverRating}
                       onClick={setPostRating}
+                      onMouseDown={(e) => e.preventDefault()} // 포커스 유지
                     />
                     {ratingError && <div className={styles.ratingError}>{ratingError}</div>}
                     <div className={styles.buttonContainer}>
