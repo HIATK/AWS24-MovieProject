@@ -85,16 +85,6 @@ const Profile: React.FC = () => {
     };
 
 
-          // //  프로필 이미지 경로 가져오기
-          // const profileImagePathReponse = await axios.get<string>("/api/image/profile", {
-          //     params: { memberNo: data.memberNo},
-          //     baseURL: "http://localhost:8000",
-          //     headers: { "Content-Type": "application/json"},
-          //     withCredentials: true,
-          //     credentials: "include",
-          // });
-          // setProfileImagePath(`profileImagePathReponse.data`);
-
         const fetchLikedMovies = async (memberNo: number) => {
             try {
                 console.log("왜 값이 안가냐!!!!!!!, 멤버 번호 : "+memberNo)
@@ -115,22 +105,68 @@ const Profile: React.FC = () => {
     const { name, value } = e.target;
     setUpdateForm({ ...updateForm, [name]: value });
   };
-  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setFile(file);
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("memberNo", member?.memberNo.toString()); // 멤버 번호 사용
 
-      axios
-        .post<string>("/api/image/upload", formData)
-        .then((response) => {
-          console.log("이미지가 변경되었습니다.", response.data);
-          setProfileImagePath(response.data); // 서버로부터 반환된 이미지 경로로 설정
-        })
-        .catch((error) => console.error("이미지 변경에 실패했습니다.", error));
+  // 프로필 이미지 업로드
+  const handleProfileImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        setFile(file);
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("memberNo", member?.memberNo?.toString() || "");
+
+        try {
+            const response = await axios.post<string>("/api/image/upload", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            setProfileImagePath(response.data);
+        } catch (error) {
+            console.error("이미지 업로드 실패", error);
+        }
     }
+};
+
+// 이미지 조회
+const fetchImage = async () => {
+  try {
+      const response = await axios.get<Blob>(`/api/image/read/${member?.memberNo}`, {
+          responseType: "blob",
+      });
+
+      if (response.data) {
+          const imageUrl = URL.createObjectURL(response.data);
+          setProfileImagePath(imageUrl);
+      } else {
+          setProfileImagePath("/profile/basic.png"); // 이미지가 없을 경우 기본 이미지로 설정
+      }
+  } catch (error) {
+      console.error("이미지 조회 실패", error);
+  }
+};
+
+  // 이미지 수정
+  const updateImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("memberNo", member?.memberNo?.toString() || "");
+
+    try {
+        await axios.put(`/api/image/update/${member?.memberNo}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+    } catch (error) {
+        console.error("이미지 수정 실패", error);
+    }
+  };
+
+    // 프로필 이미지 삭제
+    const handleProfileImageDelete = async () => {
+      try {
+          await axios.delete(`/api/image/delete/${member?.memberNo}`);
+          setProfileImagePath("/profile/basic.png"); // 삭제 후 프로필 이미지 경로 업데이트
+      } catch (error) {
+          console.error("이미지 삭제 실패", error);
+      }
   };
 
   // 비밀번호 미/오입력시 에러를 나타내는 함수
@@ -261,6 +297,11 @@ const Profile: React.FC = () => {
             }}
           >
             프로필 사진 변경
+          </button>
+          <button 
+          className={styles.button}
+          onClick={handleProfileImageDelete}>
+            프로필 사진 삭제
           </button>
           {!isEditing && (
             <button className={styles.button} onClick={handleUpdateProfile}>
