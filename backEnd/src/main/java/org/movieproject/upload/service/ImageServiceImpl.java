@@ -77,7 +77,7 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-    // 이미지 수정
+    // 이미지 수정 및 기존 이미지 삭제
     @Override
     public void updateImage(MultipartFile file, Integer memberNo) {
         Image image = imageRepository.findByMember_memberNo(memberNo);
@@ -118,23 +118,6 @@ public class ImageServiceImpl implements ImageService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file", e);
         }
-    }
-
-    // 이미지 삭제
-    @Override
-    public void deleteImage(Integer memberNo) {
-        Image image = imageRepository.findByMember_memberNo(memberNo);
-        if (image == null) {
-            throw new IllegalArgumentException("Image Not Found");
-        }
-
-        Path filePath = Paths.get(image.getFilePath());
-        try {
-            Files.deleteIfExists(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to delete file", e);
-        }
-        imageRepository.delete(image);
     }
 
     // 이미지 조회
