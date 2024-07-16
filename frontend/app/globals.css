@@ -64,7 +64,7 @@ a {
     #00000010,
     #00000010,
     #00000080
-    );
+  );
 
   --callout-rgb: 238, 240, 241;
   --callout-border-rgb: 172, 175, 176;
@@ -83,7 +83,7 @@ a {
 
 /* 되살린 부분 END */
 
-[data-theme='light'] {
+[data-theme="light"] {
   /*라이트모드 배경 (모달포함)*/
   --background: var(--background-light);
   /*라이트모드 텍스트 색상 */
@@ -92,9 +92,10 @@ a {
   --input-background: var(--input-background-light);
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --background: var(--background-dark);
-  --text: var(--text-dark);
+  /* --text: var(--text-dark); */
+  --text: #ffffff;
   --input-background: var(--input-background-dark);
 }
 body {
