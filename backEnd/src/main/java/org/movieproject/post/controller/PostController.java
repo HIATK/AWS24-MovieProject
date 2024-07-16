@@ -56,4 +56,13 @@ public class PostController {
         Double averageRating = postService.getAverageRatingByMovieId(movieId);
         return ResponseEntity.ok(averageRating);
     }
+
+    @GetMapping("/{memberNo}")
+    public ResponseEntity<?> getPostByMemberNo(@PathVariable("memberNo") Integer memberNo) {
+        List<PostDTO> posts = postService.getPostsByMemberNo(memberNo);
+
+        log.info("포스트들 !!! : "+ posts);
+
+        return ResponseEntity.ok(posts);
+    }
 }

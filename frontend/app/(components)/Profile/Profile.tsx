@@ -2,22 +2,16 @@ import React, {useState, useEffect, useRef, ChangeEvent, FormEvent,} from "react
 import axios from "axios";
 import styles from "./profile.module.css";
 
-import {Member, Errors, UpdateForm, Posts, Likes} from "@/(types)/types";
+import {Member, Errors, UpdateForm, MovieDetails, PostDetails} from "@/(types)/types";
 import { useAuth } from '@/(context)/AuthContext';
 import {checkNicknameDuplicate, getMemberDetails, verifyPassword} from "@/_Service/MemberService";
 import {Simulate} from "react-dom/test-utils";
 import error = Simulate.error;
-import {getMovieByMovieId, getMovies} from "@/_Service/MovieService";
+import {getLikedMovies, getMovieByMovieId} from "@/_Service/MovieService";
 import Link from "next/link";
 import {FaChevronCircleLeft, FaChevronCircleRight} from "react-icons/fa";
 import {IoIosArrowDropleft, IoIosArrowDropright} from "react-icons/io";
-
-
-type Movie = {
-    id: string;
-    title: string;
-    poster_path: string;
-};
+import {getPostsByMemberNo} from "@/_Service/PostService";
 
 // 프로필 컴포넌트!
 const Profile: React.FC = () => {
@@ -29,7 +23,7 @@ const Profile: React.FC = () => {
         memberPhone: '',
         memberNick: '',
     });
-    const [posts, setPosts] = useState<Posts[]>([]);
+    const [posts, setPosts] = useState<PostDetails[]>([]);
     const [likedMovies, setLikedMovies] = useState<number[]>([]);
     const [updateForm, setUpdateForm] = useState<UpdateForm>({
         memberEmail: '',
@@ -40,6 +34,7 @@ const Profile: React.FC = () => {
         newPassword: '',
         confirmNewPassword: '',
     });
+
     const [errors, setErrors] = useState<Errors>({});
     const [isEditing, setIsEditing] = useState(false);
     const [file, setFile] = useState<File | null>(null);
@@ -47,28 +42,11 @@ const Profile: React.FC = () => {
     const [profileImagePath, setProfileImagePath] = useState("/profile/basic.png"); // 이미지 경로 상태 관리
     let [isNicknameChecked, setIsNicknameChecked] = useState(false);
     let [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
-    const [movies, setMovies] = useState<Movie[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [movies, setMovies] = useState<MovieDetails[] | null>(null);
     const [page, setPage] = useState(0);
     const MOVIES_PER_PAGE = 3;
     const POSTER_WIDTH = 200;
     const POSTER_MARGIN = 10;
-
-
-    useEffect(() => {
-        async function fetchMovies() {
-            setLoading(true);
-            try {
-                const data = await getMovies();
-                setMovies(data); // 처음 5개 영화만 보여줌
-            } catch (error) {
-                console.error("Error fetching movies:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchMovies();
-    }, []);
 
     const handlePrevClick = () => {
         setPage((prevPage) => Math.max(prevPage - 1, 0));
@@ -76,8 +54,10 @@ const Profile: React.FC = () => {
 
     const handleNextClick = () => {
         setPage((prevPage) => {
-            const maxPage = Math.ceil(movies.length / MOVIES_PER_PAGE) - 1;
-            return Math.min(prevPage + 1, maxPage);
+            if (movies) {
+                const maxPage = Math.ceil(movies.length / MOVIES_PER_PAGE) - 1;
+                return Math.min(prevPage + 1, maxPage);
+            }
         });
     };
 
@@ -92,14 +72,19 @@ const Profile: React.FC = () => {
                 setMember(data); // 가져온 회원 정보를 상태에 저장합니다.
                 console.error("멤버 데이터 !!!", data); // 디버깅을 위해 콘솔에 출력합니다.
 
-                await fetchLikedMovies(data.memberNo); // 좋아요 누른 영화를 가져옵니다.
+                const data2 = await getLikedMovies(data.memberNo);
+                setLikedMovies(data2); // 가져온 데이터 저장
+
+                const data3 = await getPostsByMemberNo(data.memberNo);
+                setPosts(data3);
+
+                // 좋아요 누른 영화를 가져옵니다.
                 await fetchImage(data.memberNo); // 이미지를 가져옵니다.
 
                 if (!data || data.memberNo == null) {
                     console.error('memberNo가 응답에 포함되지 않음 : ', data); // 에러 로그를 출력합니다.
                     return;
                 }
-
                 console.error("멤버 데이터 !!!" + data); // 디버깅을 위해 콘솔에 출력합니다.
 
                 setUpdateForm((prevForm) => ({
@@ -121,38 +106,29 @@ const Profile: React.FC = () => {
                 setMember(data); // 멤버 데이터를 상태에 저장합니다.
                 console.log("설정된 멤버 데이터 : ",data); // 디버깅을 위해 콘솔에 출력합니다.
 
-                await fetchLikedMovies(data.memberNo); // 좋아요 누른 영화를 가져옵니다.
             } catch (error) {
                 console.error('데이터 가져오기 실패', error); // 에러 로그를 출력합니다.
             }
         };
 
-        const fetchLikedMovies = async (memberNo: number) => {
-            try {
-                console.log("멤버 번호 : "+memberNo); // 디버깅을 위해 콘솔에 출력합니다.
-                const response = await axios.get(`/api/movies/likes/${memberNo}`); // 좋아요 누른 영화를 가져옵니다.
-                setLikedMovies(response.data); // 가져온 영화를 상태에 저장합니다.
-                console.log("리스폰스 데이터 !!!!!" + response); // 디버깅을 위해 콘솔에 출력합니다.
-            } catch (error) {
-                console.error('좋아요 누른 영화 가져오기 실패 !!!', error); // 에러 로그를 출력합니다.
-            }
-        };
-
         if (isLoggedIn) {
-            fetchMemberDetails(); // 회원 정보를 가져옵니다.
+            fetchMemberDetails(); // 로그인시 회원 정보를 가져옵니다.
         }
     }, [isLoggedIn]); // 의존성 배열에 isLoggedIn을 추가합니다.
 
-
+    // 좋아요한 영화들의 movieId를 가져왔으니, 그것을 이용해 movie 정보를 가져옵니다.
     useEffect(() => {
         const fetchMoviesDetails = async () => {
             const movieDetailsPromises = likedMovies.map(movieId => getMovieByMovieId(movieId));
+            console.log("무비디테일스프로미스 : "+movieDetailsPromises);
+
             const movieDetails = await Promise.all(movieDetailsPromises);
-            setMovies(movieDetails.filter((movie): movie is Movie => movie !== null));
+            console.log("무비디테일스"+movieDetails);
+
+            setMovies(movieDetails.filter((movie): movie is MovieDetails => movie !== null));
             console.log(movies);
         };
-
-        if (likedMovies.length > 0) {
+        if(likedMovies.length > 0){
             fetchMoviesDetails();
         }
     }, [likedMovies]);
@@ -410,11 +386,19 @@ const Profile: React.FC = () => {
         </div>
 
         <div className={styles.contentSection}>
-          <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>내가 남긴 리뷰</h2>
-            {/* 리뷰 내용 */}
-            {/*  {posts}*/}
-          </div>
+            <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>내가 남긴 리뷰</h2>
+                {/* 리뷰 내용 */}
+                <div>
+                    {posts !== null && posts.map((post) => (
+                        <div key={post.postId}>
+                            {post.postContent} /
+                            Rating: {post.ratingStar} /
+                            Posted on: {post.regDate}
+                        </div>
+                    ))}
+                </div>
+            </div>
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>좋아요 누른 영화</h2>
                 <button onClick={handlePrevClick} className={styles.navButton}>
@@ -425,7 +409,7 @@ const Profile: React.FC = () => {
                         className={styles.movieItems}
                         style={{transform: `translateX(${translateX}px)`}}
                     >
-                        {movies.map((movie) => (
+                        {movies !== null && movies.map((movie) => (
                             <li key={movie.id} className={styles.movieItem}>
                                 <Link href={`/movies/details/${movie.id}`}>
                                     <img
@@ -439,7 +423,7 @@ const Profile: React.FC = () => {
                     </ul>
                 </div>
                 <button onClick={handleNextClick} className={styles.navButton}>
-                    {(page + 1) * MOVIES_PER_PAGE < movies.length ? (
+                    {movies !== null && (page + 1) * MOVIES_PER_PAGE < movies.length ? (
                         <FaChevronCircleRight/>
                     ) : (
                         <IoIosArrowDropright/>

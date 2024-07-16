@@ -37,3 +37,14 @@ export const getAverageRatingByMovieId = async (movieId: number) => {
         throw error;
       }
 };
+
+// memberNo 으로 posts 데이터 서버에서 가져오기.
+export const getPostsByMemberNo = async (memberNo: number) => {
+    try{
+        const response = await axios.get(`/api/posts/${memberNo}`);
+        return response.data;
+    }catch(error){
+        console.log("Error getting posts by memberNo:", error);
+        return [];
+    }
+}
