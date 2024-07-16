@@ -15,7 +15,17 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    setDisplayedPosts(posts.slice(0, 5));
+    // 처음 렌더링 시에만 5개 포스트를 표시
+    if (displayedPosts.length === 0 && posts.length > 0) {
+      const initialPosts = posts.slice(0, 5);
+      setDisplayedPosts(initialPosts);
+    } else {
+      // 새로운 포스트가 등록될 때 기존 포스트를 모두 렌더링
+      setTimeout(() => {
+        const newPosts = posts.slice(0, postIndex);
+        setDisplayedPosts(newPosts);
+      }, 1);
+    }
   }, [posts]);
 
   useEffect(() => {
@@ -81,8 +91,9 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
             <div className={styles.postHeader}>
               {renderStars(post.ratingStar)}
             </div>
-            <div>{post.memberNick}:</div>
-            <div className={styles.withmargin}></div>
+            <div className={styles.postNick}>
+              {post.memberNick}
+            </div>
             <div className={styles.postContent}>
               {expandedPost === post.postId
                 ? post.postContent
