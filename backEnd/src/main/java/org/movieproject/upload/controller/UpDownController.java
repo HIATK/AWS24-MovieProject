@@ -65,6 +65,7 @@ public class UpDownController {
         return ResponseEntity.noContent().build();
     }
 
+
     // 이미지 삭제
     @DeleteMapping("/delete/{memberNo}")
     public ResponseEntity<Void> deleteImage(@PathVariable Integer memberNo) {
