@@ -13,23 +13,24 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
   const [displayedPosts, setDisplayedPosts] = useState<PostDetails[]>([]);
   const [postIndex, setPostIndex] = useState(5);
   const observerRef = useRef<HTMLDivElement | null>(null);
+  const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    // 처음 렌더링 시에만 5개 포스트를 표시
     if (displayedPosts.length === 0 && posts.length > 0) {
       const initialPosts = posts.slice(0, 5);
       setDisplayedPosts(initialPosts);
     } else {
-      // 새로운 포스트가 등록될 때 기존 포스트를 모두 렌더링
       setTimeout(() => {
         const newPosts = posts.slice(0, postIndex);
         setDisplayedPosts(newPosts);
       }, 1);
     }
-  }, [posts]);
+  }, [posts, postIndex]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
           loadMorePosts();
@@ -41,13 +42,11 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
     );
 
     if (observerRef.current) {
-      observer.observe(observerRef.current);
+      observer.current.observe(observerRef.current);
     }
 
     return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
-      }
+      if (observer.current) observer.current.disconnect();
     };
   }, [displayedPosts]);
 
