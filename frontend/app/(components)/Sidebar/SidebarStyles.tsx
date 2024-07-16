@@ -12,7 +12,7 @@ export const SidebarContainer = styled.div<StyledProps>`
   width: ${({$isOpen}) => ($isOpen ? '150px' : '60px')};
   height: 100vh;
   background-color: ${({$theme}) => $theme === 'light' ? 'rgba(188,182,182,0.5)' : 'rgb(12,11,11)'};
-  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
+  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#6ebbdb'};
   transition: width 0.3s ease, background-color 0.3s ease, color 0.3s ease;
   z-index: 1000;
   display: flex;

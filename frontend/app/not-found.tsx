@@ -5,7 +5,7 @@ const NotFound = () => {
 
             <center>
                 <img src="/404.png"/>
-                 g
+
             </center>
             </div>;
 };
