@@ -27,7 +27,7 @@ export default function NowPlayingMovies() {
       try {
         const data = await getMovies();
         setMovies(data);
-        setVisibleMovies(data.slice(0, MOVIES_PER_PAGE)); // 처음 10개 영화만 보여줌
+         setVisibleMovies(data.slice(0, MOVIES_PER_PAGE)); // 처음 10개 영화만 보여줌
       } catch (error) {
         console.error("Error fetching movies:", error);
       } finally {
