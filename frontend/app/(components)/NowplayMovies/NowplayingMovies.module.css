@@ -65,19 +65,19 @@
 
 @keyframes gradientBorder {
     0% {
-        border-image: linear-gradient(0deg, #ff00ff, #00ffff, #00ff00, #ffff00) 1;
+        border-image: linear-gradient(0deg, #e61fe6, #3effff, #f684ff, #85a2ff) 1;
     }
     25% {
-        border-image: linear-gradient(90deg, #ff00ff, #00ffff, #00ff00, #ffff00) 1;
+        border-image: linear-gradient(90deg, #e61fe6, #3effff, #f684ff, #85a2ff) 1;
     }
     50% {
-        border-image: linear-gradient(180deg, #ff00ff, #00ffff, #00ff00, #ffff00) 1;
+        border-image: linear-gradient(180deg, #e61fe6, #3effff, #f684ff, #85a2ff) 1;
     }
     75% {
-        border-image: linear-gradient(270deg, #ff00ff, #00ffff, #00ff00, #ffff00) 1;
+        border-image: linear-gradient(270deg, #e61fe6, #3effff, #f684ff, #85a2ff) 1;
     }
     100% {
-        border-image: linear-gradient(360deg, #ff00ff, #00ffff, #00ff00, #ffff00) 1;
+        border-image: linear-gradient(360deg, #e61fe6, #3effff, #f684ff, #85a2ff) 1;
     }
 }
 
