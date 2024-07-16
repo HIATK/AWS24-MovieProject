@@ -130,3 +130,17 @@
   font-size: 0.9em;
   margin-bottom: 10px;
 }
+
+.movielist {
+  max-width: 1000px; /* 예시로 지정한 최대 너비 */
+  margin: 0 auto; /* 가운데 정렬을 위해 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh; /* 전체 화면 높이 설정 */
+}
+
+.loadMore {
+  text-align: center;
+  padding: 20px;
+}

@@ -17,9 +17,6 @@ public interface ImageService {
     //  이미지 조회
     Image getImage(Integer memberNo);
 
-    //  이미지 수정
-    void updateImage(MultipartFile file, Integer memberNo);
-
     //  이미지 삭제
     void deleteImage(Integer memberNo);
 

@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  ChangeEvent,
-  FormEvent,
-} from "react";
+import React, {useState, useEffect, useRef, ChangeEvent, FormEvent,} from "react";
 import axios from "axios";
 import styles from "./profile.module.css";
 
@@ -14,6 +8,14 @@ import {checkNicknameDuplicate, getMemberDetails, verifyPassword} from "@/_Servi
 import {Simulate} from "react-dom/test-utils";
 import error = Simulate.error;
 import {List} from "lucide-react";
+import {getMovieByMovieId, getMovies} from "@/_Service/MovieService";
+import Link from "next/link";
+
+type Movie = {
+    id: string;
+    title: string;
+    poster_path: string;
+};
 
 // 프로필 컴포넌트!
 const Profile: React.FC = () => {
@@ -26,7 +28,7 @@ const Profile: React.FC = () => {
         memberNick: '',
     });
     const [posts, setPosts] = useState<Posts[]>([]);
-    const [likedMovies, setLikedMovies] = useState<List<Likes>[]>([]);
+    const [likedMovies, setLikedMovies] = useState<number[]>([]);
     const [updateForm, setUpdateForm] = useState<UpdateForm>({
         memberEmail: '',
         memberName: '',
@@ -43,7 +45,50 @@ const Profile: React.FC = () => {
     const [profileImagePath, setProfileImagePath] = useState("/profile/basic.png"); // 이미지 경로 상태 관리
     let [isNicknameChecked, setIsNicknameChecked] = useState(false);
     let [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
+    const [movies, setMovies] = useState<Movie[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const observer = useRef<IntersectionObserver | null>(null);
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
+    const MOVIES_PER_PAGE = 5; // 한 번에 보여줄 영화 개수
+    const [visibleMovies, setVisibleMovies] = useState<Movie[]>([]);
 
+    useEffect(() => {
+        async function fetchMovies() {
+            setLoading(true);
+            try {
+                const data = await getMovies();
+                setMovies(data);
+                setVisibleMovies(data.slice(0, MOVIES_PER_PAGE)); // 처음 5개 영화만 보여줌
+            } catch (error) {
+                console.error("Error fetching movies:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchMovies();
+    }, []);
+
+    useEffect(() => {
+        if (observer.current) observer.current.disconnect();
+
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && !loading) {
+                setPage(prevPage => prevPage + 1);
+            }
+        });
+
+        if (loadMoreRef.current) {
+            observer.current.observe(loadMoreRef.current);
+        }
+    }, [loading]);
+
+    useEffect(() => {
+        if (page > 1) {
+            const newVisibleMovies = movies.slice(0, page * MOVIES_PER_PAGE);
+            setVisibleMovies(newVisibleMovies);
+        }
+    }, [page, movies]);
 
     useEffect(() => {
         const fetchMemberDetails = async () => {
@@ -104,6 +149,19 @@ const Profile: React.FC = () => {
     }, [isLoggedIn]); // 의존성 배열에 isLoggedIn을 추가합니다.
 
 
+    useEffect(() => {
+        const fetchMoviesDetails = async () => {
+            const movieDetailsPromises = likedMovies.map(movieId => getMovieByMovieId(movieId));
+            const movieDetails = await Promise.all(movieDetailsPromises);
+            setMovies(movieDetails.filter((movie): movie is Movie => movie !== null));
+            console.log(movies);
+        };
+
+        if (likedMovies.length > 0) {
+            fetchMoviesDetails();
+        }
+    }, [likedMovies]);
+
     // 이미지 조회
     const fetchImage = async (memberNo: number) => {
         try {
@@ -126,45 +184,37 @@ const Profile: React.FC = () => {
     // 프로필 이미지 업로드
     const handleProfileImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0]; // 선택된 파일을 가져옵니다.
-            setFile(file); // 선택된 파일을 상태에 저장합니다.
+            const file = e.target.files[0];
+            setFile(file);
+    
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("memberNo", member?.memberNo?.toString() || ""); // 폼 데이터를 설정합니다.
-
+            formData.append("memberNo", member?.memberNo?.toString() || "");
+    
             try {
+                //  기존 이미지 삭제
+                await handleProfileImageDelete();
+
+                //  새 이미지 업로드
                 await axios.post("/api/image/upload", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                }); // 이미지를 업로드합니다.
-                await fetchImage(member.memberNo); // 이미지 업로드 후 다시 이미지를 가져옵니다.
+                });
+
+                //  업로드 후 이미지 불러오기
+                await fetchImage(member.memberNo); 
             } catch (error) {
-                console.error("이미지 업로드 실패", error); // 에러 로그를 출력합니다.
+                console.error("Failed to upload image", error);
             }
-        }
-    };
-
-    // 이미지 수정
-    const updateImage = async (file: File) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("memberNo", member?.memberNo?.toString() || ""); // 폼 데이터를 설정합니다.
-
-        try {
-            await axios.put(`/api/image/update/${member?.memberNo}`, formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            }); // 이미지를 수정합니다.
-        } catch (error) {
-            console.error("이미지 수정 실패", error); // 에러 로그를 출력합니다.
         }
     };
 
     // 프로필 이미지 삭제
     const handleProfileImageDelete = async () => {
         try {
-            await axios.delete(`/api/image/delete/${member?.memberNo}`); // 이미지를 삭제합니다.
-            setProfileImagePath("/profile/basic.png"); // 삭제 후 프로필 이미지 경로를 기본 이미지로 설정합니다.
+            await axios.delete(`/api/image/delete/${member?.memberNo}`);
+            setProfileImagePath("/profile/basic.png"); // 이미지 삭제 시 기본 이미지로 설정
         } catch (error) {
-            console.error("이미지 삭제 실패", error); // 에러 로그를 출력합니다.
+            console.error("Failed to delete image", error);
         }
     };
 
@@ -218,8 +268,8 @@ const Profile: React.FC = () => {
                     return;
                 }
 
-                const { currentPassword, confirmNewPassword, ...updateData } =
-                    updateForm;
+                const { currentPassword, confirmNewPassword, ...updateData
+                } = updateForm;
 
                 if (
                     updateForm.newPassword === undefined ||
@@ -279,136 +329,83 @@ const Profile: React.FC = () => {
       <div className={styles.mainContent}>
         <div className={styles.profileSection}>
             <div className={styles.profileImage}>
-                <img
-                    src={profileImagePath}
-                    alt="Profile"
-                    className={styles.profileImageContent}
+                <img src={profileImagePath} alt="Profile" className={styles.profileImageContent}
                     onError={(e) => {
                         e.currentTarget.src = "/profile/basic.png"; // 이미지 로드 실패 시 기본 이미지로 대체
-                    }}
-                />
-
+                    }}/>
             </div>
+
             <div className={styles.nickname}>{member.memberNick}님</div>
+
             <input
-                type="file"
-                ref={fileInputRef}
-                onClick={() => fileInputRef.current?.click()}
-                style={{display: "none"}}
-                onChange={handleProfileImageChange}
-            />
-            <button
-                className={styles.button}
-            onClick={() => {
-              // click 메서드를 호출하기 전에 null 체크를 수행합니다.
-              if (fileInputRef.current) {
-                fileInputRef.current.click();
-              }
-            }}
-          >
+                type="file" ref={fileInputRef} onClick={() => fileInputRef.current?.click()}
+                style={{display: "none"}} onChange={handleProfileImageChange}/>
+
+            <button className={styles.button} onClick={() => {
+                 // click 메서드를 호출하기 전에 null 체크를 수행합니다.
+                  if (fileInputRef.current) {fileInputRef.current.click();} }}>
             프로필 사진 변경
           </button>
-          <button 
-          className={styles.button}
-          onClick={handleProfileImageDelete}>
+
+          <button className={styles.button} onClick={handleProfileImageDelete}>
             프로필 사진 삭제
           </button>
+
           {!isEditing && (
             <button className={styles.button} onClick={handleUpdateProfile}>
               개인정보 수정
-            </button>
-          )}
-          <form
-            onSubmit={handleSubmit}
-            className={`${styles.editForm} ${isEditing ? styles.visible : ""}`}
-          >
-            <input
-              type="password"
-              name="currentPassword"
-              placeholder="현재 비밀번호"
-              onChange={handleChange}
-              required
-              className={styles.input}
-            />
+            </button> )}
+
+          <form onSubmit={handleSubmit} className={`${styles.editForm} ${isEditing ? styles.visible : ""}`}>
+
+            <input type="password" name="currentPassword" placeholder="현재 비밀번호"
+              onChange={handleChange} required className={styles.input}/>
+
             {errors.currentPassword && (
               <span style={{ color: "red" }}>{errors.currentPassword}</span>
             )}
 
-            <input
-              type="password"
-              name="newPassword"
-              placeholder="새 비밀번호 (변경 시에만 입력)"
-              onChange={handleChange}
-              className={styles.input}
-            />
+            <input type="password" name="newPassword" placeholder="새 비밀번호 (변경 시에만 입력)"
+                   onChange={handleChange} className={styles.input}/>
+
             {errors.newPassword && (
               <span style={{ color: "red" }}>{errors.newPassword}</span>
             )}
 
             <input
-              type="password"
-              name="confirmNewPassword"
-              placeholder="새 비밀번호 확인"
-              onChange={handleChange}
-              className={styles.input}
-            />
+              type="password" name="confirmNewPassword" placeholder="새 비밀번호 확인"
+              onChange={handleChange} className={styles.input}/>
+
             {errors.confirmNewPassword && (
-              <span style={{ color: "red" }}>{errors.confirmNewPassword}</span>
-            )}
+              <span style={{ color: "red" }}>{errors.confirmNewPassword}</span>)}
 
-            <input
-              type="text"
-              name="memberName"
-              value={updateForm.memberName}
-              onChange={handleChange}
-              placeholder="이름"
-              className={styles.input}
-              required
-            />
+            <input type="text" name="memberName" value={updateForm.memberName}
+                   onChange={handleChange} placeholder="이름" className={styles.input} required/>
 
-            <input
-              type="text"
-              name="memberNick"
-              value={updateForm.memberNick}
-              onChange={handleChange}
-              placeholder="닉네임"
-              className={styles.input}
-              required
-            />
+            <input type="text" name="memberNick" value={updateForm.memberNick}
+                   onChange={handleChange} placeholder="닉네임" className={styles.input} required/>
 
-            <button
-              type="button"
-              onClick={handleNicknameCheck}
-              className={styles.button}
-            >
+            <button type="button" onClick={handleNicknameCheck} className={styles.button}>
               닉네임 중복 체크
             </button>
 
             {isNicknameChecked && (
               <span style={{ color: isNicknameDuplicate ? "red" : "green" }}>
                 {isNicknameDuplicate
-                  ? "이미 사용 중인 닉네임입니다."
-                  : "사용 가능한 닉네임입니다."}
-              </span>
-            )}
+                  ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다."}
+              </span> )}
 
             {errors.memberNick && (
-              <span style={{ color: "red" }}>{errors.memberNick}</span>
-            )}
+              <span style={{ color: "red" }}>{errors.memberNick}</span> )}
 
             <input
-              type="text"
-              name="memberPhone"
-              value={updateForm.memberPhone}
-              onChange={handleChange}
-              placeholder="전화번호"
-              className={styles.input}
-              required
-            />
+              type="text" name="memberPhone" value={updateForm.memberPhone}
+              onChange={handleChange} placeholder="전화번호" className={styles.input} required/>
 
             <button className={styles.button} type="submit">
               수정 완료
             </button>
+
           </form>
           {isEditing && (
             <button className={styles.button} onClick={handleCancelEdit}>
@@ -416,6 +413,7 @@ const Profile: React.FC = () => {
             </button>
           )}
         </div>
+
         <div className={styles.contentSection}>
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>내가 남긴 리뷰</h2>
@@ -424,7 +422,25 @@ const Profile: React.FC = () => {
           </div>
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>좋아요 누른 영화</h2>
-                {likedMovies}
+                <div className={styles.movielist}>
+                    <ul className={styles["movie-items"]}>
+
+                {visibleMovies.map((movie) => (
+                    <li key={movie.id} className={styles["movie-item"]}>
+                        <Link href={`/movies/details/${movie.id}`}>
+                            <img
+                                src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
+                                alt={`Poster for ${movie.title}`}
+                                className={styles["movie-img"]}
+                            />
+                        </Link>
+                    </li>
+                ))}
+                    </ul>
+                    <div ref={loadMoreRef} className={styles.loadMore}>
+                        {loading && <p>Loading...</p>}
+                    </div>
+                </div>
             </div>
         </div>
       </div>

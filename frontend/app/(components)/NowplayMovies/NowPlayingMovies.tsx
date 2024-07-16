@@ -19,7 +19,7 @@ export default function NowPlayingMovies() {
 
   const MOVIES_PER_PAGE = 5;
   const POSTER_WIDTH = 200;
-  const POSTER_MARGIN = 10;
+  const POSTER_MARGIN = 20;
 
   useEffect(() => {
     async function fetchMovies() {
@@ -44,42 +44,38 @@ export default function NowPlayingMovies() {
     });
   };
 
-  const translateX =
-    -page *
-    (POSTER_WIDTH * MOVIES_PER_PAGE + POSTER_MARGIN * MOVIES_PER_PAGE * 2);
+  const translateX = -page * (POSTER_WIDTH + POSTER_MARGIN * 2) * MOVIES_PER_PAGE;
 
   return (
     <div className={styles.container}>
-      <div className={styles.navigationContainer}>
-        <button onClick={handlePrevClick} className={styles.navButton}>
-          {page > 0 ? <FaChevronCircleLeft /> : <IoIosArrowDropleft />}
-        </button>
-        <div className={styles.sliderWrapper}>
-          <ul
-            className={styles.movieItems}
-            style={{ transform: `translateX(${translateX}px)` }}
-          >
-            {movies.map((movie) => (
-              <li key={movie.id} className={styles.movieItem}>
-                <Link href={`/movies/details/${movie.id}`}>
-                  <img
-                    src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
-                    alt={`Poster for ${movie.title}`}
-                    className={styles.movieImg}
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
+      <button onClick={handlePrevClick} className={styles.navButton} disabled={page === 0}>
+        {page > 0 ? <FaChevronCircleLeft /> : <IoIosArrowDropleft />}
+      </button>
+      <div className={styles.sliderWrapper}>
+        <div
+          className={styles.movieItems}
+          style={{ transform: `translateX(${translateX}px)` }}
+        >
+          {movies.map((movie) => (
+            <div key={movie.id} className={styles.movieItem}>
+              <Link href={`/movies/details/${movie.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
+                  alt={`Poster for ${movie.title}`}
+                  className={styles.movieImg}
+                />
+              </Link>
+            </div>
+          ))}
         </div>
-        <button onClick={handleNextClick} className={styles.navButton}>
-          {(page + 1) * MOVIES_PER_PAGE < movies.length ? (
-            <FaChevronCircleRight />
-          ) : (
-            <IoIosArrowDropright />
-          )}
-        </button>
       </div>
+      <button onClick={handleNextClick} className={styles.navButton} disabled={(page + 1) * MOVIES_PER_PAGE >= movies.length}>
+        {(page + 1) * MOVIES_PER_PAGE < movies.length ? (
+          <FaChevronCircleRight />
+        ) : (
+          <IoIosArrowDropright />
+        )}
+      </button>
     </div>
   );
 }

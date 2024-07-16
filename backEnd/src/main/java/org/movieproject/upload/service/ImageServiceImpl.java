@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -38,8 +40,17 @@ public class ImageServiceImpl implements ImageService {
         Member member = memberRepository.findById(memberNo)
                 .orElseThrow(() -> new IllegalArgumentException("Member Not Found"));
 
+        Image existingImage = imageRepository.findByMember_memberNo(memberNo);
+
         try {
             String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
+
+            // 확장자 검사
+            if (!isSupportedFileType(fileExtension)) {
+                throw new IllegalArgumentException("Only jpg, jpeg, png, gif files are allowed");
+            }
+
             String uuid = UUID.randomUUID().toString();
             String fileName = uuid + "_" + originalFileName;
 
@@ -56,12 +67,34 @@ public class ImageServiceImpl implements ImageService {
                     .size(100, 100) // 썸네일 크기 설정
                     .toFile(thumbnailFilePath.toFile());
 
-            Image image = Image.builder()
-                    .uuid(uuid)
-                    .filePath(filePath.toString())
-                    .thumbnailPath(thumbnailFilePath.toString()) // 썸네일 경로 설정
-                    .member(member)
-                    .build();
+            Image image;
+            if (existingImage == null) {
+                // 새로운 이미지 업로드
+                image = Image.builder()
+                        .uuid(uuid)
+                        .filePath(filePath.toString())
+                        .thumbnailPath(thumbnailFilePath.toString())
+                        .member(member)
+                        .build();
+            } else {
+                // 이미지 업데이트
+                // 기존 파일 삭제
+                Path oldFilePath = Paths.get(existingImage.getFilePath());
+                Files.deleteIfExists(oldFilePath);
+
+                // 기존 썸네일 파일 삭제
+                Path oldThumbnailFilePath = Paths.get(existingImage.getThumbnailPath());
+                Files.deleteIfExists(oldThumbnailFilePath);
+
+                // 새로운 썸네일 생성
+                Thumbnails.of(filePath.toFile())
+                        .size(100, 100) // 썸네일 크기 설정
+                        .toFile(thumbnailFilePath.toFile());
+
+                // 이미지 정보 업데이트
+                existingImage.changeImage(uuid, filePath.toString(), thumbnailFilePath.toString());
+                image = existingImage;
+            }
 
             imageRepository.save(image);
 
@@ -71,49 +104,6 @@ public class ImageServiceImpl implements ImageService {
                     .thumbnailPath(thumbnailFilePath.toString())
                     .memberNo(memberNo)
                     .build();
-
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to store file", e);
-        }
-    }
-
-    // 이미지 수정
-    @Override
-    public void updateImage(MultipartFile file, Integer memberNo) {
-        Image image = imageRepository.findByMember_memberNo(memberNo);
-        if (image == null) {
-            throw new IllegalArgumentException("Image Not Found");
-        }
-
-        try {
-            String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-            String uuid = UUID.randomUUID().toString();
-            String fileName = uuid + "_" + originalFileName;
-
-            Path uploadPath = Paths.get(uploadDirectory);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(file.getInputStream(), filePath);
-
-            // 기존 파일 삭제
-            Path oldFilePath = Paths.get(image.getFilePath());
-            Files.deleteIfExists(oldFilePath);
-
-            // 기존 썸네일 파일 삭제
-            Path oldThumbnailFilePath = Paths.get(image.getThumbnailPath());
-            Files.deleteIfExists(oldThumbnailFilePath);
-
-            // 새로운 썸네일 생성
-            Path thumbnailFilePath = uploadPath.resolve("thumb_" + fileName);
-            Thumbnails.of(filePath.toFile())
-                    .size(100, 100) // 썸네일 크기 설정
-                    .toFile(thumbnailFilePath.toFile());
-
-            // 이미지 정보 업데이트
-            image.changeImage(uuid, filePath.toString(), thumbnailFilePath.toString());
-            imageRepository.save(image);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file", e);
@@ -141,5 +131,11 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Image getImage(Integer memberNo) {
         return imageRepository.findByMember_memberNo(memberNo);
+    }
+
+    // 허용된 파일 확장자 목록 검사
+    private boolean isSupportedFileType(String fileExtension) {
+        List<String> supportedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif");
+        return supportedExtensions.contains(fileExtension);
     }
 }
