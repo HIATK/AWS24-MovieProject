@@ -74,10 +74,10 @@ const Search = () => {
   return (
     <div className={styles.main}>
       <div className={styles.description}>
-        <h1>Search Results for "{searchTerm}"</h1>
+        <center> <h1>"{searchTerm}" 에 대한 검색 결과</h1></center>
       </div>
       <div className={styles.posterSection}>
-        <ul className={styles["movie-items"]}>
+      <ul className={styles["movie-items"]}>
           {results.map((movie, index) => {
             if (results.length === index + 1) {
               return (
