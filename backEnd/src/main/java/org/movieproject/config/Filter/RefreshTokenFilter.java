@@ -148,12 +148,12 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         Cookie accessTokenCookie = new Cookie("accessToken", accessTokenValue);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(600); // 10분
+        accessTokenCookie.setMaxAge(60*15); // 15분
 
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshTokenValue);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(3600); // 1시간
+        refreshTokenCookie.setMaxAge(60*90); // 90분
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);

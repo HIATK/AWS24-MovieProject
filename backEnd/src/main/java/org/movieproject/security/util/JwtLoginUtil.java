@@ -37,13 +37,13 @@ public class JwtLoginUtil {
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(900); // 15분
+        accessTokenCookie.setMaxAge(60*15); // 15분
 
         // 리프레시 토큰 쿠키 생성
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(10800); // 90분
+        refreshTokenCookie.setMaxAge(60*90); // 90분
 
         // 쿠키를 응답에 추가
         response.addCookie(accessTokenCookie);

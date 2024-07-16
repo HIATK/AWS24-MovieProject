@@ -11,10 +11,8 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.time.ZonedDateTime;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 @Component
@@ -25,6 +23,9 @@ public class JwtProvider {
     private String secret;
 
     private SecretKey secretKey;
+
+    private final Set<String> blacklist = ConcurrentHashMap.newKeySet();
+
 
     // 객체 초기화, secretKey 를 Base64로 인코딩
     @PostConstruct
@@ -50,7 +51,7 @@ public class JwtProvider {
                 .add("typ", "JWT")
                 .and()
                 .claims(payloads)
-                .signWith(this.getSigningKey())
+                .signWith(getSigningKey())
                 .issuedAt(Date.from(ZonedDateTime.now().toInstant()))
                 .expiration(expiration)
                 .compact();
@@ -58,14 +59,21 @@ public class JwtProvider {
 
     public Map<String, Object> extractClaim(String token) throws JwtException {
 
-        Map<String, Object> claim = null;
-
-        claim = Jwts.parser()
-                .verifyWith(this.getSigningKey())
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
 
-        return claim;
+    public void invalidateToken(String token) {
+        if (token != null && !token.isEmpty()) {
+            blacklist.add(token);
+            log.info("블랙리스트토큰 추가 : " + blacklist.toString());
+        }
+    }
+
+    public boolean isBlacklisted(String token) {
+        return blacklist.contains(token);
     }
 }

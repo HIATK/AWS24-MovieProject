@@ -11,7 +11,7 @@ public interface MovieService {
 
     CompletableFuture<Map<String, String>> getMovieByMovieId(Integer movieId);
 
-    CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword);
+    CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword, int page);
 
     void saveMovies(List<Map<String, String>> movies);
 

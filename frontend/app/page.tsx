@@ -3,7 +3,6 @@
 import React from 'react';
 import NowPlayingMovies from "./(components)/NowplayMovies/NowPlayingMovies";
 import styles from "./page.module.css";
-import SearchBar from "@/(components)/SearchBar/SearchBar";
 import {useTheme} from "@/(components)/DarkModToggle/ThemeContext";
 import MatrixRainEffect from "@/(components)/RainEffect/MatrixRainEffect";
 

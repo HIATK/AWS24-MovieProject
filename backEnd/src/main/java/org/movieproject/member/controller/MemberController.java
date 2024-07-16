@@ -3,6 +3,7 @@ package org.movieproject.member.controller;
 import io.jsonwebtoken.JwtException;
 import io.swagger.v3.core.jackson.ModelResolver;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.entity.Member;
 import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.member.service.MemberService;
+import org.movieproject.security.JwtProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -35,6 +37,7 @@ public class MemberController {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final JwtProvider jwtProvider;
 
     // 회원가입
     @PostMapping("/join")
@@ -187,7 +190,26 @@ public class MemberController {
 
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+
+        // 쿠키에 저장된 토큰들을 블랙리스트에 등록
+        String accessToken = null;
+        String refreshToken = null;
+
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    accessToken = cookie.getValue();
+                }
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                }
+            }
+        }
+
+        jwtProvider.invalidateToken(accessToken);
+        jwtProvider.invalidateToken(refreshToken);
+
         // accessToken 쿠키 삭제
         Cookie accessTokenCookie = new Cookie("accessToken", null);
         accessTokenCookie.setHttpOnly(true);

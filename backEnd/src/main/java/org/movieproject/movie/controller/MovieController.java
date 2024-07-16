@@ -40,9 +40,9 @@ public class MovieController {
     }
 
     @GetMapping("/search")
-    public CompletableFuture<List<Map<String, String>>> searchMovies(@RequestParam String keyword) {
-        log.info("키워드: " + keyword);
-        return movieService.searchMovieByKeyword(keyword)
+    public CompletableFuture<List<Map<String, String>>> searchMovies(@RequestParam String keyword, @RequestParam int page) {
+        log.info("키워드: " + keyword + ", 페이지: " + page);
+        return movieService.searchMovieByKeyword(keyword, page)
                 .thenApply(movies -> {
                     movieService.saveMovies(movies); // 검색된 영화를 저장
                     return movies;
