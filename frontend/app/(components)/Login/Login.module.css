@@ -21,7 +21,6 @@
 }
 
 .formContainer h2 {
-
   /*다크모드 화이트모드 로그인창 위에 로그인 적용*/
   --text: var(--text-light);
 }
@@ -29,7 +28,7 @@
 .formContainer input {
   width: 300px;
   padding: 10px;
-  border: 1px solid rgba(228, 56, 56, 0.6);
+  border: 1px solid #5fbebb;
   background: transparent;
   color: white;
   border-radius: 4px;
