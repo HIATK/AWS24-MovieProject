@@ -7,9 +7,11 @@ import { useAuth } from '@/(context)/AuthContext';
 import {checkNicknameDuplicate, getMemberDetails, verifyPassword} from "@/_Service/MemberService";
 import {Simulate} from "react-dom/test-utils";
 import error = Simulate.error;
-import {List} from "lucide-react";
 import {getMovieByMovieId, getMovies} from "@/_Service/MovieService";
 import Link from "next/link";
+import {FaChevronCircleLeft, FaChevronCircleRight} from "react-icons/fa";
+import {IoIosArrowDropleft, IoIosArrowDropright} from "react-icons/io";
+
 
 type Movie = {
     id: string;
@@ -47,19 +49,18 @@ const Profile: React.FC = () => {
     let [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
     const [movies, setMovies] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(false);
-    const [page, setPage] = useState(1);
-    const observer = useRef<IntersectionObserver | null>(null);
-    const loadMoreRef = useRef<HTMLDivElement | null>(null);
-    const MOVIES_PER_PAGE = 5; // 한 번에 보여줄 영화 개수
-    const [visibleMovies, setVisibleMovies] = useState<Movie[]>([]);
+    const [page, setPage] = useState(0);
+    const MOVIES_PER_PAGE = 3;
+    const POSTER_WIDTH = 200;
+    const POSTER_MARGIN = 10;
+
 
     useEffect(() => {
         async function fetchMovies() {
             setLoading(true);
             try {
                 const data = await getMovies();
-                setMovies(data);
-                setVisibleMovies(data.slice(0, MOVIES_PER_PAGE)); // 처음 5개 영화만 보여줌
+                setMovies(data); // 처음 5개 영화만 보여줌
             } catch (error) {
                 console.error("Error fetching movies:", error);
             } finally {
@@ -69,26 +70,20 @@ const Profile: React.FC = () => {
         fetchMovies();
     }, []);
 
-    useEffect(() => {
-        if (observer.current) observer.current.disconnect();
+    const handlePrevClick = () => {
+        setPage((prevPage) => Math.max(prevPage - 1, 0));
+    };
 
-        observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting && !loading) {
-                setPage(prevPage => prevPage + 1);
-            }
+    const handleNextClick = () => {
+        setPage((prevPage) => {
+            const maxPage = Math.ceil(movies.length / MOVIES_PER_PAGE) - 1;
+            return Math.min(prevPage + 1, maxPage);
         });
+    };
 
-        if (loadMoreRef.current) {
-            observer.current.observe(loadMoreRef.current);
-        }
-    }, [loading]);
-
-    useEffect(() => {
-        if (page > 1) {
-            const newVisibleMovies = movies.slice(0, page * MOVIES_PER_PAGE);
-            setVisibleMovies(newVisibleMovies);
-        }
-    }, [page, movies]);
+    const translateX =
+        -page *
+        (POSTER_WIDTH * MOVIES_PER_PAGE + POSTER_MARGIN * MOVIES_PER_PAGE * 2);
 
     useEffect(() => {
         const fetchMemberDetails = async () => {
@@ -422,25 +417,34 @@ const Profile: React.FC = () => {
           </div>
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>좋아요 누른 영화</h2>
-                <div className={styles.movielist}>
-                    <ul className={styles["movie-items"]}>
-
-                {visibleMovies.map((movie) => (
-                    <li key={movie.id} className={styles["movie-item"]}>
-                        <Link href={`/movies/details/${movie.id}`}>
-                            <img
-                                src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
-                                alt={`Poster for ${movie.title}`}
-                                className={styles["movie-img"]}
-                            />
-                        </Link>
-                    </li>
-                ))}
+                <button onClick={handlePrevClick} className={styles.navButton}>
+                    {page > 0 ? <FaChevronCircleLeft/> : <IoIosArrowDropleft/>}
+                </button>
+                <div className={styles.sliderWrapper}>
+                    <ul
+                        className={styles.movieItems}
+                        style={{transform: `translateX(${translateX}px)`}}
+                    >
+                        {movies.map((movie) => (
+                            <li key={movie.id} className={styles.movieItem}>
+                                <Link href={`/movies/details/${movie.id}`}>
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
+                                        alt={`Poster for ${movie.title}`}
+                                        className={styles.movieImg}
+                                    />
+                                </Link>
+                            </li>
+                        ))}
                     </ul>
-                    <div ref={loadMoreRef} className={styles.loadMore}>
-                        {loading && <p>Loading...</p>}
-                    </div>
                 </div>
+                <button onClick={handleNextClick} className={styles.navButton}>
+                    {(page + 1) * MOVIES_PER_PAGE < movies.length ? (
+                        <FaChevronCircleRight/>
+                    ) : (
+                        <IoIosArrowDropright/>
+                    )}
+                </button>
             </div>
         </div>
       </div>

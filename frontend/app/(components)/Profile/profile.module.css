@@ -131,16 +131,38 @@
   margin-bottom: 10px;
 }
 
-.movielist {
-  max-width: 1000px; /* 예시로 지정한 최대 너비 */
-  margin: 0 auto; /* 가운데 정렬을 위해 */
+.navButton {
+  padding: 10px;
+  background-color: transparent;
+  color: #007bff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 2rem;
+}
+.movieItems {
+  list-style-type: none;
+  padding: 0;
+  margin: 0; /* 마진을 0으로 설정하여 불필요한 간격 제거 */
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100vh; /* 전체 화면 높이 설정 */
+  transition: transform 0.5s ease; /* 슬라이드 애니메이션 */
 }
 
-.loadMore {
-  text-align: center;
-  padding: 20px;
+.movieItem {
+  box-sizing: border-box;
+  flex: 0 0 200px; /* 각 포스터의 너비를 200px로 고정 */
+  margin: 0 10px; /* 포스터 좌우 간격 추가 */
 }
+
+.movieImg {
+  width: 200px; /* 고정된 너비 */
+  height: 300px; /* 고정된 높이 */
+  object-fit: cover; /* 이미지를 셀에 맞게 자름 */
+  transition: transform 0.2s ease;
+}
+
+.sliderWrapper {
+  overflow: hidden;
+  width: 1100px; /* 포스터 5개의 너비에 맞게 고정 */
+}
+
