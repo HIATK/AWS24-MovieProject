@@ -106,7 +106,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Async
     @Override
-    public CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword) {
+    public CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword, int page) {
         String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
         log.info("인코드키워드 " + encodedKeyword);
         return this.webClient.get()
@@ -114,7 +114,7 @@ public class MovieServiceImpl implements MovieService {
                         .path("/search/movie")
                         .queryParam("query", encodedKeyword)
                         .queryParam("language", "ko-KR")
-                        .queryParam("page", 1)
+                        .queryParam("page", page)
                         .queryParam("api_key", API_KEY)
                         .build())
                 .retrieve()

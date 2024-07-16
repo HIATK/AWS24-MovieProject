@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { useSearchParams, usePathname } from 'next/navigation';
 import { MovieDetails } from '@/(types)/types';
 import styles from './Search.module.css';
 import Link from 'next/link';
@@ -9,53 +9,64 @@ import RainEffect from "@/(components)/RainEffect/RainEffect";
 
 const Search = () => {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const searchTerm = searchParams.get('keyword') || '';
   const [results, setResults] = useState<MovieDetails[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
+  const prevSearchTermRef = useRef<string | null>(null);
+  const initialFetchRef = useRef<boolean>(false);
 
-  useEffect(() => {
-    // 검색어가 변경될 때마다 결과와 페이지를 초기화
+  const fetchResults = async (searchTerm: string, page: number) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8000/api/movies/search?keyword=${encodeURIComponent(searchTerm)}&page=${page}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setResults(prevResults => [...prevResults, ...data]);
+          setHasMore(data.length > 0);
+        } else {
+          console.error('Unexpected response format:', data);
+          setHasMore(false);
+        }
+      } else {
+        console.error('검색 결과를 가져오는 데 실패했습니다');
+      }
+    } catch (error) {
+      console.error('검색 결과를 가져오는 중 오류가 발생했습니다:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetSearch = useCallback(() => {
     setResults([]);
     setPage(1);
     setHasMore(true);
-    setLoading(true);
+    fetchResults(searchTerm, 1);
   }, [searchTerm]);
 
   useEffect(() => {
-    const fetchResults = async () => {
-      if (searchTerm) {
-        try {
-          const response = await fetch(`http://localhost:8000/api/movies/search?keyword=${encodeURIComponent(searchTerm)}&page=${page}`);
-          if (response.ok) {
-            const data = await response.json();
-            if (data.length > 0) {
-              setResults(prevResults => [...prevResults, ...data]);
-              if (data.length < 5) {
-                setHasMore(false);
-              }
-            } else {
-              setHasMore(false);
-            }
-          } else {
-            console.error('Failed to fetch search results');
-            setHasMore(false);
-          }
-        } catch (error) {
-          console.error('Error fetching search results:', error);
-          setHasMore(false);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
+    const currentURL = window.location.href;
+    const expectedURL = `http://localhost:3000/movies/search?keyword=${encodeURIComponent(searchTerm)}`;
 
-    fetchResults();
-  }, [searchTerm, page]); // searchTerm 또는 page가 변경될 때만 실행
+    if (currentURL === expectedURL && (prevSearchTermRef.current !== searchTerm || !initialFetchRef.current)) {
+      resetSearch();
+      prevSearchTermRef.current = searchTerm;
+      initialFetchRef.current = true;
+    }
+  }, [searchTerm, resetSearch, pathname]);
 
-  const lastPosterElementRef = useRef<HTMLLIElement>(null);
+  useEffect(() => {
+    if (page > 1) {
+      fetchResults(searchTerm, page);
+    }
+  }, [page]);
+
+  const lastPosterElementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -76,15 +87,14 @@ const Search = () => {
     <div className={styles.main}>
       <div className={styles.description}>
         <RainEffect/>
-
         <center> <h1>"{searchTerm}" 에 대한 검색 결과</h1></center>
       </div>
       <div className={styles.posterSection}>
-      <ul className={styles["movie-items"]}>
+        <div className={styles["movie-items"]}>
           {results.map((movie, index) => {
             if (results.length === index + 1) {
               return (
-                <li key={movie.id} className={styles["movie-item"]} ref={lastPosterElementRef}>
+                <div key={movie.id} className={styles["movie-item"]} ref={lastPosterElementRef}>
                   <Link href={`/movies/details/${movie.id}`}>
                     <img
                       src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
@@ -92,11 +102,11 @@ const Search = () => {
                       className={styles["movie-img"]}
                     />
                   </Link>
-                </li>
+                </div>
               );
             } else {
               return (
-                <li key={movie.id} className={styles["movie-item"]}>
+                <div key={movie.id} className={styles["movie-item"]}>
                   <Link href={`/movies/details/${movie.id}`}>
                     <img
                       src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
@@ -104,11 +114,11 @@ const Search = () => {
                       className={styles["movie-img"]}
                     />
                   </Link>
-                </li>
+                </div>
               );
             }
           })}
-        </ul>
+        </div>
         {loading && <p>Loading...</p>}
         {!hasMore && <p>No more results</p>}
       </div>

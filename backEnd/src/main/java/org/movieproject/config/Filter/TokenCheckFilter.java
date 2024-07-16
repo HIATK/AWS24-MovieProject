@@ -85,6 +85,11 @@ public class TokenCheckFilter extends OncePerRequestFilter {
         log.info("액세스토큰 쿠키 : " + accessToken);
 
         try {
+            // 블랙리스트 검증
+            if (jwtProvider.isBlacklisted(accessToken)) {
+                log.info("블랙리스트에 등록된 토큰입니다.");
+                throw new AccessTokenException(AccessTokenException.TOKEN_ERROR.BLACKLISTED);
+            }
             Map<String, Object> values = jwtProvider.extractClaim(accessToken);
             return values;
         } catch (MalformedJwtException malformedJwtException) {

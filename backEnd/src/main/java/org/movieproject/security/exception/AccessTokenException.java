@@ -16,9 +16,11 @@ public class AccessTokenException extends RuntimeException {
     public enum TOKEN_ERROR {
         UNACCEPT (401, "토 큰 이 null"),
         BADTYPE (401, "토 큰 타 입 베 어 러"),
+        BLACKLISTED (401, "블랙리스트"),
         MALFORM (403, "말 폼 드 토 큰 이 다"),
         BADSIGN (403, "나쁜 시그니쳐 토큰"),
         EXPIRED (403, "만료된 토큰");
+
 
         private int status;
         private String msg;

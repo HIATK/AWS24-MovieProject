@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import styles from "./NowPlayingMovies.module.css";
 import { getMovies } from "@/_Service/MovieService";
@@ -48,8 +47,12 @@ export default function NowPlayingMovies() {
 
   return (
     <div className={styles.container}>
-      <button onClick={handlePrevClick} className={styles.navButton} disabled={page === 0}>
-        {page > 0 ? <FaChevronCircleLeft /> : <IoIosArrowDropleft />}
+      <button
+        onClick={handlePrevClick}
+        className={`${styles.navButton} ${page === 0 ? styles.hidden : ""}`}
+        disabled={page === 0}
+      >
+        <IoIosArrowDropleft />
       </button>
       <div className={styles.sliderWrapper}>
         <div
@@ -69,12 +72,12 @@ export default function NowPlayingMovies() {
           ))}
         </div>
       </div>
-      <button onClick={handleNextClick} className={styles.navButton} disabled={(page + 1) * MOVIES_PER_PAGE >= movies.length}>
-        {(page + 1) * MOVIES_PER_PAGE < movies.length ? (
-          <FaChevronCircleRight />
-        ) : (
-          <IoIosArrowDropright />
-        )}
+      <button
+        onClick={handleNextClick}
+        className={`${styles.navButton} ${(page + 1) * MOVIES_PER_PAGE >= movies.length ? styles.hidden : ""}`}
+        disabled={(page + 1) * MOVIES_PER_PAGE >= movies.length}
+      >
+        <IoIosArrowDropright />
       </button>
     </div>
   );
