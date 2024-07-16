@@ -27,10 +27,10 @@ public class UpDownController {
 
     private final ImageService imageService;
 
-    // 이미지 업로드
+    // 이미지 업로드 및 수정
     @PostMapping("/upload")
-    public ResponseEntity<UploadResultDTO> uploadImage(@RequestParam("file") MultipartFile file,
-                                                       @RequestParam("memberNo") Integer memberNo) {
+    public ResponseEntity<UploadResultDTO> uploadOrUpdateImage(@RequestParam("file") MultipartFile file,
+                                                               @RequestParam("memberNo") Integer memberNo) {
         UploadResultDTO result = imageService.uploadImage(file, memberNo);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
@@ -56,15 +56,6 @@ public class UpDownController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    // 이미지 수정
-    @PutMapping("/update/{memberNo}")
-    public ResponseEntity<Void> updateImage(@RequestParam("file") MultipartFile file,
-                                            @PathVariable Integer memberNo) {
-        imageService.updateImage(file, memberNo);
-        return ResponseEntity.noContent().build();
-    }
-
 
     // 이미지 삭제
     @DeleteMapping("/delete/{memberNo}")
