@@ -57,11 +57,19 @@ public class UpDownController {
         }
     }
 
-    // 이미지 수정 및 기존 이미지 삭제
+    // 이미지 수정
     @PutMapping("/update/{memberNo}")
     public ResponseEntity<Void> updateImage(@RequestParam("file") MultipartFile file,
                                             @PathVariable Integer memberNo) {
         imageService.updateImage(file, memberNo);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    // 이미지 삭제
+    @DeleteMapping("/delete/{memberNo}")
+    public ResponseEntity<Void> deleteImage(@PathVariable Integer memberNo) {
+        imageService.deleteImage(memberNo);
         return ResponseEntity.noContent().build();
     }
 
