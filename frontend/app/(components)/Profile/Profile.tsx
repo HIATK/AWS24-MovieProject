@@ -184,45 +184,37 @@ const Profile: React.FC = () => {
     // 프로필 이미지 업로드
     const handleProfileImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0]; // 선택된 파일을 가져옵니다.
-            setFile(file); // 선택된 파일을 상태에 저장합니다.
+            const file = e.target.files[0];
+            setFile(file);
+    
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("memberNo", member?.memberNo?.toString() || ""); // 폼 데이터를 설정합니다.
-
+            formData.append("memberNo", member?.memberNo?.toString() || "");
+    
             try {
+                //  기존 이미지 삭제
+                await handleProfileImageDelete();
+
+                //  새 이미지 업로드
                 await axios.post("/api/image/upload", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                }); // 이미지를 업로드합니다.
-                await fetchImage(member.memberNo); // 이미지 업로드 후 다시 이미지를 가져옵니다.
+                });
+
+                //  업로드 후 이미지 불러오기
+                await fetchImage(member.memberNo); 
             } catch (error) {
-                console.error("이미지 업로드 실패", error); // 에러 로그를 출력합니다.
+                console.error("Failed to upload image", error);
             }
-        }
-    };
-
-    // 이미지 수정
-    const updateImage = async (file: File) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("memberNo", member?.memberNo?.toString() || ""); // 폼 데이터를 설정합니다.
-
-        try {
-            await axios.put(`/api/image/update/${member?.memberNo}`, formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            }); // 이미지를 수정합니다.
-        } catch (error) {
-            console.error("이미지 수정 실패", error); // 에러 로그를 출력합니다.
         }
     };
 
     // 프로필 이미지 삭제
     const handleProfileImageDelete = async () => {
         try {
-            await axios.delete(`/api/image/delete/${member?.memberNo}`); // 이미지를 삭제합니다.
-            setProfileImagePath("/profile/basic.png"); // 삭제 후 프로필 이미지 경로를 기본 이미지로 설정합니다.
+            await axios.delete(`/api/image/delete/${member?.memberNo}`);
+            setProfileImagePath("/profile/basic.png"); // 이미지 삭제 시 기본 이미지로 설정
         } catch (error) {
-            console.error("이미지 삭제 실패", error); // 에러 로그를 출력합니다.
+            console.error("Failed to delete image", error);
         }
     };
 
