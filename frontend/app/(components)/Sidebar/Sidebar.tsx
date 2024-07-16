@@ -40,8 +40,6 @@ const SidebarClient: React.FC = () => {
     const menuItems: MenuItem[] = [
         { icon: <CgProfile size={24} />, text: '프로필', href: '/member/profile' },
         { icon: <IoHomeOutline size={24} />, text: '홈으로', href: '/' },
-        { icon: <IoStatsChartOutline size={24} />, text: '데이터사용량', href: '/data-usage' },
-        { icon: <BiLink size={24} />, text: '내URL', href: '/my-url' },
     ];
 
     const settingsItem: MenuItem = { icon: <MdLogin size={24} />, text: '로그인', href: '/member/login' };

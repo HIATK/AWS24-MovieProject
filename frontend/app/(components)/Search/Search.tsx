@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { MovieDetails } from '@/(types)/types';
 import styles from './Search.module.css';
 import Link from 'next/link';
+import RainEffect from "@/(components)/RainEffect/RainEffect";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -74,10 +75,12 @@ const Search = () => {
   return (
     <div className={styles.main}>
       <div className={styles.description}>
-        <h1>Search Results for "{searchTerm}"</h1>
+        <RainEffect/>
+
+        <center> <h1>"{searchTerm}" 에 대한 검색 결과</h1></center>
       </div>
       <div className={styles.posterSection}>
-        <ul className={styles["movie-items"]}>
+      <ul className={styles["movie-items"]}>
           {results.map((movie, index) => {
             if (results.length === index + 1) {
               return (

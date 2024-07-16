@@ -4,8 +4,8 @@ const NotFound = () => {
     return <div>
 
             <center>
-                잘못된 요청입니다. <br/>
-                <a href="/">홈으로 돌아가기</a>
+                <img src="/404.png"/>
+
             </center>
             </div>;
 };

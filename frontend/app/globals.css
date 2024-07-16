@@ -72,7 +72,7 @@ a {
   --card-border-rgb: 131, 134, 135;
 
   --background-light: rgb(179, 171, 162);
-  --background-dark: rgb(33, 33, 30);
+  --background-dark: rgb(21, 21, 20);
 
   --text-light: #333333;
   /*--text-dark: #ffffff;*/
@@ -125,4 +125,17 @@ body {
 ::-webkit-scrollbar-track {
   box-shadow: none;
   background-color: transparent;
+}
+/* global.css */
+/*매트릭스 */
+#__next {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }

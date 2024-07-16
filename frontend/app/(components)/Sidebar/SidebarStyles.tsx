@@ -12,7 +12,7 @@ export const SidebarContainer = styled.div<StyledProps>`
   width: ${({$isOpen}) => ($isOpen ? '150px' : '60px')};
   height: 100vh;
   background-color: ${({$theme}) => $theme === 'light' ? 'rgba(188,182,182,0.5)' : 'rgb(12,11,11)'};
-  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
+  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#6ebbdb'};
   transition: width 0.3s ease, background-color 0.3s ease, color 0.3s ease;
   z-index: 1000;
   display: flex;
@@ -54,7 +54,8 @@ export const SettingsItemWrapper = styled(MenuItemWrapper)<StyledProps>`
 `;
 
 export const ThemeToggleWrapper = styled(MenuItemWrapper)<StyledProps>`
-  margin-top: auto;
+  //margin-top: 59px;
+  margin-bottom: 80% ;
 `;
 
 export const MenuLink = styled.div`
@@ -73,14 +74,14 @@ export const Icon = styled.div<{$theme?: 'light' | 'dark'}>`
   width: 24px;
   height: 24px;
   flex-shrink: 0;
-  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
+  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#6EBBDBFF'};
 `;
 
 export const MenuText = styled.div<StyledProps>`
   margin-left: 10px;
   white-space: nowrap;
   display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
-  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
+  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#6EBBDBFF'};
 `;
 
 export const HoverText = styled.div<StyledProps>`
@@ -89,7 +90,7 @@ export const HoverText = styled.div<StyledProps>`
   top: 50%;
   transform: translateY(-50%);
   background-color: ${({$theme}) => $theme === 'light' ? 'rgba(240, 240, 240, 0.9)' : 'rgba(33, 33, 33, 0.9)'};
-  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#5fbebb'};
+  color: ${({$theme}) => $theme === 'light' ? '#333333' : '#6EBBDBFF'};
   padding: 5px 10px;
   border-radius: 4px;
   font-size: 14px;
