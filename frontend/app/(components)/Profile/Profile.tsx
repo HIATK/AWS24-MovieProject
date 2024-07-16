@@ -318,10 +318,6 @@ const Profile: React.FC = () => {
             프로필 사진 변경
           </button>
 
-          <button className={styles.button} onClick={handleProfileImageDelete}>
-            프로필 사진 삭제
-          </button>
-
           {!isEditing && (
             <button className={styles.button} onClick={handleUpdateProfile}>
               개인정보 수정
