@@ -45,10 +45,3 @@ export interface Likes {
     movieId: number;
     movieTitle: string;
 }
-
-export interface Posts{
-    postContent: string;
-    ratingStar: number;
-    regDate: string;
-    movieId: number;
-}
