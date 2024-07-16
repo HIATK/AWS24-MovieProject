@@ -48,3 +48,15 @@ export const getMoviesByMovieId = async (id: number) => {
     throw error;
   }
 }
+
+// 유저가 찜한 무비들 API 가져오기
+export const getLikedMovies = async (memberNo: number) => {
+  try {
+    console.log("멤버 번호 : "+memberNo); // memberNo 잘 받았나 확인
+    const response = await axios.get(`/api/movies/likes/${memberNo}`); // 서버에서 가져오기
+    console.log("리스폰스 데이터 !!!!!" + response); // 서버에서 잘 가져왔나 확인
+    return response.data;
+  } catch (error) {
+    console.error('좋아요 누른 영화 가져오기 실패 !!!', error); // 실패시 에러 로그 출력
+  }
+};

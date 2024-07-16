@@ -3,6 +3,7 @@ package org.movieproject.post.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.entity.Member;
 import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.movie.entity.Movie;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -90,5 +92,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public Double getAverageRatingByMovieId(Integer movieId) {
         return postRepository.findAverageRatingByMovieId(movieId);
+    }
+
+    @Override
+    public List<PostDTO> getPostsByMemberNo(Integer memberNo) {
+        List<Post> posts = postRepository.findPostsByMemberNo(memberNo);
+
+        return posts.stream()
+                .map(post -> modelMapper.map(post, PostDTO.class))
+                .collect(Collectors.toList());
     }
 }

@@ -22,4 +22,8 @@ public interface PostService {
 
     // 영화에 대한 포스트 별점 평균
     Double getAverageRatingByMovieId(Integer movieId);
+
+    // 회원 별 포스트 찾기
+    List<PostDTO> getPostsByMemberNo(Integer memberNo);
+
 }
