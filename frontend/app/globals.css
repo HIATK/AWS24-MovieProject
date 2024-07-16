@@ -126,3 +126,16 @@ body {
   box-shadow: none;
   background-color: transparent;
 }
+/* global.css */
+/*매트릭스 */
+#__next {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
