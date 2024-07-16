@@ -22,6 +22,15 @@
   align-items: center;
 }
 
+.postNick {
+  width: 80px; /* Set a fixed width */
+  margin-right: 10px;
+  margin-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .postContent {
   flex: 1;
   white-space: nowrap;
@@ -43,6 +52,7 @@
   padding-left: 1rem; /* Ensure some spacing between content and date */
 }
 
-.withmargin {
-  margin-left: 5px;
+.observer {
+  width: 100%;
+  height: 10px;
 }

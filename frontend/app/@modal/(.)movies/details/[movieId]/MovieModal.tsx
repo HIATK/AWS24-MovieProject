@@ -103,7 +103,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
     }
     setErrorMsg("");
     if (memberNick === null) {
-      alert('먼저 로그인 해주세요');
+      alert('로그인이 필요합니다');
       return;
     }
     try {
