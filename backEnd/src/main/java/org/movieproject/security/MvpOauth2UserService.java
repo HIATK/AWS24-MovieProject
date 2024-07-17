@@ -44,16 +44,11 @@ public class MvpOauth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> paramMap = oAuth2User.getAttributes();
 
-        String memberEmail = null;
-
-        switch (clientName) {
-            case "kakao" :
-                memberEmail = getKakaoEmail(paramMap);
-                break;
-            case "naver" :
-                memberEmail = getNaverEmail(paramMap);
-                break;
-        }
+        String memberEmail = switch (clientName) {
+            case "kakao" -> getKakaoEmail(paramMap);
+            case "naver" -> getNaverEmail(paramMap);
+            default -> null;
+        };
 
         log.info("이 메 일 : " + memberEmail);
 
@@ -105,33 +100,29 @@ public class MvpOauth2UserService extends DefaultOAuth2UserService {
 
     private String getKakaoEmail(Map<String, Object> paramMap) {
 
-        log.info("카 카 오 카 카 오 카 카 오 카 카 오 카 카 오 카 카 오 카 카 오 카 카 오 카 카 오 ");
+        log.info("카카오 이메일 가져오기 시작");
 
         Object value = paramMap.get("kakao_account");
-
-        log.info("겟 카 카 오 어 카 운 트 : " + value);
 
         LinkedHashMap accountMap = (LinkedHashMap)value;
 
         String email = (String)accountMap.get("email");
 
-        log.info("이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일  : " + email);
+        log.info("카카오 이메일 : " + email);
 
         return email;
     }
 
     private String getNaverEmail(Map<String, Object> paramMap) {
-        log.info("네 이 버 네 이 버 네 이 버 네 이 버 네 이 버 네 이 버 네 이 버 네 이 버 네 이 버");
+        log.info("네이버 이메일 가져오기 시작");
 
         Object value = paramMap.get("response");
-
-        log.info("겟 네 이 버 어 카 운 트 : " + value);
 
         LinkedHashMap accountMap = (LinkedHashMap)value;
 
         String email = (String)accountMap.get("email");
 
-        log.info("이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 이 메 일 : " + email);
+        log.info("네이버 이메일: " + email);
 
         return email;
     }

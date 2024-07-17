@@ -10,6 +10,8 @@ import org.movieproject.config.handler.APILoginSuccessHandler;
 import org.movieproject.config.handler.Custom403Handler;
 import org.movieproject.config.handler.MvpSocialLoginSuccessHandler;
 import org.movieproject.security.JwtProvider;
+import org.movieproject.security.MvpOIDCUserService;
+import org.movieproject.security.MvpOauth2UserService;
 import org.movieproject.security.MvpUserDetailsService;
 import org.movieproject.security.util.JwtLoginUtil;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -49,6 +51,8 @@ public class CustomSecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final JwtLoginUtil jwtLoginUtil;
+    private final MvpOauth2UserService mvpOauth2UserService;
+    private final MvpOIDCUserService mvpOIDCUserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -70,7 +74,13 @@ public class CustomSecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable) // 기본 로그인폼 비활성화
             .oauth2Login(httpSecurityOauth2LoginConfigurer -> { // 소셜 로그인 설정
                 httpSecurityOauth2LoginConfigurer.loginPage("/member/login")
+                        .userInfoEndpoint(userInfoEndpointConfigurer -> {
+                            userInfoEndpointConfigurer
+                                    .userService(mvpOauth2UserService) // OAuth2 user service for non-OIDC providers
+                                    .oidcUserService(mvpOIDCUserService); // OIDC user service for OIDC providers
+                        })
                         .successHandler(mvpSocialLoginSuccessHandler());
+
             })
             .logout(AbstractHttpConfigurer::disable);   // 기본 로그아웃 비활성화
 
