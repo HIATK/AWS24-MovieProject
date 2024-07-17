@@ -72,6 +72,11 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
     setExpandedPost(expandedPost === postId ? null : postId);
   };
 
+  const removeBasePath = (filePath: string) => {
+    const basePathToRemove = "C:\\Users\\tjoeun\\IdeaProjects\\AWS24-MovieProject\\frontend\\public\\";
+    return filePath.replace(basePathToRemove, "");
+  };
+
   return (
     <div className={styles.postsList}>
       <AnimatePresence>
@@ -89,6 +94,11 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
           >
             <div className={styles.postHeader}>
               {renderStars(post.ratingStar)}
+            </div>
+            <div className={styles.profileImage}>
+              <img src={`/${removeBasePath(post.filePath)}`} alt="Post Image"
+                className={styles.profileImage}
+              />
             </div>
             <div className={styles.postNick}>
               {post.memberNick}

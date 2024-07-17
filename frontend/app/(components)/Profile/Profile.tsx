@@ -21,6 +21,7 @@ const Profile: React.FC = () => {
     });
     const [posts, setPosts] = useState<PostDetails[]>([]);
     const [movies, setMovies] = useState<MovieDetails[] | null>(null);
+    const [profileImageUrl, setProfileImageUrl] = useState<string>("/profile/basic.png");
 
     useEffect(() => {
         const fetchMemberDetails = async () => {
@@ -32,7 +33,8 @@ const Profile: React.FC = () => {
                 const postData = await getPostsByMemberNo(data.memberNo);
                 setPosts(postData);
 
-                await fetchImage(data.memberNo);
+                const imageUrl = await fetchImage(data.memberNo);
+                setProfileImageUrl(imageUrl);
 
                 const movieDetailsPromises = likedMovies.map(movieId => getMovieByMovieId(movieId));
                 const movieDetails = await Promise.all(movieDetailsPromises);
@@ -47,19 +49,19 @@ const Profile: React.FC = () => {
         }
     }, [isLoggedIn]);
 
-    const fetchImage = async (memberNo: number) => {
+    const fetchImage = async (memberNo: number): Promise<string> => {
         try {
             const response = await axios.get(`/api/image/read/${memberNo}`, {
                 responseType: "blob",
             });
 
             if (response.data) {
-                const imageUrl = URL.createObjectURL(response.data);
-                // 여기서 이미지 URL을 사용할 수 있습니다.
+                return URL.createObjectURL(response.data);
             }
         } catch (error) {
             console.error("이미지 조회 실패", error);
         }
+        return "/profile/basic.png";
     };
 
     if (!isLoggedIn) {
@@ -69,7 +71,13 @@ const Profile: React.FC = () => {
     return (
         <div className={styles.container}>
             <div className={styles.mainContent}>
-                <Update member={member} setMember={setMember} fetchImage={fetchImage}/>
+                <Update
+                    member={member}
+                    setMember={setMember}
+                    fetchImage={fetchImage}
+                    profileImageUrl={profileImageUrl}
+                    setProfileImageUrl={setProfileImageUrl}
+                />
                 <div className={styles.contentSection}>
                     <div className={styles.section}>
                         <h2 className={styles.sectionTitle}>내가 남긴 리뷰</h2>

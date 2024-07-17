@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Integer>, PostSearch {
 
-    @Query("SELECT p FROM Post p WHERE p.movie.movieId = :movieId order by p.postId desc")
+    @Query("SELECT p FROM Post p LEFT JOIN FETCH p.member m LEFT JOIN FETCH m.image i WHERE p.movie.movieId = :movieId ORDER BY p.postId DESC")
     List<Post> findPostsByMovieId(Integer movieId);
 
     @Query("SELECT AVG(p.ratingStar) FROM Post p WHERE p.movie.movieId = :movieId")
