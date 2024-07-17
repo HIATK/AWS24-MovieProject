@@ -15,6 +15,7 @@ type Movie = {
 export default function NowPlayingMovies() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<number>(0);
 
   const MOVIES_PER_PAGE = 5;
   const POSTER_WIDTH = 200;
@@ -45,6 +46,10 @@ export default function NowPlayingMovies() {
 
   const translateX = -page * (POSTER_WIDTH + POSTER_MARGIN * 2) * MOVIES_PER_PAGE;
 
+  const handleImageLoad = () => {
+    setLoadedImages((prevCount) => prevCount + 1);
+  };
+
   return (
     <div className={styles.container}>
       <button
@@ -59,13 +64,17 @@ export default function NowPlayingMovies() {
           className={styles.movieItems}
           style={{ transform: `translateX(${translateX}px)` }}
         >
-          {movies.map((movie) => (
-            <div key={movie.id} className={styles.movieItem}>
+          {movies.map((movie, index) => (
+            <div
+              key={movie.id}
+              className={`${styles.movieItem} ${index < MOVIES_PER_PAGE ? (loadedImages > index ? styles.loaded : styles.loading) : ''}`}
+            >
               <Link href={`/movies/details/${movie.id}`}>
                 <img
                   src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
                   alt={`Poster for ${movie.title}`}
-                  className={styles.movieImg}
+                  className={`${styles.movieImg}`}
+                  onLoad={handleImageLoad}
                 />
               </Link>
             </div>

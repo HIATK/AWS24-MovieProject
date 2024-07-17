@@ -23,12 +23,26 @@
   transition: transform 0.5s ease; /* 슬라이드 애니메이션 */
 }
 
-.movieItem {
+.movieItem {  
   box-sizing: border-box;
   flex: 0 0 200px; /* 각 포스터의 너비를 200px로 고정 */
   margin: 20px;
-  margin-top: 10x; /* 포스터 위아래 간격 추가 */
+  margin-top: 20px; /* 포스터 위아래 간격 추가 */
   margin-bottom: 15px; /* 포스터 위아래 간격 추가 */
+  object-fit: cover;
+  width: 100%;
+  transition: transform 0.2s ease, border-image 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.movieItem.loading {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.movieItem.loaded {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .movieItem:last-child {

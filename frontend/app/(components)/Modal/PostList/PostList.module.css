@@ -99,3 +99,11 @@
 .cursorPointer {
   cursor: pointer;
 }
+
+.observer {
+  width: 100%;
+  height: 20px; /* 높이를 좀 더 크게 설정 */
+  background-color: transparent; /* 시각적으로 보이지 않도록 설정 */
+  position: relative; /* 위치 조정을 위해 relative로 설정 */
+  bottom: 0; /* 화면의 맨 아래에 위치하도록 설정 */
+}

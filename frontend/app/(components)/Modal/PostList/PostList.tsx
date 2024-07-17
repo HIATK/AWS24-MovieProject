@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaStar, FaRegStar } from "react-icons/fa";
-import { MdDelete } from "react-icons/md"; 
+import { MdDelete } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./PostList.module.css";
 import { PostDetails } from "@/(types)/types";
@@ -10,10 +10,10 @@ import { deletePost } from "@/_Service/PostService";
 interface PostListProps {
   posts: PostDetails[];
   setPosts: React.Dispatch<React.SetStateAction<PostDetails[]>>; // 부모 컴포넌트로부터 setPosts 받기
-  movieId: number; // movieId 추가
+  onDeletePost: () => void;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts, setPosts, movieId }) => {
+const PostList: React.FC<PostListProps> = ({ posts, setPosts, onDeletePost }) => {
   const { memberNo } = useAuth();
   const [expandedPost, setExpandedPost] = useState<number | null>(null);
   const [displayedPosts, setDisplayedPosts] = useState<PostDetails[]>([]);
@@ -22,15 +22,8 @@ const PostList: React.FC<PostListProps> = ({ posts, setPosts, movieId }) => {
   const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    if (displayedPosts.length === 0 && posts.length > 0) {
-      const initialPosts = posts.slice(0, 5);
-      setDisplayedPosts(initialPosts);
-    } else {
-      setTimeout(() => {
-        const newPosts = posts.slice(0, postIndex);
-        setDisplayedPosts(newPosts);
-      }, 1);
-    }
+    const initialPosts = posts.slice(0, postIndex);
+    setDisplayedPosts(initialPosts);
   }, [posts, postIndex]);
 
   useEffect(() => {
@@ -85,8 +78,8 @@ const PostList: React.FC<PostListProps> = ({ posts, setPosts, movieId }) => {
     try {
       await deletePost(postId);
       const updatedPosts = posts.filter((post) => post.postId !== postId);
-      setDisplayedPosts(updatedPosts.slice(0, postIndex));
       setPosts(updatedPosts);
+      onDeletePost();
     } catch (error) {
       console.error("Failed to delete post:", error);
     }
@@ -102,7 +95,7 @@ const PostList: React.FC<PostListProps> = ({ posts, setPosts, movieId }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 1 }}
           >
             <div className={styles.postHeader}>
               {renderStars(post.ratingStar)}

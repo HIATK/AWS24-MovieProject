@@ -1,3 +1,4 @@
+// components/Modal/PostForm/PostForm.tsx
 import React, { useState, useEffect } from "react";
 import styles from "./PostForm.module.css";
 import RatingStars from "@/(components)/Modal/RatingStar/RatingStars";
@@ -52,6 +53,10 @@ const PostForm: React.FC<PostFormProps> = ({ movieId, setPosts, setAverageRating
       setPostRating(0);
       setShowRating(false);
       setIsTextareaFocused(false);
+
+      // CustomEvent 디스패치
+      const event = new CustomEvent('refreshMovies');
+      window.dispatchEvent(event);
     } catch (error) {
       console.error("Post submission error:", error);
     }
