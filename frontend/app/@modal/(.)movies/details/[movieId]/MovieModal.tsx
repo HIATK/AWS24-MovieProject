@@ -107,7 +107,7 @@ const MovieModal: React.FC<{ movieId: string }> = ({ movieId }) => {
             <MovieHeader movie={movie} averageRating={averageRating} />
             <PostForm movieId={numericMovieId} setPosts={setPosts} setAverageRating={setAverageRating} />
             <div className={styles.postListWrapper}>
-              <PostList posts={posts} />
+              <PostList posts={posts} movieId={numericMovieId} setPosts={setPosts} />
             </div>
           </div>
         </motion.div>

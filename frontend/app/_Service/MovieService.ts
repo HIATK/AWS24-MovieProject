@@ -2,12 +2,32 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8000/api/movies";
 
-export const getMovies = async () => {
+export const getNowPlaying = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/now-playing`);
+    const response = await axios.get(`${API_BASE_URL}/now_playing`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching movies:", error);
+    console.error("Error fetching now playing movies:", error);
+    throw error;
+  }
+};
+
+export const getTopRated = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/top_rated`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching top rated movies:", error);
+    throw error;
+  }
+};
+
+export const getTopLiked = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/top_liked`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching top liked movies:", error);
     throw error;
   }
 };

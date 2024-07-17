@@ -83,7 +83,6 @@ const PostForm: React.FC<PostFormProps> = ({ movieId, setPosts, setAverageRating
             hoverRating={postHoverRating}
             onHover={setPostHoverRating}
             onClick={setPostRating}
-            onMouseDown={(e) => e.preventDefault()} // 포커스 유지
           />
           {ratingError && <div className={styles.ratingError}>{ratingError}</div>}
           <div className={styles.buttonContainer}>

@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
-import styles from "./NowPlayingMovies.module.css";
-import { getNowPlaying } from "@/_Service/MovieService";
+import styles from "@/(components)/TopLiked/TopLiked.module.css";
+import { getTopLiked, getMovieByMovieId } from "@/_Service/MovieService";
 
 type Movie = {
   id: string;
@@ -12,7 +12,7 @@ type Movie = {
   poster_path: string;
 };
 
-export default function NowPlayingMovies() {
+export default function TopLikedMovies() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(0);
 
@@ -23,14 +23,21 @@ export default function NowPlayingMovies() {
   useEffect(() => {
     async function fetchMovies() {
       try {
-        const data = await getNowPlaying();
-        setMovies(data);
+        const movieIds = await getTopLiked();
+        const movieDetails: Movie[] = [];
+
+        for (const id of movieIds) {
+          const details = await getMovieByMovieId(id);
+          movieDetails.push(details);
+        }
+
+        setMovies(movieDetails);
       } catch (error) {
         console.error("Error fetching movies:", error);
       }
     }
     fetchMovies();
-  }, []);
+  }, []); // 빈 배열을 의존성 배열로 전달하여 컴포넌트 마운트 시 한 번만 실행
 
   const handlePrevClick = () => {
     setPage((prevPage) => Math.max(prevPage - 1, 0));

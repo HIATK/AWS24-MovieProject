@@ -9,6 +9,10 @@ import java.util.concurrent.CompletableFuture;
 public interface MovieService {
     CompletableFuture<List<Map<String, String>>> getNowPlayingMovies();
 
+    List<Integer> getTopRatedMovies();
+
+    List<Integer> getTopLikedMovies();
+
     CompletableFuture<Map<String, String>> getMovieByMovieId(Integer movieId);
 
     CompletableFuture<List<Map<String, String>>> searchMovieByKeyword(String keyword, int page);

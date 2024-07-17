@@ -30,4 +30,8 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Likes> likes = new ArrayList<>();
+
+    public long getLikesCount() {
+        return likes.stream().filter(Likes::isLiked).count();
+    }
 }

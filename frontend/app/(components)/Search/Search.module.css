@@ -59,3 +59,12 @@
   transform: scale(1.1);
   animation: gradientBorder 4s infinite linear;
 }
+
+.searchText {
+  margin-top: 20px;
+  justify-content: center;
+  text-align: center; /* 텍스트를 가운데 정렬 */
+  font-family: 'cyber', sans-serif;
+  font-size: 33px; 
+  color: yellow;
+}
