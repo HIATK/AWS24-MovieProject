@@ -25,7 +25,7 @@
   box-sizing: border-box;
   flex: 0 0 200px; /* 각 포스터의 너비를 200px로 고정 */
   margin: 20px;
-  margin-top: 10x; /* 포스터 위아래 간격 추가 */
+  margin-top: 20px; /* 포스터 위아래 간격 추가 */
   margin-bottom: 15px; /* 포스터 위아래 간격 추가 */
   object-fit: cover;
   width: 100%;
