@@ -36,4 +36,6 @@ public class PostDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate regDate;
 
+    private String filePath;
+
 }

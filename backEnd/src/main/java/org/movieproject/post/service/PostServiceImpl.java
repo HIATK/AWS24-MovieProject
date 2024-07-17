@@ -83,12 +83,18 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDTO> getPostByMovieId(Integer movieId) {
         List<Post> posts = postRepository.findPostsByMovieId(movieId);
-        log.info("포스트 확인 " + posts);
         return posts.stream()
-                .map(post -> modelMapper.map(post, PostDTO.class))
+                .map(post -> {
+                    PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+                    if (post.getMember() != null && post.getMember().getImage() != null) {
+                        postDTO.setFilePath(post.getMember().getImage().getFilePath());
+                    } else {
+                        postDTO.setFilePath("C:\\Users\\tjoeun\\IdeaProjects\\AWS24-MovieProject\\frontend\\public\\profile\\basic.png");
+                    }
+                    return postDTO;
+                })
                 .collect(Collectors.toList());
     }
-
     @Override
     public Double getAverageRatingByMovieId(Integer movieId) {
         return postRepository.findAverageRatingByMovieId(movieId);
