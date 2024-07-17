@@ -45,6 +45,7 @@ public class PostController {
     @GetMapping("/movie/{movieId}")
     public List<PostDTO> getPostByMovieId(@PathVariable("movieId") Integer movieId) {
         List<PostDTO> postDTOs = postService.getPostByMovieId(movieId);
+        log.info("포스트리스트 from 컨트롤러: " + postDTOs.toString());
         if (postDTOs == null || postDTOs.isEmpty()) {
             return new ArrayList<>(); // 빈 리스트 반환
         }
