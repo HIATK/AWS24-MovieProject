@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "./Update.module.css";
 import { Member, Errors, UpdateForm } from "@/(types)/types";
 import { checkNicknameDuplicate, verifyPassword } from "@/_Service/MemberService";
+import {useAuth} from "@/(context)/AuthContext";
 
 interface UpdateProps {
     member: Member;
@@ -15,6 +16,9 @@ interface UpdateProps {
 
 
 const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileImageUrl, setProfileImageUrl }) => {
+    const handleDeleteClick = () => {
+        handleDelete(member.memberNo);
+    };
 
     console.log(member.memberNo)
     const [updateForm, setUpdateForm] = useState<UpdateForm>({
@@ -34,6 +38,7 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
     const [profileImagePath, setProfileImagePath] = useState("/profile/basic.png");
     const [isNicknameChecked, setIsNicknameChecked] = useState(false);
     const [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
+    const { logout } = useAuth(); // useAuth에서 logout 함수를 가져옵니다
 
     useEffect(() => {
         setUpdateForm({
@@ -140,10 +145,12 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
                         credentials: "include",
                     }
                 );
+
                 alert(data.message);
                 setMember(data.member);
                 setErrors({});
                 setIsEditing(false);
+
             } catch (error) {
                 if (axios.isAxiosError(error) && error.response) {
                     console.error("서버 응답 에러:", error.response.data);
@@ -152,6 +159,42 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
                     console.error("예상치 못한 에러:", error);
                     alert("예상치 못한 오류가 발생했습니다.");
                 }
+            }
+        }
+    };
+
+
+    const handleDelete = async (memberNo: number) => {
+        try {
+            const isConfirmed = window.confirm("정말로 회원정보를 삭제하시겠습니까?");
+
+            if (!isConfirmed) {
+                return;
+            }
+
+            const response = await axios.delete<{ message:string }>(
+                `/api/member/delete/${memberNo}`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                    credentials: "include",
+                }
+            );
+            alert(response.data);
+            logout();
+            // 필요한 후속 작업을 여기서 수행 (예: 상태 업데이트 등)
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    console.error("서버 응답 에러:", error.response.data);
+                    alert(error.response.data.message || "멤버 삭제 중 오류가 발생했습니다.");
+                } else {
+                    console.error("요청 에러:", error.message);
+                    alert("요청 중 오류가 발생했습니다.");
+                }
+            } else {
+                console.error("예상치 못한 에러:", error);
+                alert("예상치 못한 오류가 발생했습니다.");
             }
         }
     };
@@ -256,6 +299,9 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
                     닫기
                 </button>
             )}
+            <button className={styles.button} onClick={handleDeleteClick}>
+                회원 탈퇴
+            </button>
         </div>
     );
 };

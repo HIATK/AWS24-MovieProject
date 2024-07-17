@@ -89,7 +89,7 @@ public class PostServiceImpl implements PostService {
                     if (post.getMember() != null && post.getMember().getImage() != null) {
                         postDTO.setFilePath(post.getMember().getImage().getFilePath());
                     } else {
-                        postDTO.setFilePath("C:\\Users\\tjoeun\\IdeaProjects\\AWS24-MovieProject\\frontend\\public\\profile\\basic.png");
+                        postDTO.setFilePath("/Users/parkjihong/AWS24-MovieProject/frontend/public/profile/basic.png");
                     }
                     return postDTO;
                 })
