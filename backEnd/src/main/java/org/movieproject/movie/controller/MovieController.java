@@ -25,13 +25,23 @@ public class MovieController {
     private final MovieService movieService;
     private final ModelMapper modelMapper;
 
-    @GetMapping("/now-playing")
+    @GetMapping("/now_playing")
     public CompletableFuture<List<Map<String, String>>> getNowPlayingMovies() {
         return movieService.getNowPlayingMovies()
                 .thenApply(movies -> {
                     movieService.saveMovies(movies); // 검색된 영화를 저장
                     return movies;
                 });
+    }
+
+    @GetMapping("/top_rated")
+    public List<Integer> getTopRatedMovies() {
+        return movieService.getTopRatedMovies();
+    }
+
+    @GetMapping("/top_liked")
+    public List<Integer> getTopLikedMovies() {
+        return movieService.getTopLikedMovies();
     }
 
     @GetMapping("/{movieId}")

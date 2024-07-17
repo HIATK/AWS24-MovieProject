@@ -28,6 +28,15 @@ export const regPost = async (content: string, rating: number, movieId: number, 
     }
 };
 
+export const deletePost = async (postId: number) => {
+    try {
+      await axios.delete(`/api/posts/delete/${postId}`);
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+      throw error;
+    }
+};
+
 export const getAverageRatingByMovieId = async (movieId: number) => {
     try {
         const response = await axios.get(`/api/posts/average-rating/${movieId}`);

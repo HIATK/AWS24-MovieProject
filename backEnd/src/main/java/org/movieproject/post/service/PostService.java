@@ -12,7 +12,7 @@ public interface PostService {
     void regPost(PostDTO postsDTO);
 
     //  삭제
-    void removePost(Integer postId);
+    void deletePost(Integer postId);
 
     //  Paging
 //    PageResponseDTO<PostDTO> list (PageRequestDTO pageRequestDTO);

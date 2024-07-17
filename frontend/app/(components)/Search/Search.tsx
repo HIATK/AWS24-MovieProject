@@ -11,6 +11,7 @@ const Search = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const searchTerm = searchParams.get('keyword') || '';
+  const [initialSearchTerm, setInitialSearchTerm] = useState(searchTerm); // 초기 검색어 상태 저장
   const [results, setResults] = useState<MovieDetails[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -83,11 +84,17 @@ const Search = () => {
     }
   }, [loading, hasMore]);
 
+  useEffect(() => {
+    // pathname이 /movies/search 일 때만 초기 검색어 설정
+    if (pathname === '/movies/search') {
+      setInitialSearchTerm(searchTerm);
+    }
+  }, [pathname, searchTerm]);
+
   return (
     <div className={styles.main}>
       <div className={styles.description}>
-        <RainEffect/>
-        <center> <h1>"{searchTerm}" 에 대한 검색 결과</h1></center>
+        <div className={styles.searchText}>Search results for "{initialSearchTerm}" </div>
       </div>
       <div className={styles.posterSection}>
         <div className={styles["movie-items"]}>
@@ -119,8 +126,8 @@ const Search = () => {
             }
           })}
         </div>
-        {loading && <p>Loading...</p>}
-        {!hasMore && <p>No more results</p>}
+        <div className={styles.searchText}>{loading && <p>Loading...</p>}</div>
+        <div className={styles.searchText}>{!hasMore && <p>No more results</p>}</div>
       </div>
     </div>
   );

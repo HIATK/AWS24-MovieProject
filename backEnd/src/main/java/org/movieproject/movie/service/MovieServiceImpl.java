@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.movieproject.movie.entity.Movie;
 import org.movieproject.movie.repository.MovieRepository;
+import org.movieproject.post.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
@@ -61,6 +62,16 @@ public class MovieServiceImpl implements MovieService {
                             .collect(Collectors.toList());
                 })
                 .toFuture();
+    }
+
+    @Override
+    public List<Integer> getTopRatedMovies() {
+        return movieRepository.findMoviesOrderByRatingStarAvgDesc();
+    }
+
+    @Override
+    public List<Integer> getTopLikedMovies() {
+        return movieRepository.findMoviesOrderByLikesDesc();
     }
 
     public void saveMovies(List<Map<String, String>> movies) {
