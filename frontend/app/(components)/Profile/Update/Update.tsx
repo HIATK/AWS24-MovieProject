@@ -7,10 +7,14 @@ import { checkNicknameDuplicate, verifyPassword } from "@/_Service/MemberService
 interface UpdateProps {
     member: Member;
     setMember: React.Dispatch<React.SetStateAction<Member>>;
-    fetchImage: (memberNo: number) => Promise<void>;
+    fetchImage: (memberNo: number) => Promise<string>;
+    //이미지 url을 profile에 전달 props
+    profileImageUrl: string;
+    setProfileImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage }) => {
+
+const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileImageUrl, setProfileImageUrl }) => {
 
     console.log(member.memberNo)
     const [updateForm, setUpdateForm] = useState<UpdateForm>({
@@ -169,10 +173,14 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage }) => {
     return (
         <div className={styles.profileSection}>
             <div className={styles.profileImage}>
-                <img src={profileImagePath} alt="Profile" className={styles.profileImageContent}
-                     onError={(e) => {
-                         e.currentTarget.src = "/profile/basic.png";
-                     }}/>
+                <img
+                    src={profileImageUrl}
+                    alt="Profile"
+                    className={styles.profileImageContent}
+                    onError={(e) => {
+                        e.currentTarget.src = "/profile/basic.png";
+                    }}
+                />
             </div>
 
             <div className={styles.nickname}>{member.memberNick}님</div>
