@@ -1,0 +1,62 @@
+.postsList {
+    width: 100%;
+}
+
+.post {
+    background-color: #444;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.postHeader,
+.postBody {
+    display: flex;
+    align-items: center;
+}
+
+.expanded .postContent {
+    white-space: pre-wrap;
+}
+
+.postNick {
+    width: 80px; /* Set a fixed width */
+    margin-right: 10px;
+    margin-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.postContent {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.expanded .postContent {
+    white-space: normal;
+}
+
+.star {
+    font-size: 1.5rem;
+    color: yellow;
+    margin-right: 0.2rem;
+}
+
+.postDate {
+    padding-left: 1rem; /* Ensure some spacing between content and date */
+}
