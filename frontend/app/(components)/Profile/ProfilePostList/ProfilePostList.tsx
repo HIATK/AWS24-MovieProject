@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { FaStar, FaRegStar } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
 import styles from "./ProfilePostList.module.css";
 import { PostDetails } from "@/(types)/types";
 
@@ -8,67 +7,69 @@ interface PostListProps {
     posts: PostDetails[];
 }
 
+const POSTS_PER_PAGE = 10;
+const POST_HEIGHT = 55;
+const POST_MARGIN = 16;
+
 const ProfilePostList: React.FC<PostListProps> = ({ posts }) => {
+    const [visiblePosts, setVisiblePosts] = useState<PostDetails[]>([]);
+    const [startIndex, setStartIndex] = useState(0);
     const [expandedPost, setExpandedPost] = useState<number | null>(null);
-    const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const postGroups = [];
-    for (let i = 0; i < posts.length; i += 5) {
-        postGroups.push(posts.slice(i, i + 5));
-    }
-
-    const renderStars = (ratingStar: number) => {
-        const stars = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= ratingStar) {
-                stars.push(<FaStar key={i} className={styles.star} />);
-            } else {
-                stars.push(<FaRegStar key={i} className={styles.star} />);
-            }
+    const updateVisiblePosts = useCallback(() => {
+        if (containerRef.current) {
+            const scrollTop = containerRef.current.scrollTop;
+            const newStartIndex = Math.floor(scrollTop / (POST_HEIGHT + POST_MARGIN));
+            setStartIndex(newStartIndex);
+            setVisiblePosts(posts.slice(newStartIndex, newStartIndex + POSTS_PER_PAGE));
         }
-        return stars;
-    };
-
-    const toggleExpand = (postId: number) => {
-        setExpandedPost(expandedPost === postId ? null : postId);
-    };
-
-    const handleScroll = (event: React.WheelEvent<HTMLDivElement>) => {
-        const { deltaY } = event;
-        if (deltaY > 0 && currentGroupIndex < postGroups.length - 1) {
-            setCurrentGroupIndex(currentGroupIndex + 1);
-        } else if (deltaY < 0 && currentGroupIndex > 0) {
-            setCurrentGroupIndex(currentGroupIndex - 1);
-        }
-    };
+    }, [posts]);
 
     useEffect(() => {
-        if (containerRef.current) {
-            containerRef.current.scrollTop = 0;
-        }
-    }, [currentGroupIndex]);
+        updateVisiblePosts();
+    }, [updateVisiblePosts]);
+
+    const handleScroll = useCallback(() => {
+        updateVisiblePosts();
+    }, [updateVisiblePosts]);
+
+    const renderStars = useCallback((ratingStar: number) => {
+        return Array.from({ length: 5 }, (_, i) =>
+            i < ratingStar ? <FaStar key={i} className={styles.star} /> : <FaRegStar key={i} className={styles.star} />
+        );
+    }, []);
+
+    const toggleExpand = useCallback((postId: number) => {
+        setExpandedPost(prevId => prevId === postId ? null : postId);
+    }, []);
 
     return (
-        <div className={styles.postsList} ref={containerRef} onWheel={handleScroll}>
-            <AnimatePresence>
-                {postGroups[currentGroupIndex]?.map((post) => (
-                    <motion.div
+        <div
+            className={styles.postsList}
+            ref={containerRef}
+            onScroll={handleScroll}
+            style={{ height: '400px', overflowY: 'auto' }}
+        >
+            <div style={{ height: `${posts.length * (POST_HEIGHT + POST_MARGIN)}px`, position: 'relative' }}>
+                {visiblePosts.map((post, index) => (
+                    <div
                         key={post.postId}
-                        className={`${styles.post} ${
-                            expandedPost === post.postId ? styles.expanded : ""
-                        }`}
+                        className={`${styles.post} ${expandedPost === post.postId ? styles.expanded : ""}`}
                         onClick={() => toggleExpand(post.postId)}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
+                        style={{
+                            position: 'absolute',
+                            top: `${(startIndex + index) * (POST_HEIGHT + POST_MARGIN)}px`,
+                            height: `${POST_HEIGHT}px`,
+                            width: 'calc(100%)',
+                            flex: 1
+                        }}
                     >
                         <div className={styles.postHeader}>
                             {renderStars(post.ratingStar)}
-                        </div>
-                        <div className={styles.postNick}>
-                            {post.memberNick}
+                            <div className={styles.postNick}>
+                                {post.memberNick}
+                            </div>
                         </div>
                         <div className={styles.postContent}>
                             {expandedPost === post.postId
@@ -77,12 +78,12 @@ const ProfilePostList: React.FC<PostListProps> = ({ posts }) => {
                                     ? post.postContent.split("\n")[0]
                                     : ""}
                         </div>
-                        <div>{post.regDate}</div>
-                    </motion.div>
+                        <div className={styles.postDate}>{post.regDate}</div>
+                    </div>
                 ))}
-            </AnimatePresence>
+            </div>
         </div>
     );
 };
 
-export default ProfilePostList;
+export default React.memo(ProfilePostList);

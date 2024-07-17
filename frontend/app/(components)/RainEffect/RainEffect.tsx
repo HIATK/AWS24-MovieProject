@@ -32,7 +32,7 @@ const RainEffect: React.FC = () => {
 
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = 'rgba(174, 194, 224, 0.5)';
+            ctx.strokeStyle = 'rgba(0,0,0,0.5)';
             ctx.lineWidth = 1;
 
             raindrops.forEach((drop) => {

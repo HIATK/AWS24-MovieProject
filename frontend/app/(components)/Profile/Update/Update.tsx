@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "./Update.module.css";
 import { Member, Errors, UpdateForm } from "@/(types)/types";
 import { checkNicknameDuplicate, verifyPassword } from "@/_Service/MemberService";
+import {useAuth} from "@/(context)/AuthContext";
 
 interface UpdateProps {
     member: Member;
@@ -13,14 +14,12 @@ interface UpdateProps {
     updateProfileImage: (memberNo: number) => Promise<void>;
 }
 
-const Update: React.FC<UpdateProps> = ({
-                                           member,
-                                           setMember,
-                                           fetchImage,
-                                           profileImageUrl,
-                                           setProfileImageUrl,
-                                           updateProfileImage
-                                       }) => {
+const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileImageUrl, setProfileImageUrl }) => {
+    const handleDeleteClick = () => {
+        handleDelete(member.memberNo);
+    };
+
+    console.log(member.memberNo)
     const [updateForm, setUpdateForm] = useState<UpdateForm>({
         memberEmail: member.memberEmail,
         memberName: member.memberName,
@@ -38,6 +37,7 @@ const Update: React.FC<UpdateProps> = ({
     const [profileImagePath, setProfileImagePath] = useState("/profile/basic.png");
     const [isNicknameChecked, setIsNicknameChecked] = useState(false);
     const [isNicknameDuplicate, setIsNicknameDuplicate] = useState(false);
+    const { logout } = useAuth(); // useAuth에서 logout 함수를 가져옵니다
 
     useEffect(() => {
         setUpdateForm({
@@ -144,10 +144,12 @@ const Update: React.FC<UpdateProps> = ({
                         credentials: "include",
                     }
                 );
+
                 alert(data.message);
                 setMember(data.member);
                 setErrors({});
                 setIsEditing(false);
+
             } catch (error) {
                 if (axios.isAxiosError(error) && error.response) {
                     console.error("서버 응답 에러:", error.response.data);
@@ -156,6 +158,42 @@ const Update: React.FC<UpdateProps> = ({
                     console.error("예상치 못한 에러:", error);
                     alert("예상치 못한 오류가 발생했습니다.");
                 }
+            }
+        }
+    };
+
+
+    const handleDelete = async (memberNo: number) => {
+        try {
+            const isConfirmed = window.confirm("정말로 회원정보를 삭제하시겠습니까?");
+
+            if (!isConfirmed) {
+                return;
+            }
+
+            const response = await axios.delete<{ message:string }>(
+                `/api/member/delete/${memberNo}`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                    credentials: "include",
+                }
+            );
+            alert(response.data);
+            logout();
+            // 필요한 후속 작업을 여기서 수행 (예: 상태 업데이트 등)
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    console.error("서버 응답 에러:", error.response.data);
+                    alert(error.response.data.message || "멤버 삭제 중 오류가 발생했습니다.");
+                } else {
+                    console.error("요청 에러:", error.message);
+                    alert("요청 중 오류가 발생했습니다.");
+                }
+            } else {
+                console.error("예상치 못한 에러:", error);
+                alert("예상치 못한 오류가 발생했습니다.");
             }
         }
     };
@@ -207,59 +245,33 @@ const Update: React.FC<UpdateProps> = ({
             )}
 
             <form onSubmit={handleSubmit} className={`${styles.editForm} ${isEditing ? styles.visible : ""}`}>
-                <input
-                    type="password"
-                    name="currentPassword"
-                    placeholder="현재 비밀번호"
-                    onChange={handleChange}
-                    required
-                    className={styles.input}
-                />
+
+                <input type="password" name="currentPassword" placeholder="현재 비밀번호"
+                       onChange={handleChange} required className={styles.input}/>
+
                 {errors.currentPassword && (
                     <span style={{color: "red"}}>{errors.currentPassword}</span>
                 )}
 
-                <input
-                    type="password"
-                    name="newPassword"
-                    placeholder="새 비밀번호 (변경 시에만 입력)"
-                    onChange={handleChange}
-                    className={styles.input}
-                />
+                <input type="password" name="newPassword" placeholder="새 비밀번호 (변경 시에만 입력)"
+                       onChange={handleChange} className={styles.input}/>
+
                 {errors.newPassword && (
                     <span style={{color: "red"}}>{errors.newPassword}</span>
                 )}
 
                 <input
-                    type="password"
-                    name="confirmNewPassword"
-                    placeholder="새 비밀번호 확인"
-                    onChange={handleChange}
-                    className={styles.input}
-                />
+                    type="password" name="confirmNewPassword" placeholder="새 비밀번호 확인"
+                    onChange={handleChange} className={styles.input}/>
+
                 {errors.confirmNewPassword && (
-                    <span style={{color: "red"}}>{errors.confirmNewPassword}</span>
-                )}
+                    <span style={{color: "red"}}>{errors.confirmNewPassword}</span>)}
 
-                <input
-                    type="text"
-                    name="memberName"
-                    value={updateForm.memberName}
-                    onChange={handleChange}
-                    placeholder="이름"
-                    className={styles.input}
-                    required
-                />
+                <input type="text" name="memberName" value={updateForm.memberName}
+                       onChange={handleChange} placeholder="이름" className={styles.input} required/>
 
-                <input
-                    type="text"
-                    name="memberNick"
-                    value={updateForm.memberNick}
-                    onChange={handleChange}
-                    placeholder="닉네임"
-                    className={styles.input}
-                    required
-                />
+                <input type="text" name="memberNick" value={updateForm.memberNick}
+                       onChange={handleChange} placeholder="닉네임" className={styles.input} required/>
 
                 <button type="button" onClick={handleNicknameCheck} className={styles.button}>
                     닉네임 중복 체크
@@ -267,23 +279,16 @@ const Update: React.FC<UpdateProps> = ({
 
                 {isNicknameChecked && (
                     <span style={{color: isNicknameDuplicate ? "red" : "green"}}>
-                        {isNicknameDuplicate ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다."}
-                    </span>
-                )}
+                {isNicknameDuplicate
+                    ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다."}
+              </span>)}
 
                 {errors.memberNick && (
-                    <span style={{color: "red"}}>{errors.memberNick}</span>
-                )}
+                    <span style={{color: "red"}}>{errors.memberNick}</span>)}
 
                 <input
-                    type="text"
-                    name="memberPhone"
-                    value={updateForm.memberPhone}
-                    onChange={handleChange}
-                    placeholder="전화번호"
-                    className={styles.input}
-                    required
-                />
+                    type="text" name="memberPhone" value={updateForm.memberPhone}
+                    onChange={handleChange} placeholder="전화번호" className={styles.input} required/>
 
                 <button className={styles.button} type="submit">
                     수정 완료
@@ -295,6 +300,9 @@ const Update: React.FC<UpdateProps> = ({
                     닫기
                 </button>
             )}
+            <button className={styles.button} onClick={handleDeleteClick}>
+                회원 탈퇴
+            </button>
         </div>
     );
 };

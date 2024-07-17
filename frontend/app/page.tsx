@@ -7,12 +7,13 @@ import {useTheme} from "@/(components)/DarkModToggle/ThemeContext";
 import MatrixRainEffect from "@/(components)/RainEffect/MatrixRainEffect";
 import TopLikedMovies from '@/(components)/TopLiked/TopLiked';
 import TopRatedMovies from '@/(components)/TopRated/TopRated';
+import RainEffect from "@/(components)/RainEffect/RainEffect";
 
 export default function Index() {
     const {theme} = useTheme();
     return (
         <div className={styles.pageContainer}>
-            {theme === 'dark' && <MatrixRainEffect/>}
+            {theme === 'dark' ? <MatrixRainEffect/> : <RainEffect/>}
             <div className={styles.content}>
                 <div className={styles.background}/>
                 <div className={styles.logoContainer}>

@@ -19,4 +19,7 @@ public interface MemberService {
     // 회원가입
     void memberJoin(MemberDTO memberDTO) throws MemberService.MemberExistException;
 
+    // 회원정보 삭제
+    void deleteMember(Integer memberNo) throws MemberService.MemberExistException;
+
 }
