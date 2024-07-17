@@ -4,6 +4,7 @@ export interface PostDetails {
     ratingStar: number;
     regDate: string;
     memberNick: string;
+    filePath: string;
 }
 
 export interface MovieDetails {
