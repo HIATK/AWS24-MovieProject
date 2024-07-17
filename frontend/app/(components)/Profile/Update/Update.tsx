@@ -8,15 +8,19 @@ interface UpdateProps {
     member: Member;
     setMember: React.Dispatch<React.SetStateAction<Member>>;
     fetchImage: (memberNo: number) => Promise<string>;
-    //이미지 url을 profile에 전달 props
     profileImageUrl: string;
     setProfileImageUrl: React.Dispatch<React.SetStateAction<string>>;
+    updateProfileImage: (memberNo: number) => Promise<void>;
 }
 
-
-const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileImageUrl, setProfileImageUrl }) => {
-
-    console.log(member.memberNo)
+const Update: React.FC<UpdateProps> = ({
+                                           member,
+                                           setMember,
+                                           fetchImage,
+                                           profileImageUrl,
+                                           setProfileImageUrl,
+                                           updateProfileImage
+                                       }) => {
     const [updateForm, setUpdateForm] = useState<UpdateForm>({
         memberEmail: member.memberEmail,
         memberName: member.memberName,
@@ -64,7 +68,7 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
                 await axios.post("/api/image/upload", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
-                await fetchImage(member.memberNo);
+                await updateProfileImage(member.memberNo);
             } catch (error) {
                 console.error("이미지 업로드 실패", error);
             }
@@ -186,8 +190,11 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
             <div className={styles.nickname}>{member.memberNick}님</div>
 
             <input
-                type="file" ref={fileInputRef}
-                style={{display: "none"}} onChange={handleProfileImageChange}/>
+                type="file"
+                ref={fileInputRef}
+                style={{display: "none"}}
+                onChange={handleProfileImageChange}
+            />
 
             <button className={styles.button} onClick={() => fileInputRef.current?.click()}>
                 프로필 사진 변경
@@ -200,33 +207,59 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
             )}
 
             <form onSubmit={handleSubmit} className={`${styles.editForm} ${isEditing ? styles.visible : ""}`}>
-
-                <input type="password" name="currentPassword" placeholder="현재 비밀번호"
-                       onChange={handleChange} required className={styles.input}/>
-
+                <input
+                    type="password"
+                    name="currentPassword"
+                    placeholder="현재 비밀번호"
+                    onChange={handleChange}
+                    required
+                    className={styles.input}
+                />
                 {errors.currentPassword && (
                     <span style={{color: "red"}}>{errors.currentPassword}</span>
                 )}
 
-                <input type="password" name="newPassword" placeholder="새 비밀번호 (변경 시에만 입력)"
-                       onChange={handleChange} className={styles.input}/>
-
+                <input
+                    type="password"
+                    name="newPassword"
+                    placeholder="새 비밀번호 (변경 시에만 입력)"
+                    onChange={handleChange}
+                    className={styles.input}
+                />
                 {errors.newPassword && (
                     <span style={{color: "red"}}>{errors.newPassword}</span>
                 )}
 
                 <input
-                    type="password" name="confirmNewPassword" placeholder="새 비밀번호 확인"
-                    onChange={handleChange} className={styles.input}/>
-
+                    type="password"
+                    name="confirmNewPassword"
+                    placeholder="새 비밀번호 확인"
+                    onChange={handleChange}
+                    className={styles.input}
+                />
                 {errors.confirmNewPassword && (
-                    <span style={{color: "red"}}>{errors.confirmNewPassword}</span>)}
+                    <span style={{color: "red"}}>{errors.confirmNewPassword}</span>
+                )}
 
-                <input type="text" name="memberName" value={updateForm.memberName}
-                       onChange={handleChange} placeholder="이름" className={styles.input} required/>
+                <input
+                    type="text"
+                    name="memberName"
+                    value={updateForm.memberName}
+                    onChange={handleChange}
+                    placeholder="이름"
+                    className={styles.input}
+                    required
+                />
 
-                <input type="text" name="memberNick" value={updateForm.memberNick}
-                       onChange={handleChange} placeholder="닉네임" className={styles.input} required/>
+                <input
+                    type="text"
+                    name="memberNick"
+                    value={updateForm.memberNick}
+                    onChange={handleChange}
+                    placeholder="닉네임"
+                    className={styles.input}
+                    required
+                />
 
                 <button type="button" onClick={handleNicknameCheck} className={styles.button}>
                     닉네임 중복 체크
@@ -234,21 +267,27 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
 
                 {isNicknameChecked && (
                     <span style={{color: isNicknameDuplicate ? "red" : "green"}}>
-                {isNicknameDuplicate
-                    ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다."}
-              </span>)}
+                        {isNicknameDuplicate ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다."}
+                    </span>
+                )}
 
                 {errors.memberNick && (
-                    <span style={{color: "red"}}>{errors.memberNick}</span>)}
+                    <span style={{color: "red"}}>{errors.memberNick}</span>
+                )}
 
                 <input
-                    type="text" name="memberPhone" value={updateForm.memberPhone}
-                    onChange={handleChange} placeholder="전화번호" className={styles.input} required/>
+                    type="text"
+                    name="memberPhone"
+                    value={updateForm.memberPhone}
+                    onChange={handleChange}
+                    placeholder="전화번호"
+                    className={styles.input}
+                    required
+                />
 
                 <button className={styles.button} type="submit">
                     수정 완료
                 </button>
-
             </form>
 
             {isEditing && (
