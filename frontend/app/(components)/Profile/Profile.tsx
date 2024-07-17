@@ -23,6 +23,13 @@ const Profile: React.FC = () => {
     const [movies, setMovies] = useState<MovieDetails[] | null>(null);
     const [profileImageUrl, setProfileImageUrl] = useState<string>("/profile/basic.png");
 
+
+    const updateProfileImage = async (memberNo: number) => {
+        const newImageUrl = await fetchImage(memberNo);
+        setProfileImageUrl(newImageUrl);
+    };
+
+
     useEffect(() => {
         const fetchMemberDetails = async () => {
             try {
@@ -77,6 +84,7 @@ const Profile: React.FC = () => {
                     fetchImage={fetchImage}
                     profileImageUrl={profileImageUrl}
                     setProfileImageUrl={setProfileImageUrl}
+                    updateProfileImage={updateProfileImage}  // 새로 추가된 prop
                 />
                 <div className={styles.contentSection}>
                     <div className={styles.section}>

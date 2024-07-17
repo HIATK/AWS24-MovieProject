@@ -73,7 +73,7 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
   };
 
   const removeBasePath = (filePath: string) => {
-    const basePathToRemove = "C:\\Users\\tjoeun\\IdeaProjects\\AWS24-MovieProject\\frontend\\public\\";
+    const basePathToRemove = "/AWS24-MovieProject/frontend/public";
     return filePath.replace(basePathToRemove, "");
   };
 

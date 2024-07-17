@@ -9,11 +9,10 @@ interface UpdateProps {
     member: Member;
     setMember: React.Dispatch<React.SetStateAction<Member>>;
     fetchImage: (memberNo: number) => Promise<string>;
-    //이미지 url을 profile에 전달 props
     profileImageUrl: string;
     setProfileImageUrl: React.Dispatch<React.SetStateAction<string>>;
+    updateProfileImage: (memberNo: number) => Promise<void>;
 }
-
 
 const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileImageUrl, setProfileImageUrl }) => {
     const handleDeleteClick = () => {
@@ -69,7 +68,7 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
                 await axios.post("/api/image/upload", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
-                await fetchImage(member.memberNo);
+                await updateProfileImage(member.memberNo);
             } catch (error) {
                 console.error("이미지 업로드 실패", error);
             }
@@ -229,8 +228,11 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
             <div className={styles.nickname}>{member.memberNick}님</div>
 
             <input
-                type="file" ref={fileInputRef}
-                style={{display: "none"}} onChange={handleProfileImageChange}/>
+                type="file"
+                ref={fileInputRef}
+                style={{display: "none"}}
+                onChange={handleProfileImageChange}
+            />
 
             <button className={styles.button} onClick={() => fileInputRef.current?.click()}>
                 프로필 사진 변경
@@ -291,7 +293,6 @@ const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileI
                 <button className={styles.button} type="submit">
                     수정 완료
                 </button>
-
             </form>
 
             {isEditing && (
