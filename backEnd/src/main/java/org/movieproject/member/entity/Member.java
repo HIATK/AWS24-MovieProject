@@ -3,6 +3,7 @@ package org.movieproject.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.movieproject.likes.entity.Likes;
+import org.movieproject.post.entity.Post;
 import org.movieproject.upload.entity.Image;
 
 import java.util.ArrayList;
@@ -65,4 +66,9 @@ public class Member {
     public List<Likes> getLikeMovies() {
         return likes;
     }
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Post> posts = new ArrayList<>();
+
 }
