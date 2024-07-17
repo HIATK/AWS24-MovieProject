@@ -35,8 +35,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     // 회원 정보 수정
     @Modifying
     @Transactional
-    @Query("update Member m set m.memberPw = :re_pw, m.memberName = :re_name, " +
-            "m.memberPhone = :re_phone, m.memberNick = :re_nick where m.memberEmail = :member_email")
-    void updateMember(@Param("re_pw") String pw, @Param("re_name")String name,
-                      @Param("re_phone")String phone, @Param("re_nick")String nick,  @Param("member_email")String email);
+    @Query("UPDATE Member m SET m.memberPw = :re_pw, m.memberName = :re_name, " +
+            "m.memberPhone = :re_phone, m.memberNick = :re_nick WHERE m.memberEmail = :member_email")
+    void updateMember(@Param("re_pw") String pw, @Param("re_name") String name,
+                     @Param("re_phone") String phone, @Param("re_nick") String nick,
+                     @Param("member_email") String email);
 }

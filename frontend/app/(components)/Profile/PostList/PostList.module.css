@@ -1,0 +1,15 @@
+.section {
+    /*내가남긴리뷰 좋아요 누른 영화 부분 색상*/
+    background-color: #2c2c2c;
+    /*background-color: var(--background);*/
+
+    border-radius: 10px;
+    padding: 20px;
+    flex: 1;
+}
+
+.sectionTitle {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
