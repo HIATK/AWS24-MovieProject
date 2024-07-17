@@ -6,9 +6,9 @@ import { useAuth } from '@/(context)/AuthContext';
 import { getMemberDetails } from "@/_Service/MemberService";
 import { getLikedMovies, getMovieByMovieId } from "@/_Service/MovieService";
 import { getPostsByMemberNo } from "@/_Service/PostService";
-import Update from "@/(components)/Profile/Update/Updata";
-import PostList from "@/(components)/Profile/PostList/PostList";
+import Update from "@/(components)/Profile/Update/Update";
 import LikeList from "@/(components)/Profile/LikeList/LikeList";
+import PostList from "@/(components)/Modal/PostList/PostList";
 
 const Profile: React.FC = () => {
     const { isLoggedIn } = useAuth();
@@ -71,8 +71,12 @@ const Profile: React.FC = () => {
             <div className={styles.mainContent}>
                 <Update member={member} setMember={setMember} fetchImage={fetchImage} />
                 <div className={styles.contentSection}>
+                    <div className={styles.section}>
+                        <h2 className={styles.sectionTitle}>내가 남긴 리뷰</h2>
                     <PostList posts={posts} />
+                    </div>
                     <LikeList movies={movies} />
+
                 </div>
             </div>
         </div>

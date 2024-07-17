@@ -2,7 +2,7 @@ import React, { useState, useRef, ChangeEvent, FormEvent, useEffect } from 'reac
 import axios from "axios";
 import styles from "./Update.module.css";
 import { Member, Errors, UpdateForm } from "@/(types)/types";
-import { checkNicknameDuplicate, getMemberDetails, verifyPassword } from "@/_Service/MemberService";
+import { checkNicknameDuplicate, verifyPassword } from "@/_Service/MemberService";
 
 interface UpdateProps {
     member: Member;
