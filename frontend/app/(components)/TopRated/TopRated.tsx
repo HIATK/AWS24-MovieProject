@@ -1,5 +1,5 @@
-"use client";
-
+// components/TopRatedMovies/TopRatedMovies.tsx
+'use client';
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
@@ -15,28 +15,40 @@ type Movie = {
 export default function TopRatedMovies() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<number>(0);
 
   const MOVIES_PER_PAGE = 5;
   const POSTER_WIDTH = 200;
   const POSTER_MARGIN = 20;
 
-  useEffect(() => {
-    async function fetchMovies() {
-      try {
-        const movieIds = await getTopRated();
-        const movieDetails: Movie[] = [];
+  const fetchMovies = async () => {
+    try {
+      const movieIds = await getTopRated();
+      const movieDetails: Movie[] = [];
 
-        for (const id of movieIds) {
-          const details = await getMovieByMovieId(id);
-          movieDetails.push(details);
-        }
-        setMovies(movieDetails);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
+      for (const id of movieIds) {
+        const details = await getMovieByMovieId(id);
+        movieDetails.push(details);
       }
+      setMovies(movieDetails);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
     }
+  };
+
+  useEffect(() => {
     fetchMovies();
-  }, []); // 빈 배열을 의존성 배열로 전달하여 컴포넌트 마운트 시 한 번만 실행
+
+    const handleRefreshMovies = () => {
+      fetchMovies();
+    };
+
+    window.addEventListener('refreshMovies', handleRefreshMovies);
+
+    return () => {
+      window.removeEventListener('refreshMovies', handleRefreshMovies);
+    };
+  }, []);
 
   const handlePrevClick = () => {
     setPage((prevPage) => Math.max(prevPage - 1, 0));
@@ -50,6 +62,10 @@ export default function TopRatedMovies() {
   };
 
   const translateX = -page * (POSTER_WIDTH + POSTER_MARGIN * 2) * MOVIES_PER_PAGE;
+
+  const handleImageLoad = () => {
+    setLoadedImages((prevCount) => prevCount + 1);
+  };
 
   return (
     <div className={styles.container}>
@@ -65,13 +81,17 @@ export default function TopRatedMovies() {
           className={styles.movieItems}
           style={{ transform: `translateX(${translateX}px)` }}
         >
-          {movies.map((movie) => (
-            <div key={movie.id} className={styles.movieItem}>
+          {movies.map((movie, index) => (
+            <div
+              key={movie.id}
+              className={`${styles.movieItem} ${index < MOVIES_PER_PAGE ? (loadedImages > index ? styles.loaded : styles.loading) : ''}`}
+            >
               <Link href={`/movies/details/${movie.id}`}>
                 <img
                   src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
                   alt={`Poster for ${movie.title}`}
-                  className={styles.movieImg}
+                  className={`${styles.movieImg}`}
+                  onLoad={handleImageLoad}
                 />
               </Link>
             </div>

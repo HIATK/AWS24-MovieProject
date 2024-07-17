@@ -89,6 +89,10 @@ const MovieHeader: React.FC<MovieHeaderProps> = ({ movie, averageRating }) => {
 
       const count = await fetchLikeCounts(movie.id);
       setLikesCount(count);
+
+      // CustomEvent 디스패치
+      const event = new CustomEvent('refreshMovies');
+      window.dispatchEvent(event);
     } catch (err) {
       setError("좋아요 상태 업데이트 실패");
     } finally {
