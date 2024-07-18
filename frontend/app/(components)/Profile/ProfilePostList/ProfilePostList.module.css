@@ -1,7 +1,6 @@
 .postsList {
     flex:1;
 }
-
 .post {
     background-color: #444;
     padding: 1rem;
@@ -15,22 +14,18 @@
     justify-content: space-between;
     align-items: center;
 }
-
 .post:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 .postHeader,
 .postBody {
     display: flex;
     align-items: center;
 }
-
 .expanded .postContent {
     white-space: pre-wrap;
 }
-
 .postNick {
     width: 80px;
     margin-right: 10px;
@@ -54,17 +49,14 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .expanded .postContent {
     white-space: normal;
 }
-
 .star {
     font-size: 1.5rem;
     color: yellow;
     margin-right: 0.2rem;
 }
-
 .postDate {
     padding-left: 1rem;
 }
