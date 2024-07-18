@@ -5,11 +5,16 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../(context)/AuthContext';
 import Profile from '@/(components)/Profile/Profile';
 import Loading from './loading';
+import {useTheme} from "@/(components)/DarkModToggle/ThemeContext";
+import styles from "@/page.module.css";
+import MatrixRainEffect from "@/(components)/RainEffect/MatrixRainEffect";
+import RainEffect from "@/(components)/RainEffect/RainEffect";
 
 const ProfilePage: React.FC = () => {
   const { isLoggedIn, checkAuth } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const {theme} = useTheme();
 
   useEffect(() => {
     const verifyLoginStatus = async () => {
@@ -34,7 +39,15 @@ const ProfilePage: React.FC = () => {
     return null; // 로그인 상태가 아니면 프로필 페이지 렌더링 안 함
   }
 
-  return <Profile />;
+  return (
+    <div>
+      {theme === 'dark' ? <MatrixRainEffect/> : <RainEffect/>}
+      <div className={styles.content}>
+        <div className={styles.background}/>
+        <Profile />
+      </div>
+    </div>
+);
 };
 
 export default ProfilePage;

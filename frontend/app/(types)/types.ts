@@ -6,6 +6,8 @@ export interface PostDetails {
     memberNo: number;
     memberNick: string;
     filePath: string;
+    movieId: number;
+    movieTitle: string;
 }
 
 export interface MovieDetails {

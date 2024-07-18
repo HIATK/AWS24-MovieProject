@@ -19,7 +19,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>, PostSearch
     @Query("SELECT AVG(p.ratingStar) FROM Post p WHERE p.movie.movieId = :movieId")
     Double findAverageRatingByMovieId(Integer movieId);
 
-    @Query("SELECT p FROM Post p WHERE p.member.memberNo = :memberNo")
+    @Query("select p from Post p join fetch p.movie where p.member.memberNo = :memberNo")
     List<Post> findPostsByMemberNo(@Param("memberNo") Integer memberNo);
 
     //    @Query("select p from Post p where p.postTitle like concat('%', :keyword, '%')")

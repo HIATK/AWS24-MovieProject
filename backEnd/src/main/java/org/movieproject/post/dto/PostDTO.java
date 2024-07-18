@@ -40,4 +40,6 @@ public class PostDTO {
 
     private String filePath;
 
+    private String movieTitle;
+
 }

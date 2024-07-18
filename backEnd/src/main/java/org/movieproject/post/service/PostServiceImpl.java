@@ -34,7 +34,7 @@ public class PostServiceImpl implements PostService {
     private final ModelMapper modelMapper;
 
     @Value("${org.movieproject.file.path}")
-    private String basicPath;
+    private String basicImagePath;
 
     //  게시물 등록 기능
     @Override
@@ -95,12 +95,8 @@ public class PostServiceImpl implements PostService {
                         if (post.getMember().getImage() != null) {
                             postDTO.setFilePath(post.getMember().getImage().getFilePath());
                         } else {
-                            postDTO.setFilePath("C:\\Users\\xogml\\IdeaProjects\\AWS24-MovieProject\\frontend\\public\\profile\\basic.png");
+                            postDTO.setFilePath(basicImagePath);
                         }
-                    if (post.getMember() != null && post.getMember().getImage() != null) {
-                        postDTO.setFilePath(post.getMember().getImage().getFilePath());
-                    } else {
-                        postDTO.setFilePath(basicPath);
                     }
                     return postDTO;
                 })
@@ -117,7 +113,14 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findPostsByMemberNo(memberNo);
 
         return posts.stream()
-                .map(post -> modelMapper.map(post, PostDTO.class))
+                .map(post -> {
+                    PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+                    if (post.getMovie() != null) {
+                        postDTO.setMovieId(post.getMovie().getMovieId());
+                        postDTO.setMovieTitle(post.getMovie().getMovieTitle());
+                    }
+                    return postDTO;
+                })
                 .collect(Collectors.toList());
     }
 }
