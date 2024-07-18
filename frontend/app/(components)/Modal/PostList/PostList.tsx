@@ -73,7 +73,7 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
   };
 
   const removeBasePath = (filePath: string) => {
-    const basePathToRemove = "/AWS24-MovieProject/frontend/public";
+    const basePathToRemove = "C:\\Users\\tjoeun\\IdeaProjects\\AWS24-MovieProject\\frontend\\public\\";
     return filePath.replace(basePathToRemove, "");
   };
 
@@ -96,7 +96,7 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
               {renderStars(post.ratingStar)}
             </div>
             <div className={styles.profileImage}>
-              <img src={`/${removeBasePath(post.filePath)}`} alt="Post Image"
+              <img src={`/${removeBasePath(post.filePath)}`}
                 className={styles.profileImage}
               />
             </div>
