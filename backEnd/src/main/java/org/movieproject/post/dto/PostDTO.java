@@ -30,6 +30,8 @@ public class PostDTO {
 
     private Integer movieId;
 
+    private Integer memberNo;
+
     private String memberNick;
 
     // 등록 날짜 (문자열 형태로 전송)

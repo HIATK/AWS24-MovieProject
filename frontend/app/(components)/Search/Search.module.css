@@ -34,10 +34,11 @@
 
 .movie-items {
   margin-top: 50px;
+  margin-left: 7%;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: center;
+  justify-content: flex-start;
   transition: transform 0.5s ease; /* 슬라이드 애니메이션 */
 }
 
@@ -58,4 +59,13 @@
 .movie-img:hover {
   transform: scale(1.1);
   animation: gradientBorder 4s infinite linear;
+}
+
+.searchText {
+  margin-top: 20px;
+  justify-content: center;
+  text-align: center; /* 텍스트를 가운데 정렬 */
+  font-family: 'cyber', sans-serif;
+  font-size: 33px; 
+  color: yellow;
 }

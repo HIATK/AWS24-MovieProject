@@ -13,6 +13,7 @@ import org.movieproject.post.dto.PageResponseDTO;
 import org.movieproject.post.dto.PostDTO;
 import org.movieproject.post.entity.Post;
 import org.movieproject.post.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class PostServiceImpl implements PostService {
     private final MovieRepository movieRepository;
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
+
+    @Value("${org.movieproject.file.path}")
+    private String basicPath;
 
     //  게시물 등록 기능
     @Override
@@ -57,7 +61,7 @@ public class PostServiceImpl implements PostService {
 
     //  게시물 삭제 기능
     @Override
-    public void removePost(Integer postId) {postRepository.deleteById(postId);}
+    public void deletePost(Integer postId) {postRepository.deleteById(postId);}
 
     //  페이징 처리 기능
 //    @Override
@@ -86,15 +90,23 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(post -> {
                     PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+                    if (post.getMember() != null) {
+                        postDTO.setMemberNo(post.getMember().getMemberNo()); // memberId 설정
+                        if (post.getMember().getImage() != null) {
+                            postDTO.setFilePath(post.getMember().getImage().getFilePath());
+                        } else {
+                            postDTO.setFilePath("C:\\Users\\xogml\\IdeaProjects\\AWS24-MovieProject\\frontend\\public\\profile\\basic.png");
+                        }
                     if (post.getMember() != null && post.getMember().getImage() != null) {
                         postDTO.setFilePath(post.getMember().getImage().getFilePath());
                     } else {
-                        postDTO.setFilePath("/Users/parkjihong/AWS24-MovieProject/frontend/public/profile/basic.png");
+                        postDTO.setFilePath(basicPath);
                     }
                     return postDTO;
                 })
                 .collect(Collectors.toList());
     }
+
     @Override
     public Double getAverageRatingByMovieId(Integer movieId) {
         return postRepository.findAverageRatingByMovieId(movieId);

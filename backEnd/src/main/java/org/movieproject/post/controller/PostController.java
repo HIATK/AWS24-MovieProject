@@ -32,10 +32,10 @@ public class PostController {
     }
 
     //  삭제
-    @DeleteMapping(value = "/{postId}")
-    public Map<String, String> remove(@PathVariable("postId") Integer postId) {
-        postService.removePost(postId);
-        return Map.of("result", "success");
+    @DeleteMapping(value = "/delete/{postId}")
+    public ResponseEntity<Map<String, String>> remove(@PathVariable("postId") Integer postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.ok(Map.of("message", "포스트 삭제 완료"));
     }
 
     //  검색 조건과 페이징 처리
@@ -51,6 +51,7 @@ public class PostController {
         }
         return postDTOs;
     }
+
 
     @GetMapping("/average-rating/{movieId}")
     public ResponseEntity<Double> getAverageRatingByMovieId(@PathVariable Integer movieId) {

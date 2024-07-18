@@ -3,6 +3,7 @@ export interface PostDetails {
     postContent: string;
     ratingStar: number;
     regDate: string;
+    memberNo: number;
     memberNick: string;
     filePath: string;
     movieId: number;

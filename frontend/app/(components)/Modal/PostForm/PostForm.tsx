@@ -1,3 +1,4 @@
+// components/Modal/PostForm/PostForm.tsx
 import React, { useState, useEffect } from "react";
 import styles from "./PostForm.module.css";
 import RatingStars from "@/(components)/Modal/RatingStar/RatingStars";
@@ -52,6 +53,10 @@ const PostForm: React.FC<PostFormProps> = ({ movieId, setPosts, setAverageRating
       setPostRating(0);
       setShowRating(false);
       setIsTextareaFocused(false);
+
+      // CustomEvent 디스패치
+      const event = new CustomEvent('refreshMovies');
+      window.dispatchEvent(event);
     } catch (error) {
       console.error("Post submission error:", error);
     }
@@ -83,7 +88,6 @@ const PostForm: React.FC<PostFormProps> = ({ movieId, setPosts, setAverageRating
             hoverRating={postHoverRating}
             onHover={setPostHoverRating}
             onClick={setPostRating}
-            onMouseDown={(e) => e.preventDefault()} // 포커스 유지
           />
           {ratingError && <div className={styles.ratingError}>{ratingError}</div>}
           <div className={styles.buttonContainer}>
