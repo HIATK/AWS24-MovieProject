@@ -105,7 +105,14 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findPostsByMemberNo(memberNo);
 
         return posts.stream()
-                .map(post -> modelMapper.map(post, PostDTO.class))
+                .map(post -> {
+                    PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+                    if (post.getMovie() != null) {
+                        postDTO.setMovieId(post.getMovie().getMovieId());
+                        postDTO.setMovieTitle(post.getMovie().getMovieTitle());
+                    }
+                    return postDTO;
+                })
                 .collect(Collectors.toList());
     }
 }

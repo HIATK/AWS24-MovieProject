@@ -5,6 +5,8 @@ export interface PostDetails {
     regDate: string;
     memberNick: string;
     filePath: string;
+    movieId: number;
+    movieTitle: string;
 }
 
 export interface MovieDetails {
