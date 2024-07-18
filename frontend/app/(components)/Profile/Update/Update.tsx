@@ -14,10 +14,7 @@ interface UpdateProps {
     updateProfileImage: (memberNo: number) => Promise<void>;
 }
 
-const Update: React.FC<UpdateProps> = ({ member, setMember,
-                                           fetchImage, profileImageUrl,
-                                           setProfileImageUrl,
-                                       updateProfileImage}) => {
+const Update: React.FC<UpdateProps> = ({ member, setMember, fetchImage, profileImageUrl, setProfileImageUrl }) => {
     const handleDeleteClick = () => {
         handleDelete(member.memberNo);
     };
@@ -56,14 +53,6 @@ const Update: React.FC<UpdateProps> = ({ member, setMember,
             setProfileImagePath(`/profile/${member.memberNo}.png`);
         });
     }, [member, fetchImage]);
-
-    useEffect(() => {
-        if (updateForm.memberNick === member.memberNick) {
-            setIsNicknameChecked(true);
-        } else {
-            setIsNicknameChecked(false);
-        }
-    }, [updateForm.memberNick, member.memberNick]);
 
     const handleProfileImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -119,11 +108,18 @@ const Update: React.FC<UpdateProps> = ({ member, setMember,
         e.preventDefault();
         const validationErrors = validateForm();
 
+        if (updateForm.memberNick === member.memberNick) {
+            setIsNicknameChecked(true);
+            setIsNicknameDuplicate(false);
+        }
+
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
         } else if (!isNicknameChecked || isNicknameDuplicate) {
-            alert("닉네임 중복 체크를 해주세요.");
-            return;
+            setErrors({
+                ...validationErrors,
+                memberNick: "닉네임 중복 체크를 해주세요.",
+            });
         } else {
             try {
                 const isPasswordValid = await verifyPassword(updateForm.currentPassword);
@@ -154,13 +150,6 @@ const Update: React.FC<UpdateProps> = ({ member, setMember,
                 setErrors({});
                 setIsEditing(false);
 
-                setUpdateForm(prevForm => ({
-                    ...prevForm,
-                    currentPassword: '',
-                    newPassword: '',
-                    confirmNewPassword: ''
-                }));
-
             } catch (error) {
                 if (axios.isAxiosError(error) && error.response) {
                     console.error("서버 응답 에러:", error.response.data);
@@ -172,6 +161,7 @@ const Update: React.FC<UpdateProps> = ({ member, setMember,
             }
         }
     };
+
 
     const handleDelete = async (memberNo: number) => {
         try {
@@ -191,6 +181,7 @@ const Update: React.FC<UpdateProps> = ({ member, setMember,
             );
             alert(response.data);
             logout();
+            // 필요한 후속 작업을 여기서 수행 (예: 상태 업데이트 등)
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 if (error.response) {
@@ -291,6 +282,9 @@ const Update: React.FC<UpdateProps> = ({ member, setMember,
                 {isNicknameDuplicate
                     ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다."}
               </span>)}
+
+                {errors.memberNick && (
+                    <span style={{color: "red"}}>{errors.memberNick}</span>)}
 
                 <input
                     type="text" name="memberPhone" value={updateForm.memberPhone}

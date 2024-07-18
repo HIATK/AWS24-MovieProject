@@ -18,9 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     @Query("select m from Member m where m.memberEmail = :memberEmail")
     Optional<Member> findByMemberEmailWithRoles(String memberEmail);
 
-    @Query("SELECT m FROM Member m LEFT JOIN FETCH m.posts p LEFT JOIN FETCH p.movie WHERE m.memberNo = :memberNo")
-    Member findMemberWithPostsAndMovies(@Param("memberNo") Integer memberNo);
-
     @EntityGraph(attributePaths = "roleSet")
     Optional<Member> findByMemberEmail(String memberEmail);
 

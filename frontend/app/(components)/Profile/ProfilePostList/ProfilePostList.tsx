@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FaRegStar, FaStar } from "react-icons/fa";
+import React, { useState, useRef, useCallback, useEffect } from "react";
+import { FaStar, FaRegStar } from "react-icons/fa";
 import styles from "./ProfilePostList.module.css";
 import { PostDetails } from "@/(types)/types";
 
@@ -65,10 +65,6 @@ const ProfilePostList: React.FC<PostListProps> = ({ posts }) => {
                             flex: 1
                         }}
                     >
-                        <div className={styles.postMovieTitle}>
-                            <span>{post.movieTitle}</span>
-                        </div>
-
                         <div className={styles.postHeader}>
                             {renderStars(post.ratingStar)}
                             <div className={styles.postNick}>
@@ -82,9 +78,7 @@ const ProfilePostList: React.FC<PostListProps> = ({ posts }) => {
                                     ? post.postContent.split("\n")[0]
                                     : ""}
                         </div>
-                        <div className={styles.postDate}>
-                            {post.regDate}
-                        </div>
+                        <div className={styles.postDate}>{post.regDate}</div>
                     </div>
                 ))}
             </div>

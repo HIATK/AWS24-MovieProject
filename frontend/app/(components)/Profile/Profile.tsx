@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./profile.module.css";
 import { Member, MovieDetails, PostDetails } from "@/(types)/types";
@@ -20,28 +20,15 @@ const Profile: React.FC = () => {
         memberNick: '',
     });
     const [posts, setPosts] = useState<PostDetails[]>([]);
-    const [movies, setMovies] = useState<MovieDetails[]>([]);
+    const [movies, setMovies] = useState<MovieDetails[] | null>(null);
     const [profileImageUrl, setProfileImageUrl] = useState<string>("/profile/basic.png");
 
-    const updateProfileImage = useCallback(async (memberNo: number) => {
+
+    const updateProfileImage = async (memberNo: number) => {
         const newImageUrl = await fetchImage(memberNo);
         setProfileImageUrl(newImageUrl);
-    }, []);
+    };
 
-    const fetchImage = useCallback(async (memberNo: number): Promise<string> => {
-        try {
-            const response = await axios.get(`/api/image/read/${memberNo}`, {
-                responseType: "blob",
-            });
-
-            if (response.data) {
-                return URL.createObjectURL(response.data);
-            }
-        } catch (error) {
-            console.error("이미지 조회 실패", error);
-        }
-        return "/profile/basic.png";
-    }, []);
 
     useEffect(() => {
         const fetchMemberDetails = async () => {
@@ -59,17 +46,6 @@ const Profile: React.FC = () => {
                 const movieDetailsPromises = likedMovies.map(movieId => getMovieByMovieId(movieId));
                 const movieDetails = await Promise.all(movieDetailsPromises);
                 setMovies(movieDetails.filter((movie): movie is MovieDetails => movie !== null));
-
-                // 포스트에 해당하는 영화 정보도 가져옵니다
-                const postMovieIds = [...new Set(postData.map(post => post.movieId))];
-                const postMovieDetailsPromises = postMovieIds.map(movieId => getMovieByMovieId(movieId));
-                const postMovieDetails = await Promise.all(postMovieDetailsPromises);
-                setMovies(prevMovies => [
-                    ...prevMovies,
-                    ...postMovieDetails.filter((movie): movie is MovieDetails =>
-                        movie !== null && !prevMovies.some(m => m.id === movie.id)
-                    )
-                ]);
             } catch (error) {
                 console.error('데이터 가져오기 실패', error);
             }
@@ -78,7 +54,22 @@ const Profile: React.FC = () => {
         if (isLoggedIn) {
             fetchMemberDetails();
         }
-    }, [isLoggedIn, fetchImage]);
+    }, [isLoggedIn]);
+
+    const fetchImage = async (memberNo: number): Promise<string> => {
+        try {
+            const response = await axios.get(`/api/image/read/${memberNo}`, {
+                responseType: "blob",
+            });
+
+            if (response.data) {
+                return URL.createObjectURL(response.data);
+            }
+        } catch (error) {
+            console.error("이미지 조회 실패", error);
+        }
+        return "/profile/basic.png";
+    };
 
     if (!isLoggedIn) {
         return null;
@@ -93,12 +84,12 @@ const Profile: React.FC = () => {
                     fetchImage={fetchImage}
                     profileImageUrl={profileImageUrl}
                     setProfileImageUrl={setProfileImageUrl}
-                    updateProfileImage={updateProfileImage}
+                    updateProfileImage={updateProfileImage}  // 새로 추가된 prop
                 />
                 <div className={styles.contentSection}>
                     <div className={styles.section}>
-                        <h2 className={styles.sectionTitle}>나의 리뷰</h2>
-                        <ProfilePostList posts={posts} />
+                        <h2 className={styles.sectionTitle}>내가 남긴 리뷰</h2>
+                            <ProfilePostList posts={posts}/>
                     </div>
                     <LikeList movies={movies}/>
                 </div>

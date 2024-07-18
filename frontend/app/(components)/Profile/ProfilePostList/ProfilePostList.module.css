@@ -40,14 +40,6 @@
     white-space: nowrap;
 }
 
-.postMovieTitle {
-    margin-right: 10px;
-    margin-left: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 .postContent {
     flex: 1;
     white-space: nowrap;
