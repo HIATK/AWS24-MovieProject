@@ -1,10 +1,10 @@
-"use client";
-
+// components/TopLikedMovies/TopLikedMovies.tsx
+'use client';
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
-import styles from "./NowPlayingMovies.module.css";
-import { getNowPlaying } from "@/_Service/MovieService";
+import styles from "@/(components)/TopLiked/TopLiked.module.css";
+import { getTopLiked, getMovieByMovieId } from "@/_Service/MovieService";
 
 type Movie = {
   id: string;
@@ -12,7 +12,7 @@ type Movie = {
   poster_path: string;
 };
 
-export default function NowPlayingMovies() {
+export default function TopLikedMovies() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(0);
   const [loadedImages, setLoadedImages] = useState<number>(0);
@@ -21,16 +21,33 @@ export default function NowPlayingMovies() {
   const POSTER_WIDTH = 200;
   const POSTER_MARGIN = 20;
 
-  useEffect(() => {
-    async function fetchMovies() {
-      try {
-        const data = await getNowPlaying();
-        setMovies(data);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
+  const fetchMovies = async () => {
+    try {
+      const movieIds = await getTopLiked();
+      const movieDetails: Movie[] = [];
+
+      for (const id of movieIds) {
+        const details = await getMovieByMovieId(id);
+        movieDetails.push(details);
       }
+      setMovies(movieDetails);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
     }
+  };
+
+  useEffect(() => {
     fetchMovies();
+
+    const handleRefreshMovies = () => {
+      fetchMovies();
+    };
+
+    window.addEventListener('refreshMovies', handleRefreshMovies);
+
+    return () => {
+      window.removeEventListener('refreshMovies', handleRefreshMovies);
+    };
   }, []);
 
   const handlePrevClick = () => {

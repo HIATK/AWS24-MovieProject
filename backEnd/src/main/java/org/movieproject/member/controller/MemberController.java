@@ -14,6 +14,7 @@ import org.movieproject.member.dto.MemberDTO;
 import org.movieproject.member.entity.Member;
 import org.movieproject.member.repository.MemberRepository;
 import org.movieproject.member.service.MemberService;
+import org.movieproject.post.dto.PostDTO;
 import org.movieproject.security.JwtProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -147,6 +148,19 @@ public class MemberController {
             return ResponseEntity.badRequest().body("업데이트 실패하였습니다. !!!");
         }
     }
+
+    // 회원 삭제
+    @DeleteMapping("/delete/{memberNo}")
+    public ResponseEntity<String> deleteMember(@PathVariable("memberNo") Integer memberNo){
+            try {
+                memberService.deleteMember(memberNo);
+                return ResponseEntity.ok("회원정보 삭제에 성공 했습니다.");
+            }catch (MemberService.MemberExistException e) {
+                return ResponseEntity.badRequest().body("회원정보 삭제에 실패하였습니다. !!!");
+            }catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+            }
+        }
 
     @GetMapping("/check_auth")
     public ResponseEntity<?> checkAuth() {

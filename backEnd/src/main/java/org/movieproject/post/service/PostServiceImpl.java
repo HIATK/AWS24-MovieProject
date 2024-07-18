@@ -61,7 +61,7 @@ public class PostServiceImpl implements PostService {
 
     //  게시물 삭제 기능
     @Override
-    public void removePost(Integer postId) {postRepository.deleteById(postId);}
+    public void deletePost(Integer postId) {postRepository.deleteById(postId);}
 
     //  페이징 처리 기능
 //    @Override
@@ -90,6 +90,13 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(post -> {
                     PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+                    if (post.getMember() != null) {
+                        postDTO.setMemberNo(post.getMember().getMemberNo()); // memberId 설정
+                        if (post.getMember().getImage() != null) {
+                            postDTO.setFilePath(post.getMember().getImage().getFilePath());
+                        } else {
+                            postDTO.setFilePath("C:\\Users\\xogml\\IdeaProjects\\AWS24-MovieProject\\frontend\\public\\profile\\basic.png");
+                        }
                     if (post.getMember() != null && post.getMember().getImage() != null) {
                         postDTO.setFilePath(post.getMember().getImage().getFilePath());
                     } else {
@@ -99,6 +106,7 @@ public class PostServiceImpl implements PostService {
                 })
                 .collect(Collectors.toList());
     }
+
     @Override
     public Double getAverageRatingByMovieId(Integer movieId) {
         return postRepository.findAverageRatingByMovieId(movieId);

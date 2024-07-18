@@ -16,4 +16,10 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
 
     @Query("SELECT m FROM Movie m JOIN m.likes l WHERE l.member.memberNo = :memberNo AND l.liked = true")
     List<Movie> findLikedMoviesByMemberNo(@Param("memberNo") Integer memberNo);
+
+    @Query("SELECT m.movieId FROM Movie m INNER JOIN m.likes l ON l.liked = true GROUP BY m.movieId ORDER BY COUNT(l) DESC")
+    List<Integer> findMoviesOrderByLikesDesc();
+
+    @Query("SELECT m.movieId FROM Movie m JOIN m.post p GROUP BY m.movieId ORDER BY AVG(p.ratingStar) DESC")
+    List<Integer> findMoviesOrderByRatingStarAvgDesc();
 }
